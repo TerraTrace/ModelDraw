@@ -6,17 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */; };
+		A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FD2E741D090024A4A4 /* ContentView.swift */; };
+		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
+		A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A9DEB5FD2E741D090024A4A4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A9DEB5FE2E741D090024A4A4 /* ModelDraw.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ModelDraw.entitlements; sourceTree = "<group>"; };
+		A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawApp.swift; sourceTree = "<group>"; };
+		A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		A9DEB5EF2E741B8D0024A4A4 /* ModelDraw */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ModelDraw;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A9DEB5EA2E741B8D0024A4A4 /* Frameworks */ = {
@@ -32,7 +36,7 @@
 		A9DEB5E42E741B8D0024A4A4 = {
 			isa = PBXGroup;
 			children = (
-				A9DEB5EF2E741B8D0024A4A4 /* ModelDraw */,
+				A9DEB6002E741D090024A4A4 /* ModelDraw */,
 				A9DEB5EE2E741B8D0024A4A4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +47,26 @@
 				A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A9DEB6002E741D090024A4A4 /* ModelDraw */ = {
+			isa = PBXGroup;
+			children = (
+				A9DEB6062E741D300024A4A4 /* Specs */,
+				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
+				A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */,
+				A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */,
+				A9DEB5FD2E741D090024A4A4 /* ContentView.swift */,
+				A9DEB5FE2E741D090024A4A4 /* ModelDraw.entitlements */,
+			);
+			path = ModelDraw;
+			sourceTree = "<group>";
+		};
+		A9DEB6062E741D300024A4A4 /* Specs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Specs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,9 +83,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				A9DEB5EF2E741B8D0024A4A4 /* ModelDraw */,
 			);
 			name = ModelDraw;
 			packageProductDependencies = (
@@ -109,6 +130,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +141,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
+				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
+				A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
