@@ -10,8 +10,9 @@ import SwiftUI
 @main
 struct ModelDrawApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        
+        DocumentGroup(newDocument: ModelDrawDocument()) { file in
+            ContentView(document: file.$document)
         }
     }
 }
