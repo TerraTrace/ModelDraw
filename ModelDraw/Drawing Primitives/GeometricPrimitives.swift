@@ -9,16 +9,19 @@ import SwiftUI
 import UniformTypeIdentifiers
 import Foundation
 
+
 // MARK: - Geometric Primitive Protocol
 protocol GeometricPrimitive: Codable {
     var id: UUID { get }
     var primitiveType: PrimitiveType { get }
 }
 
+
 // MARK: - Primitive Types
 enum PrimitiveType: String, Codable, CaseIterable {
     case cylinder = "cylinder"
 }
+
 
 // MARK: - Cylinder Primitive
 struct Cylinder: GeometricPrimitive {
@@ -38,6 +41,7 @@ struct Cylinder: GeometricPrimitive {
         self.wallThickness = wallThickness
     }
 }
+
 
 // MARK: - Type Erasure for Codable Collections
 struct AnyPrimitive: Codable {
@@ -72,6 +76,7 @@ struct AnyPrimitive: Codable {
     }
 }
 
+
 // MARK: - Document Metadata
 struct DocumentMetadata: Codable {
     let createdDate: Date
@@ -88,9 +93,11 @@ struct DocumentMetadata: Codable {
     }
 }
 
+
 // MARK: - File Format Structure
+
 struct ModelDrawFile: Codable {
-    var version: String = "1.0"
+    var version: String { "1.0" }
     let primitives: [AnyPrimitive]
     let metadata: DocumentMetadata
     
@@ -100,12 +107,15 @@ struct ModelDrawFile: Codable {
     }
 }
 
+
 // MARK: - Document Implementation
+
 struct ModelDrawDocument: FileDocument {
     static var readableContentTypes: [UTType] = [.modelDrawDocument]
     
     var primitives: [GeometricPrimitive] = []
     var metadata: DocumentMetadata = DocumentMetadata()
+    
     
     // MARK: - FileDocument Conformance
     init() {
@@ -147,6 +157,7 @@ struct ModelDrawDocument: FileDocument {
         return FileWrapper(regularFileWithContents: data)
     }
 }
+
 
 // MARK: - Uniform Type Identifier
 extension UTType {
