@@ -12,6 +12,7 @@
 		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
 		A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */; };
 		A9DEB60A2E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */; };
+		A9DEB60C2E747AA60024A4A4 /* GeometricPrimitives.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB60B2E747A950024A4A4 /* GeometricPrimitives.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawApp.swift; sourceTree = "<group>"; };
 		A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v0.15.md; sourceTree = "<group>"; };
+		A9DEB60B2E747A950024A4A4 /* GeometricPrimitives.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricPrimitives.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +57,9 @@
 			isa = PBXGroup;
 			children = (
 				A9DEB6062E741D300024A4A4 /* Specs */,
-				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
 				A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */,
+				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
+				A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */,
 				A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */,
 				A9DEB5FD2E741D090024A4A4 /* ContentView.swift */,
 				A9DEB5FE2E741D090024A4A4 /* ModelDraw.entitlements */,
@@ -70,6 +73,14 @@
 				A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */,
 			);
 			path = Specs;
+			sourceTree = "<group>";
+		};
+		A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */ = {
+			isa = PBXGroup;
+			children = (
+				A9DEB60B2E747A950024A4A4 /* GeometricPrimitives.swift */,
+			);
+			path = "Drawing Primitives";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +159,7 @@
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
 				A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */,
+				A9DEB60C2E747AA60024A4A4 /* GeometricPrimitives.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
