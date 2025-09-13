@@ -68,37 +68,17 @@ struct ModelDrawDocument: FileDocument {
         )
     }
     
-    /*init(configuration: ReadConfiguration) throws {
+    init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents else {
             throw CocoaError(.fileReadCorruptFile)
         }
         
-        let modelDrawFile = try JSONDecoder().decode(ModelDrawFile.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let modelDrawFile = try decoder.decode(ModelDrawFile.self, from: data)
+        
         self.primitives = modelDrawFile.primitives.map { $0.primitive }
         self.metadata = modelDrawFile.metadata
-    } */
-    
-    init(configuration: ReadConfiguration) throws {
-        print("🔍 Attempting to read document...")
-        
-        guard let data = configuration.file.regularFileContents else {
-            print("❌ Failed to get file contents")
-            throw CocoaError(.fileReadCorruptFile)
-        }
-        
-        print("✅ Got file data: \(data.count) bytes")
-        
-        do {
-            let modelDrawFile = try JSONDecoder().decode(ModelDrawFile.self, from: data)
-            print("✅ JSON decoded successfully")
-            
-            self.primitives = modelDrawFile.primitives.map { $0.primitive }
-            self.metadata = modelDrawFile.metadata
-            print("✅ Document initialized successfully")
-        } catch {
-            print("❌ JSON decode error: \(error)")
-            throw error
-        }
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {

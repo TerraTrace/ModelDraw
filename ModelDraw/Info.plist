@@ -5,21 +5,16 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleDocumentTypes</key>
-			<array>
-				<dict>
-					<key>CFBundleTypeName</key>
-					<string>ModelDraw Document</string>
-					<key>LSHandlerRank</key>
-					<string>Default</string>
-				</dict>
-			</array>
 			<key>CFBundleTypeName</key>
 			<string>ModelDraw Document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
-			<string>Default</string>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.demeter.modeldraw.document</string>
+			</array>
 		</dict>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
