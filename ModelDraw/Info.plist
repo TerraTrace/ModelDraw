@@ -5,8 +5,15 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>com.demeter.modeldraw.document</string>
+			<key>CFBundleDocumentTypes</key>
+			<array>
+				<dict>
+					<key>CFBundleTypeName</key>
+					<string>ModelDraw Document</string>
+					<key>LSHandlerRank</key>
+					<string>Default</string>
+				</dict>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>ModelDraw Document</string>
 			<key>CFBundleTypeRole</key>

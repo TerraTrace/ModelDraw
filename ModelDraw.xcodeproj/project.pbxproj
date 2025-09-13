@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9486F6C2E75997E00FEBE31 /* ModelDrawDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */; };
 		A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */; };
 		A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FD2E741D090024A4A4 /* ContentView.swift */; };
 		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawDocument.swift; sourceTree = "<group>"; };
 		A9DA0FAF2E74C8E800E3B264 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -38,6 +40,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A9486F6D2E75998700FEBE31 /* App Models */ = {
+			isa = PBXGroup;
+			children = (
+				A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */,
+			);
+			path = "App Models";
+			sourceTree = "<group>";
+		};
 		A9DEB5E42E741B8D0024A4A4 = {
 			isa = PBXGroup;
 			children = (
@@ -58,9 +68,10 @@
 			isa = PBXGroup;
 			children = (
 				A9DA0FAF2E74C8E800E3B264 /* Info.plist */,
-				A9DEB6062E741D300024A4A4 /* Specs */,
 				A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */,
+				A9DEB6062E741D300024A4A4 /* Specs */,
 				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
+				A9486F6D2E75998700FEBE31 /* App Models */,
 				A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */,
 				A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */,
 				A9DEB5FD2E741D090024A4A4 /* ContentView.swift */,
@@ -162,6 +173,7 @@
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
 				A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */,
 				A9DEB60C2E747AA60024A4A4 /* GeometricPrimitives.swift in Sources */,
+				A9486F6C2E75997E00FEBE31 /* ModelDrawDocument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
