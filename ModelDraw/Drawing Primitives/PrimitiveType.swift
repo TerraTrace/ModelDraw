@@ -1,44 +1,26 @@
 //
-//  GeometricPrimitives.swift
+//  PrimitiveType.swift
 //  ModelDraw
 //
-//  Created by Mike Raftery on 9/12/25.
+//  Created by Mike Raftery on 9/13/25.
 //
 
 import SwiftUI
 import Foundation
 
 
+// MARK: - Primitive Types
+enum PrimitiveType: String, Codable, CaseIterable {
+    case cylinder = "cylinder"
+    case cone = "cone"
+}
+
+
+
 // MARK: - Geometric Primitive Protocol
 protocol GeometricPrimitive: Codable {
     var id: UUID { get }
     var primitiveType: PrimitiveType { get }
-}
-
-
-// MARK: - Primitive Types
-enum PrimitiveType: String, Codable, CaseIterable {
-    case cylinder = "cylinder"
-}
-
-
-// MARK: - Cylinder Primitive
-struct Cylinder: GeometricPrimitive {
-    let id: UUID
-    let primitiveType: PrimitiveType
-    
-    // Cylinder parameters
-    let radius: Double        // Outer radius in meters
-    let height: Double        // Height in meters
-    let wallThickness: Double // Wall thickness in meters
-    
-    init(radius: Double, height: Double, wallThickness: Double) {
-        self.id = UUID()
-        self.primitiveType = .cylinder
-        self.radius = radius
-        self.height = height
-        self.wallThickness = wallThickness
-    }
 }
 
 
@@ -61,6 +43,8 @@ struct AnyPrimitive: Codable {
         switch type {
         case .cylinder:
             self.primitive = try container.decode(Cylinder.self, forKey: .data)
+        case .cone:
+            self.primitive = try container.decode(Cone.self, forKey: .data)
         }
     }
     
@@ -71,9 +55,9 @@ struct AnyPrimitive: Codable {
         switch primitive.primitiveType {
         case .cylinder:
             try container.encode(primitive as! Cylinder, forKey: .data)
+        case .cone:
+            try container.encode(primitive as! Cone, forKey: .data)
         }
     }
 }
-
-
 
