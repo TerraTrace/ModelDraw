@@ -10,6 +10,7 @@
 		A9486F6C2E75997E00FEBE31 /* ModelDrawDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */; };
 		A97FE4CB2E75DB5900540DEE /* PrimitiveType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CA2E75DB5800540DEE /* PrimitiveType.swift */; };
 		A97FE4CD2E75DBED00540DEE /* Cone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CC2E75DBEB00540DEE /* Cone.swift */; };
+		A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CE2E75DDA100540DEE /* Assembly.swift */; };
 		A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */; };
 		A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FD2E741D090024A4A4 /* ContentView.swift */; };
 		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
@@ -22,6 +23,7 @@
 		A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawDocument.swift; sourceTree = "<group>"; };
 		A97FE4CA2E75DB5800540DEE /* PrimitiveType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimitiveType.swift; sourceTree = "<group>"; };
 		A97FE4CC2E75DBEB00540DEE /* Cone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cone.swift; sourceTree = "<group>"; };
+		A97FE4CE2E75DDA100540DEE /* Assembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembly.swift; sourceTree = "<group>"; };
 		A9DA0FAF2E74C8E800E3B264 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */ = {
 			isa = PBXGroup;
 			children = (
+				A97FE4CE2E75DDA100540DEE /* Assembly.swift */,
 				A97FE4CA2E75DB5800540DEE /* PrimitiveType.swift */,
 				A9DEB60B2E747A950024A4A4 /* Cylinder.swift */,
 				A97FE4CC2E75DBEB00540DEE /* Cone.swift */,
@@ -176,6 +179,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A97FE4CD2E75DBED00540DEE /* Cone.swift in Sources */,
+				A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
 				A97FE4CB2E75DB5900540DEE /* PrimitiveType.swift in Sources */,
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
