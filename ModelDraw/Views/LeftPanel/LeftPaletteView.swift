@@ -19,7 +19,7 @@ enum SelectedItem: Hashable {
 struct LeftPaletteView: View {
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
-    @Binding var selection: SelectedItem
+    @Binding var selection: SelectedItem?
 
     
     var body: some View {

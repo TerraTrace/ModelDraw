@@ -37,6 +37,7 @@ struct RightPaletteView: View {
     }
 }
 
+
 struct PrimitiveCardView: View {
     let primitive: GeometricPrimitive
     

@@ -7,8 +7,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var document: ModelDrawDocument
-    @State private var selection: SelectedItem? = nil
-    
+    @State private var selection: SelectedItem?
+
     var body: some View {
         HSplitView {
             // Left Palette - Assembly Information
