@@ -20,7 +20,6 @@ struct LeftPaletteView: View {
     @Environment(ViewModel.self) private var model
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
-    @Binding var selection: SelectedItem?
 
     
     var body: some View {

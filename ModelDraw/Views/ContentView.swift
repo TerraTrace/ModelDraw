@@ -8,13 +8,15 @@ import SwiftUI
 struct ContentView: View {
     @Environment(ViewModel.self) private var model
     @Binding var document: ModelDrawDocument
-    @State private var selection: SelectedItem?
-
+    
     var body: some View {
         HSplitView {
             // Left Palette - Assembly Information
-            LeftPaletteView(assemblies: document.assemblies, primitives: document.primitives, selection: $selection)
-                .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
+            LeftPaletteView(
+                assemblies: document.assemblies,
+                primitives: document.primitives,
+            )
+            .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
             
             // Center - RealityKit 3D View
             CenterRealityView(
@@ -26,10 +28,15 @@ struct ContentView: View {
             // Right Palette - Primitive Details
             RightPaletteView(
                 assemblies: document.assemblies,
-                primitives: document.primitives,
-                selection: selection
+                primitives: document.primitives
             )
             .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
+        }
+        .onAppear {
+            // Initialize with first assembly selected
+            if let firstAssembly = document.assemblies.first {
+                model.selectItem(.assembly(firstAssembly.id))
+            }
         }
     }
 }
