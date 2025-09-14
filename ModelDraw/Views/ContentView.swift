@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {
         HSplitView {
             // Left Palette - Assembly Information
-            LeftPaletteView(assemblies: document.assemblies)
+            LeftPaletteView(assemblies: document.assemblies, primitives: document.primitives)
                 .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
             
             // Center - RealityKit 3D View
