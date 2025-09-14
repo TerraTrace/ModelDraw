@@ -9,7 +9,6 @@ import SwiftUI
 struct RightPaletteView: View {
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
-    let selection: SelectedItem?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
