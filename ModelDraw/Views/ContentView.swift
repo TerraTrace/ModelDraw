@@ -23,8 +23,12 @@ struct ContentView: View {
             .frame(minWidth: 400)
             
             // Right Palette - Primitive Details
-            RightPaletteView(primitives: document.primitives)
-                .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
+            RightPaletteView(
+                assemblies: document.assemblies,
+                primitives: document.primitives,
+                selection: selection
+            )
+            .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
         }
     }
 }
