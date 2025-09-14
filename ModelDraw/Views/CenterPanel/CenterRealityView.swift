@@ -47,12 +47,29 @@ func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> En
     // Add some test content
     var yOffset: Float = 0.0
     
+    // Add after creating rootEntity but before adding primitives
+    let cameraEntity = Entity()
+    cameraEntity.position = SIMD3<Float>(4, 0, 0)  // Pull back and up
+    //cameraEntity.look(at: SIMD3<Float>(0, 1, 0), from: cameraEntity.position, relativeTo: nil)
+    rootEntity.addChild(cameraEntity)
+
+    
     for primitive in primitives {
         let entity = createPrimitiveEntity(primitive: primitive)
         entity.position = SIMD3<Float>(0, yOffset, 0)
         rootEntity.addChild(entity)
         yOffset += 2.0  // Space them out vertically for now
     }
+    
+    // Add this test entity to the scene
+    let testBox = Entity()
+    let testMesh = MeshResource.generateBox(size: 1.0)
+    let testMaterial = SimpleMaterial(color: .red, isMetallic: false)
+    testBox.components.set(ModelComponent(mesh: testMesh, materials: [testMaterial]))
+    //testBox.position = SIMD3<Float>(0, 0, -5) // Place it in front of camera
+    testBox.position = SIMD3<Float>(0, 0, 0) // Place it in front of camera
+    rootEntity.addChild(testBox)
+    print("🔧 Added test red box at (0,0,-5)")
     
     // Add basic lighting
     let lightEntity = Entity()
@@ -63,7 +80,10 @@ func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> En
     lightEntity.orientation = simd_quatf(angle: -Float.pi/4, axis: SIMD3(1, 1, 0))
     rootEntity.addChild(lightEntity)
     
+    // Add after creating the scene
     print("🔧 Created scene with \(primitives.count) primitives")
+    print("🔧 Scene bounds: \(rootEntity.visualBounds(relativeTo: nil))")
+
     return rootEntity
 }
 
@@ -92,5 +112,9 @@ func createPrimitiveEntity(primitive: GeometricPrimitive) -> Entity {
         print("⚠️ Unknown primitive type: \(type(of: primitive))")
     }
     
+    // And in createPrimitiveEntity, add:
+    print("🔧 Creating \(primitive.primitiveType) at default position")
+    print("🔧 Entity bounds: \(entity.visualBounds(relativeTo: nil))")
+
     return entity
 }
