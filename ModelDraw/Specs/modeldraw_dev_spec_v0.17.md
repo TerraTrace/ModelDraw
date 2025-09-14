@@ -1,4 +1,4 @@
-# ModelDraw Development Specification v0.16
+# ModelDraw Development Specification v0.17
 **Date:** September 14, 2025  
 **Changes:** Major architectural update - Project-based file system, Demeter workflow integration, preliminary design CAD positioning
 
@@ -111,9 +111,9 @@ ModelDraw is positioned as the **"preliminary design CAD"** tool within the Deme
 ### Core Classes
 
 ```swift
-// Project Management (Singleton)
-class ProjectManager {
-    static let shared = ProjectManager()
+// Drawing Management (Singleton)
+class DrawingManager {
+    static let shared = DrawingManager()
     private init() {}
     
     func loadProject(from folderURL: URL) throws -> ProjectData
@@ -232,8 +232,8 @@ ModelDraw provides geometry and mass properties for:
 
 ## Development Phases
 
-### Phase 1: Project System Foundation
-- ProjectManager singleton implementation
+### Phase 1: Drawing System Foundation
+- DrawingManager singleton implementation
 - Document directory scanning and project enumeration
 - Basic project loading/saving
 - Simple template system
