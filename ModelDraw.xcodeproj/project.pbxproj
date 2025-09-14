@@ -15,11 +15,12 @@
 		A97FE4D42E76EC3D00540DEE /* CenterRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */; };
 		A97FE4D62E76EC8800540DEE /* RightPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D52E76EC8600540DEE /* RightPaletteView.swift */; };
 		A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */; };
+		A97FE4DE2E77499100540DEE /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4DD2E77498E00540DEE /* ProjectManager.swift */; };
+		A97FE4E02E77545800540DEE /* modeldraw_dev_spec_v0.16.md in Resources */ = {isa = PBXBuildFile; fileRef = A97FE4DF2E77545800540DEE /* modeldraw_dev_spec_v0.16.md */; };
 		A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */; };
 		A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FD2E741D090024A4A4 /* ContentView.swift */; };
 		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
 		A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */; };
-		A9DEB60A2E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */; };
 		A9DEB60C2E747AA60024A4A4 /* Cylinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB60B2E747A950024A4A4 /* Cylinder.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,8 @@
 		A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterRealityView.swift; sourceTree = "<group>"; };
 		A97FE4D52E76EC8600540DEE /* RightPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightPaletteView.swift; sourceTree = "<group>"; };
 		A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorRowView.swift; sourceTree = "<group>"; };
+		A97FE4DD2E77498E00540DEE /* ProjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectManager.swift; sourceTree = "<group>"; };
+		A97FE4DF2E77545800540DEE /* modeldraw_dev_spec_v0.16.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v0.16.md; sourceTree = "<group>"; };
 		A9DA0FAF2E74C8E800E3B264 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -39,7 +42,6 @@
 		A9DEB5FE2E741D090024A4A4 /* ModelDraw.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ModelDraw.entitlements; sourceTree = "<group>"; };
 		A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawApp.swift; sourceTree = "<group>"; };
 		A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v0.15.md; sourceTree = "<group>"; };
 		A9DEB60B2E747A950024A4A4 /* Cylinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cylinder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,6 +100,14 @@
 			path = CenterPanel;
 			sourceTree = "<group>";
 		};
+		A97FE4DC2E77497E00540DEE /* App Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A97FE4DD2E77498E00540DEE /* ProjectManager.swift */,
+			);
+			path = "App Controllers";
+			sourceTree = "<group>";
+		};
 		A9DEB5E42E741B8D0024A4A4 = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +131,7 @@
 				A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */,
 				A9DEB6062E741D300024A4A4 /* Specs */,
 				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
+				A97FE4DC2E77497E00540DEE /* App Controllers */,
 				A9486F6D2E75998700FEBE31 /* App Models */,
 				A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */,
 				A97FE4D02E75DE8500540DEE /* Views */,
@@ -133,7 +144,7 @@
 		A9DEB6062E741D300024A4A4 /* Specs */ = {
 			isa = PBXGroup;
 			children = (
-				A9DEB6092E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md */,
+				A97FE4DF2E77545800540DEE /* modeldraw_dev_spec_v0.16.md */,
 			);
 			path = Specs;
 			sourceTree = "<group>";
@@ -210,7 +221,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9DEB60A2E7448BF0024A4A4 /* modeldraw_dev_spec_v0.15.md in Resources */,
+				A97FE4E02E77545800540DEE /* modeldraw_dev_spec_v0.16.md in Resources */,
 				A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -225,6 +236,7 @@
 				A97FE4CD2E75DBED00540DEE /* Cone.swift in Sources */,
 				A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
+				A97FE4DE2E77499100540DEE /* ProjectManager.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
 				A97FE4CB2E75DB5900540DEE /* PrimitiveType.swift in Sources */,
 				A97FE4D62E76EC8800540DEE /* RightPaletteView.swift in Sources */,
