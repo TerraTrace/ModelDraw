@@ -19,7 +19,7 @@ enum SelectedItem: Hashable {
 struct LeftPaletteView: View {
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
-    @State private var selection: SelectedItem? = nil
+    @Binding var selection: SelectedItem
 
     
     var body: some View {
@@ -47,6 +47,11 @@ struct LeftPaletteView: View {
                 }
             }
             .listStyle(.sidebar)
+            .onAppear {
+                if let firstAssembly = assemblies.first {
+                    selection = .assembly(firstAssembly.id)
+                }
+            }
             .onChange(of: selection) {
                 print("Selected: \(String(describing: selection))")
             }

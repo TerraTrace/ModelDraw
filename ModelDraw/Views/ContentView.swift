@@ -7,11 +7,12 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var document: ModelDrawDocument
+    @State private var selection: SelectedItem? = nil
     
     var body: some View {
         HSplitView {
             // Left Palette - Assembly Information
-            LeftPaletteView(assemblies: document.assemblies, primitives: document.primitives)
+            LeftPaletteView(assemblies: document.assemblies, primitives: document.primitives, selection: $selection)
                 .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
             
             // Center - RealityKit 3D View
