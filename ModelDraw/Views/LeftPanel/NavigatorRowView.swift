@@ -13,7 +13,7 @@ struct NavigatorItem: Identifiable, Hashable, Equatable {
     let id = UUID()
     var name: String
     var itemType: NavigatorItemType
-    var children: [NavigatorItem] = []
+    var children: [NavigatorItem]? = nil
     
     init(name: String, itemType: NavigatorItemType, children: [NavigatorItem]) {
         self.name = name
