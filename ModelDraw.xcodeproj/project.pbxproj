@@ -54,6 +54,13 @@
 			path = "App Models";
 			sourceTree = "<group>";
 		};
+		A97FE4D02E75DE8500540DEE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		A9DEB5E42E741B8D0024A4A4 = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +86,7 @@
 				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
 				A9486F6D2E75998700FEBE31 /* App Models */,
 				A9DEB60D2E747AB00024A4A4 /* Drawing Primitives */,
+				A97FE4D02E75DE8500540DEE /* Views */,
 				A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */,
 				A9DEB5FD2E741D090024A4A4 /* ContentView.swift */,
 				A9DEB5FE2E741D090024A4A4 /* ModelDraw.entitlements */,
