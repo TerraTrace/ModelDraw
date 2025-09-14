@@ -14,10 +14,11 @@ struct LeftPaletteView: View {
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
     @State private var selection: NavigatorItem?
+    @State private var expandedItems: Set<UUID> = Set()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header
+            // Header (same as before)
             HStack {
                 Text("Project Navigator")
                     .font(.headline)
@@ -28,11 +29,27 @@ struct LeftPaletteView: View {
             .padding(.vertical, 8)
             .background(Color(.controlBackgroundColor))
             
-            // Navigator List
-            List(navigatorItems, id: \.self, children: \.children, selection: $selection) { item in
-                NavigatorRowView(item: item)
+            // Navigator List with expansion control
+            List(selection: $selection) {
+                ForEach(navigatorItems, id: \.self) { item in
+                    NavigatorNodeView(
+                        item: item,
+                        expandedItems: $expandedItems
+                    )
+                }
             }
             .listStyle(.sidebar)
+            .onAppear {
+                // Initialize top-level assemblies as expanded
+                for assembly in assemblies {
+                    if let assemblyItem = navigatorItems.first(where: {
+                        if case .assembly = $0.itemType { return true }
+                        return false
+                    }) {
+                        expandedItems.insert(assemblyItem.id)
+                    }
+                }
+            }
         }
     }
     
@@ -97,5 +114,36 @@ struct LeftPaletteView: View {
         }
         
         return children
+    }
+}
+
+
+struct NavigatorNodeView: View {
+    let item: NavigatorItem
+    @Binding var expandedItems: Set<UUID>
+    
+    var body: some View {
+        if let children = item.children, !children.isEmpty {
+            DisclosureGroup(
+                isExpanded: Binding(
+                    get: { expandedItems.contains(item.id) },
+                    set: { isExpanded in
+                        if isExpanded {
+                            expandedItems.insert(item.id)
+                        } else {
+                            expandedItems.remove(item.id)
+                        }
+                    }
+                )
+            ) {
+                ForEach(children, id: \.self) { child in
+                    NavigatorNodeView(item: child, expandedItems: $expandedItems)
+                }
+            } label: {
+                NavigatorRowView(item: item)
+            }
+        } else {
+            NavigatorRowView(item: item)
+        }
     }
 }
