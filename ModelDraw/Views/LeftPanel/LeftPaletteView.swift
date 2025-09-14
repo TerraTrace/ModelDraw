@@ -20,7 +20,6 @@ struct LeftPaletteView: View {
     @Environment(ViewModel.self) private var model
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
-
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -30,8 +29,11 @@ struct LeftPaletteView: View {
                 .padding()
                 .background(Color(.controlBackgroundColor))
             
-            // List with selection
-            List(selection: $selection) {
+            // List with selection - use model's selectedItem
+            List(selection: Binding(
+                get: { model.selectedItem },
+                set: { model.selectItem($0) }
+            )) {
                 ForEach(assemblies, id: \.id) { assembly in
                     DisclosureGroup(assembly.name, isExpanded: .constant(true)) {
                         ForEach(primitivesIn(assembly), id: \.id) { primitive in
@@ -47,17 +49,13 @@ struct LeftPaletteView: View {
                 }
             }
             .listStyle(.sidebar)
-            .onAppear {
-                if let firstAssembly = assemblies.first {
-                    selection = .assembly(firstAssembly.id)
-                }
-            }
-            .onChange(of: selection) {
-                print("Selected: \(String(describing: selection))")
+            .onChange(of: model.selectedItem) {
+                print("Selected: \(String(describing: model.selectedItem))")
             }
         }
     }
     
+    // Keep this method unchanged
     private func primitivesIn(_ assembly: Assembly) -> [GeometricPrimitive] {
         assembly.children.compactMap { child in
             if case .primitive(let id) = child {
@@ -66,5 +64,7 @@ struct LeftPaletteView: View {
             return nil
         }
     }
+
+    
 }
     

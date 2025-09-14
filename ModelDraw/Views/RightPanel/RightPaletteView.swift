@@ -7,6 +7,7 @@ import SwiftUI
 
 // MARK: - Right Palette (Selection Properties)
 struct RightPaletteView: View {
+    @Environment(ViewModel.self) private var model
     let assemblies: [Assembly]
     let primitives: [GeometricPrimitive]
     
@@ -19,7 +20,7 @@ struct RightPaletteView: View {
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    if let selection = selection {
+                    if let selection = model.selectedItem {
                         selectedItemView(selection)
                     } else {
                         Text("No selection")
