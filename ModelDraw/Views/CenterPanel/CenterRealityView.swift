@@ -11,6 +11,7 @@ import RealityKit
 
 // MARK: - Center RealityKit View
 struct CenterRealityView: View {
+    @Environment(ViewModel.self) private var model
     let primitives: [GeometricPrimitive]
     let assemblies: [Assembly]
     
@@ -41,17 +42,47 @@ struct CenterRealityView: View {
 }
 
 // MARK: - RealityKit Scene Creation
+
 func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> Entity {
+    let rootEntity = Entity()
+    
+    // Add your primitives, but scaled down and positioned properly
+    var yOffset: Float = -1.0  // Start below the red box
+    
+    for primitive in primitives {
+        let entity = createPrimitiveEntity(primitive: primitive)
+        // Scale them down so they're not huge
+        entity.scale = SIMD3<Float>(0.3, 0.3, 0.3)  // Make them 30% of original size
+        entity.position = SIMD3<Float>(0, yOffset, 0)
+        rootEntity.addChild(entity)
+        yOffset -= 1.5  // Stack them going down
+    }
+    
+    // Create the simplest possible test - a small red box at origin
+    let testEntity = Entity()
+    let mesh = MeshResource.generateBox(size: 0.5)  // Small box
+    let material = SimpleMaterial(color: .red, roughness: 1.0, isMetallic: false)
+    testEntity.components.set(ModelComponent(mesh: mesh, materials: [material]))
+    testEntity.position = SIMD3<Float>(0, 0, 0)
+    rootEntity.addChild(testEntity)
+    
+    print("🔧 Created minimal test scene with red box at origin")
+    print("🔧 Box bounds: \(testEntity.visualBounds(relativeTo: nil))")
+    
+    return rootEntity
+}
+
+/*func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> Entity {
     let rootEntity = Entity()
     
     // Add some test content
     var yOffset: Float = 0.0
     
     // Add after creating rootEntity but before adding primitives
-    let cameraEntity = Entity()
+    /*let cameraEntity = Entity()
     cameraEntity.position = SIMD3<Float>(4, 0, 0)  // Pull back and up
-    //cameraEntity.look(at: SIMD3<Float>(0, 1, 0), from: cameraEntity.position, relativeTo: nil)
-    rootEntity.addChild(cameraEntity)
+    cameraEntity.look(at: SIMD3<Float>(0, 1, 0), from: cameraEntity.position, relativeTo: nil)
+    rootEntity.addChild(cameraEntity) */
 
     
     for primitive in primitives {
@@ -85,7 +116,7 @@ func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> En
     print("🔧 Scene bounds: \(rootEntity.visualBounds(relativeTo: nil))")
 
     return rootEntity
-}
+} */
 
 func createPrimitiveEntity(primitive: GeometricPrimitive) -> Entity {
     let entity = Entity()

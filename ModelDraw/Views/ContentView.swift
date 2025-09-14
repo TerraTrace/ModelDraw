@@ -6,6 +6,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(ViewModel.self) private var model
     @Binding var document: ModelDrawDocument
     @State private var selection: SelectedItem?
 
