@@ -15,12 +15,8 @@ struct LeftPaletteView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Projects")
                     .font(.headline)
-                Text(model.projectName)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
             }
             .padding()
-            .background(Color(.controlBackgroundColor))
             
             // Project hierarchy
             List(selection: Binding(

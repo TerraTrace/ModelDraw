@@ -146,25 +146,39 @@ class DrawingManager {
         )
     }
     
-    // MARK: - Project Loading
+    
+    // MARK: - Project Loading (Updated for Flexibility)
     func loadProject(from projectInfo: ProjectInfo) throws -> ProjectData {
         currentProjectURL = projectInfo.folderURL
         
         let projectFile = try loadProjectFile(from: projectInfo.projectFileURL)
         var allAssemblies: [Assembly] = []
         var allPrimitives: [GeometricPrimitive] = []
+        var actualConfigurations: [String] = []
         
-        // Load each configuration
+        // Load each configuration that actually exists
         for configName in projectFile.configurations {
             let configURL = projectInfo.folderURL.appendingPathComponent(configName)
-            let (assemblies, primitives) = try loadConfiguration(from: configURL)
-            allAssemblies.append(contentsOf: assemblies)
-            allPrimitives.append(contentsOf: primitives)
+            
+            if fileManager.fileExists(atPath: configURL.path) {
+                do {
+                    let (assemblies, primitives) = try loadConfiguration(from: configURL)
+                    allAssemblies.append(contentsOf: assemblies)
+                    allPrimitives.append(contentsOf: primitives)
+                    actualConfigurations.append(configName)
+                    print("✅ DrawingManager: Loaded configuration '\(configName)' with \(assemblies.count) assemblies, \(primitives.count) primitives")
+                } catch {
+                    print("⚠️ DrawingManager: Failed to load configuration '\(configName)': \(error)")
+                    // Continue with other configurations instead of failing entirely
+                }
+            } else {
+                print("ℹ️ DrawingManager: Skipping missing configuration '\(configName)'")
+            }
         }
         
         return ProjectData(
             metadata: projectFile.metadata,
-            configurations: projectFile.configurations,
+            configurations: actualConfigurations, // Only include configurations that were successfully loaded
             assemblies: allAssemblies,
             primitives: allPrimitives,
             libraryDependencies: projectFile.libraryDependencies
@@ -176,8 +190,22 @@ class DrawingManager {
             throw DrawingManagerError.configurationNotFound(path: configURL.path)
         }
         
-        return try scanAssemblyHierarchy(configURL)
+        // Check if it's actually a directory
+        var isDirectory: ObjCBool = false
+        guard fileManager.fileExists(atPath: configURL.path, isDirectory: &isDirectory), isDirectory.boolValue else {
+            throw DrawingManagerError.configurationNotFound(path: configURL.path)
+        }
+        
+        let (assemblies, primitives) = try scanAssemblyHierarchy(configURL)
+        
+        // It's OK to have empty configurations
+        if assemblies.isEmpty && primitives.isEmpty {
+            print("ℹ️ DrawingManager: Configuration '\(configURL.lastPathComponent)' is empty (no .modeldraw files)")
+        }
+        
+        return (assemblies, primitives)
     }
+
     
     private func scanAssemblyHierarchy(_ folderURL: URL) throws -> (assemblies: [Assembly], primitives: [GeometricPrimitive]) {
         var assemblies: [Assembly] = []
