@@ -13,7 +13,7 @@ struct LeftPaletteView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header with project info
             VStack(alignment: .leading, spacing: 4) {
-                Text("Project Navigator")
+                Text("Projects")
                     .font(.headline)
                 Text(model.projectName)
                     .font(.subheadline)
@@ -28,15 +28,36 @@ struct LeftPaletteView: View {
                 set: { model.selectItem($0) }
             )) {
                 // Project level
-                DisclosureGroup(model.projectName, isExpanded: .constant(true)) {
+                DisclosureGroup(model.projectName, isExpanded: Binding(
+                    get: { model.isProjectExpanded },
+                    set: { model.isProjectExpanded = $0 }
+                )) {
                     
                     // Configuration level
                     ForEach(model.configurations, id: \.self) { configName in
-                        DisclosureGroup(configName, isExpanded: .constant(true)) {
+                        DisclosureGroup(configName, isExpanded: Binding(
+                            get: { model.expandedConfigurations.contains(configName) },
+                            set: { isExpanded in
+                                if isExpanded {
+                                    model.expandedConfigurations.insert(configName)
+                                } else {
+                                    model.expandedConfigurations.remove(configName)
+                                }
+                            }
+                        )) {
                             
                             // Assembly level
                             ForEach(assembliesForConfiguration(configName), id: \.id) { assembly in
-                                DisclosureGroup(assembly.name, isExpanded: .constant(true)) {
+                                DisclosureGroup(assembly.name, isExpanded: Binding(
+                                    get: { model.expandedAssemblies.contains(assembly.id) },
+                                    set: { isExpanded in
+                                        if isExpanded {
+                                            model.expandedAssemblies.insert(assembly.id)
+                                        } else {
+                                            model.expandedAssemblies.remove(assembly.id)
+                                        }
+                                    }
+                                )) {
                                     
                                     // Primitives in assembly
                                     ForEach(model.primitivesIn(assembly: assembly), id: \.id) { primitive in

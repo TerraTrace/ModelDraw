@@ -18,6 +18,11 @@ class ViewModel {
     // MARK: - Selection State
     var selectedItem: SelectedItem?
     
+    // MARK: - UI State
+    var isProjectExpanded = true
+    var expandedConfigurations: Set<String> = []
+    var expandedAssemblies: Set<UUID> = []
+    
     // MARK: - 3D View State
     var cameraPosition = SIMD3<Float>(0, 0, 5)
     var cameraRotation = simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0))
