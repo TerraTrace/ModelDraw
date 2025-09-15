@@ -1,5 +1,5 @@
 //
-//  RightPaletteView.swift
+//  RightPaletteView.swift - Updated for ViewModel-Driven Architecture
 //  ModelDraw
 //
 
@@ -8,8 +8,6 @@ import SwiftUI
 // MARK: - Right Palette (Selection Properties)
 struct RightPaletteView: View {
     @Environment(ViewModel.self) private var model
-    let assemblies: [Assembly]
-    let primitives: [GeometricPrimitive]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -40,14 +38,14 @@ struct RightPaletteView: View {
     private func selectedItemView(_ item: SelectedItem) -> some View {
         switch item {
         case .assembly(let id):
-            if let assembly = assemblies.first(where: { $0.id == id }) {
-                AssemblyPropertiesView(assembly: assembly, primitives: primitives)
+            if let assembly = model.assembly(withId: id) {
+                AssemblyPropertiesView(assembly: assembly)
             } else {
                 Text("Assembly not found")
                     .foregroundColor(.secondary)
             }
         case .primitive(let id):
-            if let primitive = primitives.first(where: { $0.id == id }) {
+            if let primitive = model.primitive(withId: id) {
                 PrimitivePropertiesView(primitive: primitive)
             } else {
                 Text("Primitive not found")
@@ -59,8 +57,8 @@ struct RightPaletteView: View {
 
 // MARK: - Assembly Properties View
 struct AssemblyPropertiesView: View {
+    @Environment(ViewModel.self) private var model
     let assembly: Assembly
-    let primitives: [GeometricPrimitive]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -100,7 +98,7 @@ struct AssemblyPropertiesView: View {
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     
-                    ForEach(primitivesInAssembly, id: \.id) { primitive in
+                    ForEach(model.primitivesIn(assembly: assembly), id: \.id) { primitive in
                         HStack {
                             Image(systemName: primitive.primitiveType == .cylinder ? "cylinder" : "cone")
                                 .foregroundColor(primitive.primitiveType == .cylinder ? .blue : .orange)
@@ -115,15 +113,6 @@ struct AssemblyPropertiesView: View {
         .padding()
         .background(Color(.controlBackgroundColor))
         .cornerRadius(8)
-    }
-    
-    private var primitivesInAssembly: [GeometricPrimitive] {
-        assembly.children.compactMap { child in
-            if case .primitive(let id) = child {
-                return primitives.first { $0.id == id }
-            }
-            return nil
-        }
     }
 }
 
@@ -153,20 +142,20 @@ struct PrimitivePropertiesView: View {
                     .foregroundColor(.secondary)
                 
                 if let cylinder = primitive as? Cylinder {
-                    Text("Radius: \(String(format: "%.2f", cylinder.radius))m")
+                    Text("Radius: \(cylinder.radius, specifier: "%.2f")m")
                         .font(.caption)
-                    Text("Height: \(String(format: "%.2f", cylinder.height))m")
+                    Text("Height: \(cylinder.height, specifier: "%.2f")m")
                         .font(.caption)
-                    Text("Wall Thickness: \(String(format: "%.3f", cylinder.wallThickness))m")
+                    Text("Wall Thickness: \(cylinder.wallThickness, specifier: "%.3f")m")
                         .font(.caption)
                 } else if let cone = primitive as? Cone {
-                    Text("Base Radius: \(String(format: "%.2f", cone.baseRadius))m")
+                    Text("Base Radius: \(cone.baseRadius, specifier: "%.2f")m")
                         .font(.caption)
-                    Text("Top Radius: \(String(format: "%.2f", cone.topRadius))m")
+                    Text("Top Radius: \(cone.topRadius, specifier: "%.2f")m")
                         .font(.caption)
-                    Text("Height: \(String(format: "%.2f", cone.height))m")
+                    Text("Height: \(cone.height, specifier: "%.2f")m")
                         .font(.caption)
-                    Text("Wall Thickness: \(String(format: "%.3f", cone.wallThickness))m")
+                    Text("Wall Thickness: \(cone.wallThickness, specifier: "%.3f")m")
                         .font(.caption)
                 }
             }
