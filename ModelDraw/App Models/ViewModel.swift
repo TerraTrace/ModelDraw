@@ -44,6 +44,10 @@ class ViewModel {
         currentProject?.configurations ?? []
     }
     
+    var navigatorData: [NavigatorItem] {
+        buildNavigatorData()
+    }
+    
     // MARK: - Project Management Methods
     func loadAvailableProjects() {
         isLoadingProjects = true
@@ -132,9 +136,30 @@ class ViewModel {
         }
     }
 
+    /*private func buildAssemblyNodes(for configName: String) -> [NavigatorItem] {
+        return assembliesForConfiguration(configName).map { assembly in
+            NavigatorItem(
+                name: assembly.name,
+                itemType: .assembly,
+                children: buildPrimitiveNodes(for: assembly)
+            )
+        }
+    } */
+
+    /* private func buildPrimitiveNodes(for assembly: Assembly) -> [NavigatorItem] {
+        return primitivesIn(assembly: assembly).map { primitive in
+            NavigatorItem(
+                name: primitive.primitiveType.rawValue.capitalized,
+                itemType: .primitive(primitive.primitiveType),
+                children: nil
+            )
+        }
+    } */
+
     private func buildAssemblyNodes(for configName: String) -> [NavigatorItem] {
         return assembliesForConfiguration(configName).map { assembly in
             NavigatorItem(
+                id: assembly.id,  // Use the actual Assembly UUID
                 name: assembly.name,
                 itemType: .assembly,
                 children: buildPrimitiveNodes(for: assembly)
@@ -145,13 +170,14 @@ class ViewModel {
     private func buildPrimitiveNodes(for assembly: Assembly) -> [NavigatorItem] {
         return primitivesIn(assembly: assembly).map { primitive in
             NavigatorItem(
+                id: primitive.id,  // Use the actual Primitive UUID
                 name: primitive.primitiveType.rawValue.capitalized,
                 itemType: .primitive(primitive.primitiveType),
                 children: nil
             )
         }
     }
-
+    
     private func assembliesForConfiguration(_ configName: String) -> [Assembly] {
         // For now, return all assemblies - could be filtered by configuration later
         return assemblies

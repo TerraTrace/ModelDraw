@@ -10,12 +10,13 @@ import SwiftUI
 
 // MARK: - Hierarchical Data Structure for Navigator Panel
 struct NavigatorItem: Identifiable, Hashable, Equatable {
-    let id = UUID()
+    var id: UUID
     var name: String
     var itemType: NavigatorItemType
     var children: [NavigatorItem]? = nil
     
-    init(name: String, itemType: NavigatorItemType, children: [NavigatorItem]) {
+    init(id: UUID = UUID(), name: String, itemType: NavigatorItemType, children: [NavigatorItem]?) {
+        self.id = id
         self.name = name
         self.itemType = itemType
         self.children = children
