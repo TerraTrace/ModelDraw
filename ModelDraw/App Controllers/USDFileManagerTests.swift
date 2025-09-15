@@ -234,3 +234,81 @@ func testUSDSpacecraftAssembly() {
         print("❌ Spacecraft test failed: \(error.localizedDescription)")
     }
 }
+
+
+/// Test USDFileManager with properly oriented spacecraft (90° X rotation)
+func testUSDOrientedSpacecraft() {
+    print("🧪 Testing USD Oriented Spacecraft (Standing Upright)...")
+    
+    // 90 degree rotation around X axis to make cylinders/cones stand upright
+    let uprightRotation = Quaternion.from(axis: Vector3D.unitX, angle: -Double.pi/2)
+    
+    // Create upright propellant tank
+    let tankAttributes: [String: USDAttribute] = [
+        "height": USDAttribute(name: "height", value: 3.0, valueType: "double"),
+        "radius": USDAttribute(name: "radius", value: 1.0, valueType: "double")
+    ]
+    
+    let propellantTank = USDPrim(
+        name: "PropellantTank",
+        type: "Cylinder",
+        attributes: tankAttributes,
+        transform: USDTransform(position: Vector3D(x: 0, y: 1.5, z: 0), orientation: uprightRotation),
+        metadata: [
+            "modelDrawType": "cylinder",
+            "material": "aluminum"
+        ]
+    )
+    
+    // Create upright nose cone
+    let noseAttributes: [String: USDAttribute] = [
+        "height": USDAttribute(name: "height", value: 1.5, valueType: "double"),
+        "radius": USDAttribute(name: "radius", value: 1.0, valueType: "double")
+    ]
+    
+    let noseCone = USDPrim(
+        name: "NoseCone",
+        type: "Cone",
+        attributes: noseAttributes,
+        transform: USDTransform(position: Vector3D(x: 0, y: 4.0, z: 0), orientation: uprightRotation),
+        metadata: [
+            "modelDrawType": "cone",
+            "material": "carbonFiber"
+        ]
+    )
+    
+    // Create oriented spacecraft assembly
+    let spacecraft = USDPrim(
+        name: "OrientedSpacecraft",
+        type: "Xform",
+        transform: USDTransform(position: Vector3D.zero),
+        children: [propellantTank, noseCone],
+        metadata: [
+            "modelDrawType": "assembly",
+            "assemblyType": "spacecraft"
+        ]
+    )
+    
+    let stage = USDStage(
+        defaultPrim: "OrientedSpacecraft",
+        customLayerData: [
+            "modelDrawType": "spacecraft",
+            "createdBy": "USDFileManager - Properly Oriented"
+        ]
+    )
+    
+    let spacecraftFile = USDFile(stage: stage, rootPrims: [spacecraft])
+    
+    // Write oriented spacecraft
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let spacecraftFileURL = documentsURL.appendingPathComponent("ModelDrawTest_OrientedSpacecraft.usd")
+    
+    do {
+        try USDFileManager.shared.writeUSDFile(spacecraftFile, to: spacecraftFileURL)
+        print("✅ Oriented spacecraft USD created at: \(spacecraftFileURL.path)")
+        print("📱 Drag ModelDrawTest_OrientedSpacecraft.usd to RCP - should stand upright!")
+        
+    } catch {
+        print("❌ Oriented spacecraft test failed: \(error.localizedDescription)")
+    }
+}

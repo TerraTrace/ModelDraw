@@ -17,9 +17,9 @@ struct ModelDrawApp: App {
         // Initialize DrawingManager directory structure on app launch
         do {
             try drawingManager.initializeAppDirectories()
-            testUSDCone()
-            testUSDSpacecraftAssembly()
-
+            testUSDOrientedSpacecraft()
+            
+            
         } catch {
             print("❌ Failed to initialize DrawingManager: \(error)")
             // Could add additional error handling here if needed
