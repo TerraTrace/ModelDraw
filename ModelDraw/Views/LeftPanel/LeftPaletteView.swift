@@ -32,16 +32,23 @@ struct LeftPaletteView: View {
                     }
                 },
                 set: { selectedID in
+                    print("OutlineGroup selected ID: \(selectedID?.uuidString ?? "nil")")
+                    
                     guard let id = selectedID else {
+                        print("Clearing selection")
                         model.selectItem(nil)
                         return
                     }
                     
-                    // Determine if it's an assembly or primitive based on the data
                     if model.assemblies.contains(where: { $0.id == id }) {
+                        print("Selected assembly: \(id)")
                         model.selectItem(.assembly(id))
                     } else if model.primitives.contains(where: { $0.id == id }) {
+                        print("Selected primitive: \(id)")
                         model.selectItem(.primitive(id))
+                    } else {
+                        print("Selected non-data item (project/config), clearing selection")
+                        model.selectItem(nil)
                     }
                 }
             )) { item in
