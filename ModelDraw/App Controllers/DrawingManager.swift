@@ -227,7 +227,7 @@ class DrawingManager {
     
     // MARK: - Project Creation
     func createProject(named name: String, from templateName: String = "Basic-Spacecraft") throws -> ProjectInfo {
-        let sanitizedName = name.replacingOccurrences(of: " ", with: "-")
+        let sanitizedName = name.replacingOccurrences(of: " ", with: "_")
         let projectURL = projectsURL.appendingPathComponent(sanitizedName)
         
         // Check if project already exists
