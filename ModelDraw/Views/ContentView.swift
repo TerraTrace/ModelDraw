@@ -7,7 +7,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ViewModel.self) private var model
-    @Binding var document: ModelDrawDocument
+    //@Binding var document: ModelDrawDocument
     
     var body: some View {
         HSplitView {

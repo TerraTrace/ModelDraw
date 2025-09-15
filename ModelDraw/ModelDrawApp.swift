@@ -17,6 +17,14 @@ struct ModelDrawApp: App {
         // Initialize DrawingManager directory structure on app launch
         do {
             try drawingManager.initializeAppDirectories()
+            
+            // Test project discovery
+            let projects = try DrawingManager.shared.scanProjectsDirectory()
+            print("📁 Found \(projects.count) projects:")
+            for project in projects {
+                print("  - \(project.name) at \(project.folderURL.lastPathComponent)")
+            }
+
         } catch {
             print("❌ Failed to initialize DrawingManager: \(error)")
             // Could add additional error handling here if needed
@@ -25,10 +33,15 @@ struct ModelDrawApp: App {
     
     var body: some Scene {
         
-        DocumentGroup(newDocument: ModelDrawDocument()) { file in
-            ContentView(document: file.$document)
+        WindowGroup {
+            ContentView(document: <#Binding<ModelDrawDocument>#>)
                 .environment(model)
         }
+        
+        /*DocumentGroup(newDocument: ModelDrawDocument()) { file in
+            ContentView(document: file.$document)
+                .environment(model)
+        } */
     }
     
     
