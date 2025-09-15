@@ -128,11 +128,13 @@ private extension USDFileManager {
         return headerLines.joined(separator: "\n")
     }
     
-    /// Generate USD primitive content - Phase 1A: Cylinder only
+    /// Generate USD primitive content - Phase 1B: Cylinder and Cone support
     func generatePrimContent(_ prim: USDPrim) throws -> String {
         switch prim.type {
         case "Cylinder":
             return try generateCylinderUSD(prim)
+        case "Cone":
+            return try generateConeUSD(prim)
         case "Xform":
             return try generateXformUSD(prim)
         default:
@@ -148,6 +150,42 @@ private extension USDFileManager {
         
         // Prim definition with custom data
         lines.append("def Cylinder \"\(sanitizedName)\" (")
+        if !prim.metadata.isEmpty {
+            lines.append("    customData = {")
+            for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
+                lines.append("        string \(key) = \"\(value)\"")
+            }
+            lines.append("    }")
+        }
+        lines.append(")")
+        lines.append("{")
+        
+        // Geometry attributes
+        for (_, attribute) in prim.attributes {
+            let line = "    \(attribute.valueType) \(attribute.name) = \(formatAttributeValue(attribute.value, type: attribute.valueType))"
+            lines.append(line)
+        }
+        
+        // Transform
+        if let transform = prim.transform {
+            lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
+            lines.append("    quatf xformOp:orient = (\(transform.orientation.wf), \(transform.orientation.xf), \(transform.orientation.yf), \(transform.orientation.zf))")
+            lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
+        }
+        
+        lines.append("}")
+        
+        return lines.joined(separator: "\n")
+    }
+    
+    /// Generate USD content for a cone primitive
+    func generateConeUSD(_ prim: USDPrim) throws -> String {
+        let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
+        
+        var lines: [String] = []
+        
+        // Prim definition with custom data
+        lines.append("def Cone \"\(sanitizedName)\" (")
         if !prim.metadata.isEmpty {
             lines.append("    customData = {")
             for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
@@ -289,4 +327,48 @@ extension USDFileManager {
         
         return USDFile(stage: stage, rootPrims: [cylinderPrim])
     }
+    
+    /// Create a test cone for Phase 1B validation
+    /// - Parameters:
+    ///   - name: Cone name
+    ///   - height: Height in meters
+    ///   - radius: Base radius in meters
+    ///   - position: Position in 3D space (geometric center)
+    /// - Returns: USDFile ready for writing
+    static func createTestCone(name: String = "TestCone",
+                              height: Double = 2.0,
+                              radius: Double = 1.0,
+                              position: Vector3D = Vector3D.zero) -> USDFile {
+        
+        let coneAttributes: [String: USDAttribute] = [
+            "height": USDAttribute(name: "height", value: height, valueType: "double"),
+            "radius": USDAttribute(name: "radius", value: radius, valueType: "double")
+        ]
+        
+        let coneMetadata: [String: String] = [
+            "modelDrawType": "cone",
+            "modelDrawID": UUID().uuidString,
+            "material": "aluminum",
+            "wallThickness": "0.03"
+        ]
+        
+        let conePrim = USDPrim(
+            name: name,
+            type: "Cone",
+            attributes: coneAttributes,
+            transform: USDTransform(position: position),
+            metadata: coneMetadata
+        )
+        
+        let stage = USDStage(
+            defaultPrim: name,
+            customLayerData: [
+                "modelDrawType": "testFile",
+                "createdBy": "USDFileManager Phase 1B - Cone Support"
+            ]
+        )
+        
+        return USDFile(stage: stage, rootPrims: [conePrim])
+    }
 }
+
