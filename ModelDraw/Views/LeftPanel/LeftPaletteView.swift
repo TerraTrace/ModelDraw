@@ -24,6 +24,8 @@ struct LeftPaletteView: View {
                 set: { model.selectItem($0) }
             )) {
                 // Project level
+                
+                
                 DisclosureGroup(model.projectName, isExpanded: Binding(
                     get: { model.isProjectExpanded },
                     set: { model.isProjectExpanded = $0 }
@@ -72,6 +74,9 @@ struct LeftPaletteView: View {
                         }
                     }
                 }
+                
+                
+                
             }
             .listStyle(.sidebar)
             .onChange(of: model.selectedItem) {

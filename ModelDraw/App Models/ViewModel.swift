@@ -53,10 +53,16 @@ class ViewModel {
             availableProjects = try DrawingManager.shared.scanProjectsDirectory()
             print("📁 ViewModel: Loaded \(availableProjects.count) available projects")
             
-            // Auto-load first project if available and no current project
-            if currentProject == nil, let firstProject = availableProjects.first {
-                loadProject(firstProject)
+            // Add this debug line:
+            for project in availableProjects {
+                print("  - Found project: \(project.name)")
             }
+
+            // DEVELOPMENT; Delete later for production
+            if let dragonProject = availableProjects.first(where: { $0.name.contains("Dragon") }) {
+                loadProject(dragonProject)
+            }
+            
         } catch {
             projectError = "Failed to scan projects: \(error.localizedDescription)"
             print("❌ ViewModel: Failed to scan projects: \(error)")
