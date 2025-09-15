@@ -10,6 +10,7 @@
 		A9486F6C2E75997E00FEBE31 /* ModelDrawDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */; };
 		A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE52E78A85100329151 /* Quaternion.swift */; };
 		A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE42E78A85100329151 /* Vector3d.swift */; };
+		A96A5AE92E78AB8000329151 /* usd_file_manager_spec_v1.0.md in Resources */ = {isa = PBXBuildFile; fileRef = A96A5AE82E78AB8000329151 /* usd_file_manager_spec_v1.0.md */; };
 		A97FE4CB2E75DB5900540DEE /* PrimitiveType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CA2E75DB5800540DEE /* PrimitiveType.swift */; };
 		A97FE4CD2E75DBED00540DEE /* Cone.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CC2E75DBEB00540DEE /* Cone.swift */; };
 		A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4CE2E75DDA100540DEE /* Assembly.swift */; };
@@ -32,6 +33,7 @@
 		A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawDocument.swift; sourceTree = "<group>"; };
 		A96A5AE42E78A85100329151 /* Vector3d.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector3d.swift; sourceTree = "<group>"; };
 		A96A5AE52E78A85100329151 /* Quaternion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quaternion.swift; sourceTree = "<group>"; };
+		A96A5AE82E78AB8000329151 /* usd_file_manager_spec_v1.0.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.0.md; sourceTree = "<group>"; };
 		A97FE4CA2E75DB5800540DEE /* PrimitiveType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimitiveType.swift; sourceTree = "<group>"; };
 		A97FE4CC2E75DBEB00540DEE /* Cone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cone.swift; sourceTree = "<group>"; };
 		A97FE4CE2E75DDA100540DEE /* Assembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembly.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				A97FE4E32E77567500540DEE /* modeldraw_dev_spec_v0.17.md */,
+				A96A5AE82E78AB8000329151 /* usd_file_manager_spec_v1.0.md */,
 			);
 			path = Specs;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A96A5AE92E78AB8000329151 /* usd_file_manager_spec_v1.0.md in Resources */,
 				A97FE4E42E77567500540DEE /* modeldraw_dev_spec_v0.17.md in Resources */,
 				A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */,
 			);
