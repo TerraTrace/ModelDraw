@@ -132,14 +132,3 @@ class ViewModel {
     }
 }
 
-// MARK: - Extensions for Better Descriptions
-extension SelectedItem {
-    var description: String {
-        switch self {
-        case .assembly(let id):
-            return "Assembly(\(id))"
-        case .primitive(let id):
-            return "Primitive(\(id))"
-        }
-    }
-}
