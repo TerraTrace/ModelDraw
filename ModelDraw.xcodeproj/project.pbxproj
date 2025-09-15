@@ -18,6 +18,7 @@
 		A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E12E77557000540DEE /* DrawingManager.swift */; };
 		A97FE4E42E77567500540DEE /* modeldraw_dev_spec_v0.17.md in Resources */ = {isa = PBXBuildFile; fileRef = A97FE4E32E77567500540DEE /* modeldraw_dev_spec_v0.17.md */; };
 		A97FE4E62E78116000540DEE /* SelectedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E52E78115E00540DEE /* SelectedItem.swift */; };
+		A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E72E782F5000540DEE /* NavigatorItem.swift */; };
 		A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */; };
 		A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FD2E741D090024A4A4 /* ContentView.swift */; };
 		A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DEB5FF2E741D090024A4A4 /* ModelDrawApp.swift */; };
@@ -37,6 +38,7 @@
 		A97FE4E12E77557000540DEE /* DrawingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingManager.swift; sourceTree = "<group>"; };
 		A97FE4E32E77567500540DEE /* modeldraw_dev_spec_v0.17.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v0.17.md; sourceTree = "<group>"; };
 		A97FE4E52E78115E00540DEE /* SelectedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItem.swift; sourceTree = "<group>"; };
+		A97FE4E72E782F5000540DEE /* NavigatorItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorItem.swift; sourceTree = "<group>"; };
 		A9DA0FAF2E74C8E800E3B264 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A9DEB5ED2E741B8D0024A4A4 /* ModelDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9DEB5FC2E741D090024A4A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			children = (
 				A9DEB6042E741D1D0024A4A4 /* ViewModel.swift */,
 				A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */,
+				A97FE4E72E782F5000540DEE /* NavigatorItem.swift */,
 				A97FE4E52E78115E00540DEE /* SelectedItem.swift */,
 			);
 			path = "App Models";
@@ -240,6 +243,7 @@
 				A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
+				A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */,
 				A97FE4CB2E75DB5900540DEE /* PrimitiveType.swift in Sources */,
 				A97FE4D62E76EC8800540DEE /* RightPaletteView.swift in Sources */,
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,

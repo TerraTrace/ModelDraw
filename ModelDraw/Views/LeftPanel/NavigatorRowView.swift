@@ -8,26 +8,6 @@
 import SwiftUI
 
 
-// MARK: - Hierarchical Data Structure for Navigator
-struct NavigatorItem: Identifiable, Hashable, Equatable {
-    let id = UUID()
-    var name: String
-    var itemType: NavigatorItemType
-    var children: [NavigatorItem]? = nil
-    
-    init(name: String, itemType: NavigatorItemType, children: [NavigatorItem]) {
-        self.name = name
-        self.itemType = itemType
-        self.children = children
-    }
-}
-
-enum NavigatorItemType: Hashable, Equatable {
-    case assembly
-    case primitive(PrimitiveType)
-    case matingRule
-}
-
 
 // MARK: - Navigator Row View (Clean, Xcode-style)
 struct NavigatorRowView: View {
