@@ -287,45 +287,6 @@ private extension USDFileManager {
         return lines.joined(separator: "\n")
     }
     
-    /// Generate USD content for an Xform (transform group)
-    /*func generateXformUSD(_ prim: USDPrim) throws -> String {
-        let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
-        
-        var lines: [String] = []
-        
-        // Prim definition
-        lines.append("def Xform \"\(sanitizedName)\" (")
-        if !prim.metadata.isEmpty {
-            lines.append("    customData = {")
-            for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
-                lines.append("        string \(key) = \"\(value)\"")
-            }
-            lines.append("    }")
-        }
-        lines.append(")")
-        lines.append("{")
-        
-        // Transform
-        if let transform = prim.transform {
-            lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
-            lines.append("    quatf xformOp:orient = (\(transform.orientation.wf), \(transform.orientation.xf), \(transform.orientation.yf), \(transform.orientation.zf))")
-            lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
-        }
-        
-        // Child prims
-        for child in prim.children {
-            let childContent = try generatePrimContent(child)
-            let indentedChild = childContent.components(separatedBy: .newlines)
-                .map { "    " + $0 }
-                .joined(separator: "\n")
-            lines.append("")
-            lines.append(indentedChild)
-        }
-        
-        lines.append("}")
-        
-        return lines.joined(separator: "\n")
-    } */
     
     /// Helper method to format attribute values for USD output
     private func formatAttributeValue(_ value: Any, valueType: String) -> String {
@@ -353,31 +314,6 @@ private extension USDFileManager {
         return String(describing: value)
     }
     
-    /// Format attribute value based on USD type
-    /*func formatAttributeValue(_ value: Any, type: String) -> String {
-        switch type {
-        case "double":
-            if let doubleValue = value as? Double {
-                return String(doubleValue)
-            }
-        case "float":
-            if let floatValue = value as? Float {
-                return String(floatValue)
-            }
-        case "string":
-            if let stringValue = value as? String {
-                return "\"\(stringValue)\""
-            }
-        case "token":
-            if let tokenValue = value as? String {
-                return "\"\(tokenValue)\""
-            }
-        default:
-            break
-        }
-        
-        return String(describing: value)
-    } */
 }
 
 
@@ -393,7 +329,7 @@ extension USDFileManager {
         let lines = content.components(separatedBy: .newlines)
         
         // Find #usda version line
-        guard let usdaLine = lines.first(where: { $0.hasPrefix("#usda") }) else {
+        guard lines.first(where: { $0.hasPrefix("#usda") }) != nil else {
             throw USDFileError.invalidUSDSyntax(line: 1, message: "Missing #usda header")
         }
         
@@ -543,8 +479,8 @@ extension USDFileManager {
     }
 
     /// Extract individual prim definition blocks from USD content
-    //private func extractPrimBlocks(from content: String) -> [String] {
-    public func extractPrimBlocks(from content: String) -> [String] {
+    private func extractPrimBlocks(from content: String) -> [String] {
+    //public func extractPrimBlocks(from content: String) -> [String] {
         var primBlocks: [String] = []
         let lines = content.components(separatedBy: .newlines)
         
@@ -606,9 +542,10 @@ extension USDFileManager {
         return nil
     }
     
-    /// Parse a complete USD prim definition block
-    //private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
-    public func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+    
+    /// Parse a complete USD prim definition block with nested children support
+    private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+    //public func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
         let lines = primBlock.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
@@ -620,11 +557,20 @@ extension USDFileManager {
         // Parse header to get type and name
         let (primType, primName) = try parsePrimHeader(lines[0])
         
-        // Parse the prim content between the braces
-        let metadata = try parseCustomData(from: lines)
-        let attributes = try parseAttributes(from: lines)
-        let transform = try parseTransform(from: lines)
-        let children = try parseChildren(from: lines, parentType: primType)
+        // Split content into parent content and child blocks
+        let (parentLines, childBlocks) = try separateParentAndChildContent(from: lines)
+        
+        // Parse parent content only
+        let metadata = try parseCustomData(from: parentLines)
+        let attributes = try parseAttributes(from: parentLines)
+        let transform = try parseTransform(from: parentLines)
+        
+        // Recursively parse child prims
+        var children: [USDPrim] = []
+        for childBlock in childBlocks {
+            let childPrim = try parsePrimDefinition(childBlock)
+            children.append(childPrim)
+        }
         
         return USDPrim(
             name: primName,
@@ -634,6 +580,79 @@ extension USDFileManager {
             children: children,
             metadata: metadata
         )
+    }
+
+    /// Separate parent prim content from nested child prim blocks
+    private func separateParentAndChildContent(from lines: [String]) throws -> (parentLines: [String], childBlocks: [String]) {
+        var parentLines: [String] = []
+        var childBlocks: [String] = []
+        
+        var i = 1 // Skip the first line (def statement)
+        
+        // Skip opening brace line
+        if i < lines.count && lines[i] == "{" {
+            i += 1
+        }
+        
+        // Process lines until we hit nested def statements
+        while i < lines.count {
+            let line = lines[i]
+            
+            // Check if this is a nested prim definition
+            if line.hasPrefix("def ") && line.contains("\"") {
+                // Found a child prim - extract its complete block
+                let childBlock = try extractNestedPrimBlock(from: lines, startingAt: i)
+                childBlocks.append(childBlock.block)
+                i = childBlock.endIndex + 1 // Move past this child block
+            } else if line == "}" && i == lines.count - 1 {
+                // This is the final closing brace - stop processing
+                break
+            } else {
+                // This is parent content
+                parentLines.append(line)
+                i += 1
+            }
+        }
+        
+        return (parentLines: parentLines, childBlocks: childBlocks)
+    }
+
+    /// Extract a nested child prim block from within a parent prim
+    private func extractNestedPrimBlock(from lines: [String], startingAt startIndex: Int) throws -> (block: String, endIndex: Int) {
+        guard startIndex < lines.count else {
+            throw USDFileError.invalidUSDSyntax(line: startIndex, message: "Invalid child prim start index")
+        }
+        
+        var blockLines: [String] = []
+        var braceCount = 0
+        var foundOpenBrace = false
+        var i = startIndex
+        
+        // Extract the complete child prim block
+        while i < lines.count {
+            let line = lines[i]
+            blockLines.append(line)
+            
+            // Count braces to find the matching closing brace
+            for char in line {
+                if char == "{" {
+                    braceCount += 1
+                    foundOpenBrace = true
+                } else if char == "}" {
+                    braceCount -= 1
+                }
+            }
+            
+            // If we've closed all braces for this child, we're done
+            if foundOpenBrace && braceCount == 0 {
+                return (block: blockLines.joined(separator: "\n"), endIndex: i)
+            }
+            
+            i += 1
+        }
+        
+        // If we get here, we never found a complete child block
+        throw USDFileError.invalidUSDSyntax(line: startIndex, message: "Incomplete nested prim block")
     }
 
     /// Parse the prim header line to extract type and name
