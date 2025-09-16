@@ -19,9 +19,13 @@ struct ModelDrawApp: App {
             try drawingManager.initializeAppDirectories()
             //testUSDFileManager()
             //testUSDOrientedSpacecraft()
+            //testUSDCone()
+            //testUSDSpacecraftAssembly()
             //testFullPrimParsing()
             //testSpacecraftAssemblyParsing()
-            testAttributeParsingDebug()
+            //testAttributeParsingDebug()
+            testSimpleSpacecraftParsing()
+            testSimpleSpacecraftBlockExtraction()
             
         } catch {
             print("❌ Failed to initialize DrawingManager: \(error)")

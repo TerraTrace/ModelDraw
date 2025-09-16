@@ -153,8 +153,7 @@ private extension USDFileManager {
         case "Cylinder":
             return try generateCylinderUSD(prim)
         case "Cone":
-            return try generateCylinderUSD(prim)
-            //return try generateConeUSD(prim)
+            return try generateConeUSD(prim)
         case "Xform":
             return try generateXformUSD(prim)
         default:
@@ -162,41 +161,6 @@ private extension USDFileManager {
         }
     }
     
-    /// Generate USD content for a cylinder primitive
-    /*func generateCylinderUSD(_ prim: USDPrim) throws -> String {
-        let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
-        
-        var lines: [String] = []
-        
-        // Prim definition with custom data
-        lines.append("def Cylinder \"\(sanitizedName)\" (")
-        if !prim.metadata.isEmpty {
-            lines.append("    customData = {")
-            for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
-                lines.append("        string \(key) = \"\(value)\"")
-            }
-            lines.append("    }")
-        }
-        lines.append(")")
-        lines.append("{")
-        
-        // Geometry attributes
-        for (_, attribute) in prim.attributes {
-            let line = "    \(attribute.valueType) \(attribute.name) = \(formatAttributeValue(attribute.value, type: attribute.valueType))"
-            lines.append(line)
-        }
-        
-        // Transform
-        if let transform = prim.transform {
-            lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
-            lines.append("    quatf xformOp:orient = (\(transform.orientation.wf), \(transform.orientation.xf), \(transform.orientation.yf), \(transform.orientation.zf))")
-            lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
-        }
-        
-        lines.append("}")
-        
-        return lines.joined(separator: "\n")
-    } */
     
     /// Generate USD content for a cylinder primitive - Updated structure with customData at end
     func generateCylinderUSD(_ prim: USDPrim) throws -> String {
@@ -236,44 +200,95 @@ private extension USDFileManager {
         return lines.joined(separator: "\n")
     }
     
-    /// Generate USD content for a cone primitive
-    /*func generateConeUSD(_ prim: USDPrim) throws -> String {
+    /// Generate USD content for a cone primitive - Updated structure with customData at end
+    func generateConeUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
         
-        // Prim definition with custom data
-        lines.append("def Cone \"\(sanitizedName)\" (")
+        // Clean prim definition header (no parentheses)
+        lines.append("def Cone \"\(sanitizedName)\"")
+        lines.append("{")
+        
+        // Core geometry attributes first
+        for (_, attribute) in prim.attributes.sorted(by: { $0.key < $1.key }) {
+            let valueString = formatAttributeValue(attribute.value, valueType: attribute.valueType)
+            lines.append("    \(attribute.valueType) \(attribute.name) = \(valueString)")
+        }
+        
+        // Transform attributes (if present)
+        if let transform = prim.transform {
+            lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
+            lines.append("    quatf xformOp:orient = (\(transform.orientation.w), \(transform.orientation.x), \(transform.orientation.y), \(transform.orientation.z))")
+            lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
+        }
+        
+        // CustomData at the end (optional, can fail gracefully)
         if !prim.metadata.isEmpty {
+            lines.append("")  // Blank line for readability
             lines.append("    customData = {")
             for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
                 lines.append("        string \(key) = \"\(value)\"")
             }
             lines.append("    }")
         }
-        lines.append(")")
+        
+        lines.append("}")
+        
+        return lines.joined(separator: "\n")
+    }
+    
+    /// Generate USD content for an Xform assembly primitive - Updated structure with customData at end
+    func generateXformUSD(_ prim: USDPrim) throws -> String {
+        let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
+        
+        var lines: [String] = []
+        
+        // Clean prim definition header (no parentheses)
+        lines.append("def Xform \"\(sanitizedName)\"")
         lines.append("{")
         
-        // Geometry attributes
-        for (_, attribute) in prim.attributes {
-            let line = "    \(attribute.valueType) \(attribute.name) = \(formatAttributeValue(attribute.value, type: attribute.valueType))"
-            lines.append(line)
+        // Xform attributes (if any) - typically just transforms
+        for (_, attribute) in prim.attributes.sorted(by: { $0.key < $1.key }) {
+            let valueString = formatAttributeValue(attribute.value, valueType: attribute.valueType)
+            lines.append("    \(attribute.valueType) \(attribute.name) = \(valueString)")
         }
         
-        // Transform
+        // Transform attributes (if present)
         if let transform = prim.transform {
             lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
-            lines.append("    quatf xformOp:orient = (\(transform.orientation.wf), \(transform.orientation.xf), \(transform.orientation.yf), \(transform.orientation.zf))")
+            lines.append("    quatf xformOp:orient = (\(transform.orientation.w), \(transform.orientation.x), \(transform.orientation.y), \(transform.orientation.z))")
             lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
+        }
+        
+        // Child prims (the main content of assemblies)
+        for child in prim.children {
+            lines.append("")  // Blank line before each child for readability
+            let childContent = try generatePrimContent(child)
+            // Indent child content by 4 spaces
+            let indentedChildContent = childContent.components(separatedBy: .newlines)
+                .map { "    " + $0 }
+                .joined(separator: "\n")
+            lines.append(indentedChildContent)
+        }
+        
+        // CustomData at the end (optional, can fail gracefully)
+        if !prim.metadata.isEmpty {
+            lines.append("")  // Blank line for readability
+            lines.append("    customData = {")
+            for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
+                lines.append("        string \(key) = \"\(value)\"")
+            }
+            lines.append("    }")
         }
         
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    } */
+    }
     
     /// Generate USD content for an Xform (transform group)
-    func generateXformUSD(_ prim: USDPrim) throws -> String {
+    /*func generateXformUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -310,7 +325,7 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    }
+    } */
     
     /// Helper method to format attribute values for USD output
     private func formatAttributeValue(_ value: Any, valueType: String) -> String {
@@ -794,31 +809,33 @@ extension USDFileManager {
         return Quaternion(w: w, x: x, y: y, z: z)
     }
 
-    
-    /// Parse transform information from xformOp attributes - Direct parsing approach
+    /// Parse transform information from xformOp attributes - Fixed pattern matching
     private func parseTransform(from lines: [String]) throws -> USDTransform? {
         var position = Vector3D.zero
         var orientation = Quaternion.identity
         var hasTransform = false
         
         for line in lines {
-            if line.contains("xformOp:translate") {
+            // More specific pattern matching to avoid xformOpOrder line
+            if line.contains("xformOp:translate =") {
                 // Parse line like: double3 xformOp:translate = (0.0, 1.5, 0.0)
                 if let vector = parseTranslateLine(line) {
                     position = vector
                     hasTransform = true
                 }
-            } else if line.contains("xformOp:orient") {
+            } else if line.contains("xformOp:orient =") {
                 // Parse line like: quatf xformOp:orient = (1.0, 0.0, 0.0, 0.0)
                 if let quat = parseOrientLine(line) {
                     orientation = quat
                     hasTransform = true
                 }
             }
+            // Skip xformOpOrder lines - they don't contain transform values
         }
         
         return hasTransform ? USDTransform(position: position, orientation: orientation) : nil
     }
+    
 
     /// Parse translate line directly: double3 xformOp:translate = (0.0, 1.5, 0.0)
     private func parseTranslateLine(_ line: String) -> Vector3D? {
