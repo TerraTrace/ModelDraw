@@ -486,4 +486,156 @@ func testUSDOrientedSpacecraft() {
 } */
 
 
+// MARK: - Test Full Prim Definition Parsing
 
+/// Test complete parsing of prim definitions with all attributes and transforms
+func testFullPrimParsing() {
+    print("🧪 Testing complete prim definition parsing...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    
+    // Test with cylinder file first
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_Cylinder.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        let primBlocks = USDFileManager.shared.extractPrimBlocks(from: content)
+        
+        print("🔍 Parsing \(primBlocks.count) prim blocks...")
+        
+        for (index, block) in primBlocks.enumerated() {
+            print("\n📦 Prim \(index + 1):")
+            print("─────────────────────")
+            
+            do {
+                let prim = try USDFileManager.shared.parsePrimDefinition(block)
+                
+                // Print basic info
+                print("   Name: \(prim.name)")
+                print("   Type: \(prim.type)")
+                
+                // Print attributes
+                if !prim.attributes.isEmpty {
+                    print("   Attributes:")
+                    for (key, attribute) in prim.attributes.sorted(by: { $0.key < $1.key }) {
+                        print("      \(key): \(attribute.value) (\(attribute.valueType))")
+                    }
+                } else {
+                    print("   Attributes: (none)")
+                }
+                
+                // Print transform
+                if let transform = prim.transform {
+                    print("   Transform:")
+                    print("      Position: (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
+                    print("      Orientation: (\(transform.orientation.w), \(transform.orientation.x), \(transform.orientation.y), \(transform.orientation.z))")
+                } else {
+                    print("   Transform: (none)")
+                }
+                
+                // Print metadata
+                if !prim.metadata.isEmpty {
+                    print("   Metadata:")
+                    for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
+                        print("      \(key): \(value)")
+                    }
+                } else {
+                    print("   Metadata: (none)")
+                }
+                
+                // Print children
+                print("   Children: \(prim.children.count)")
+                
+            } catch {
+                print("   ❌ Failed to parse prim: \(error)")
+                
+                // Show the block content for debugging
+                print("   Block content:")
+                let blockLines = block.components(separatedBy: .newlines)
+                for (lineNum, line) in blockLines.enumerated() {
+                    print("      \(lineNum + 1): \(line)")
+                }
+            }
+            
+            print("─────────────────────")
+        }
+        
+    } catch {
+        print("❌ Test setup failed: \(error)")
+    }
+    
+    print("\n✅ Full prim parsing test complete!")
+}
+
+/// Test parsing with the complex spacecraft assembly
+func testSpacecraftAssemblyParsing() {
+    print("🧪 Testing spacecraft assembly parsing...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_OrientedSpacecraft.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        let primBlocks = USDFileManager.shared.extractPrimBlocks(from: content)
+        
+        print("🚀 Found \(primBlocks.count) prims in spacecraft assembly:")
+        
+        for (index, block) in primBlocks.enumerated() {
+            do {
+                let prim = try USDFileManager.shared.parsePrimDefinition(block)
+                print("   \(index + 1). \(prim.type) \"\(prim.name)\"")
+                print("       Attributes: \(prim.attributes.count)")
+                print("       Transform: \(prim.transform != nil ? "✅" : "❌")")
+                print("       Metadata: \(prim.metadata.count)")
+                
+                // Show transform details if present
+                if let transform = prim.transform {
+                    let pos = transform.position
+                    let rot = transform.orientation
+                    print("       Position: (\(String(format: "%.2f", pos.x)), \(String(format: "%.2f", pos.y)), \(String(format: "%.2f", pos.z)))")
+                    print("       Rotation: (\(String(format: "%.3f", rot.w)), \(String(format: "%.3f", rot.x)), \(String(format: "%.3f", rot.y)), \(String(format: "%.3f", rot.z)))")
+                }
+                
+            } catch {
+                print("   \(index + 1). ❌ Parse failed: \(error)")
+            }
+        }
+        
+    } catch {
+        print("❌ Spacecraft test failed: \(error)")
+    }
+}
+
+
+/// Test method using the debug version
+func testAttributeParsingDebug() {
+    print("🧪 Testing attribute parsing with debug output...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_Cylinder.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        let primBlocks = USDFileManager.shared.extractPrimBlocks(from: content)
+        
+        if let firstBlock = primBlocks.first {
+            print("📄 First prim block content:")
+            let blockLines = firstBlock.components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+            
+            for (index, line) in blockLines.enumerated() {
+                print("   \(index + 1): \(line)")
+            }
+            
+            print("\n🔍 Now testing attribute parsing:")
+            let _ = try USDFileManager.shared.debugParseAttributes(from: blockLines)
+        }
+        
+    } catch {
+        print("❌ Debug test failed: \(error)")
+    }
+}

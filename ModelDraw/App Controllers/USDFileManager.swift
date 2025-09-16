@@ -153,7 +153,8 @@ private extension USDFileManager {
         case "Cylinder":
             return try generateCylinderUSD(prim)
         case "Cone":
-            return try generateConeUSD(prim)
+            return try generateCylinderUSD(prim)
+            //return try generateConeUSD(prim)
         case "Xform":
             return try generateXformUSD(prim)
         default:
@@ -162,7 +163,7 @@ private extension USDFileManager {
     }
     
     /// Generate USD content for a cylinder primitive
-    func generateCylinderUSD(_ prim: USDPrim) throws -> String {
+    /*func generateCylinderUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -195,10 +196,48 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
+    } */
+    
+    /// Generate USD content for a cylinder primitive - Updated structure with customData at end
+    func generateCylinderUSD(_ prim: USDPrim) throws -> String {
+        let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
+        
+        var lines: [String] = []
+        
+        // Clean prim definition header (no parentheses)
+        lines.append("def Cylinder \"\(sanitizedName)\"")
+        lines.append("{")
+        
+        // Core geometry attributes first
+        for (_, attribute) in prim.attributes.sorted(by: { $0.key < $1.key }) {
+            let valueString = formatAttributeValue(attribute.value, valueType: attribute.valueType)
+            lines.append("    \(attribute.valueType) \(attribute.name) = \(valueString)")
+        }
+        
+        // Transform attributes (if present)
+        if let transform = prim.transform {
+            lines.append("    double3 xformOp:translate = (\(transform.position.x), \(transform.position.y), \(transform.position.z))")
+            lines.append("    quatf xformOp:orient = (\(transform.orientation.w), \(transform.orientation.x), \(transform.orientation.y), \(transform.orientation.z))")
+            lines.append("    uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:orient\"]")
+        }
+        
+        // CustomData at the end (optional, can fail gracefully)
+        if !prim.metadata.isEmpty {
+            lines.append("")  // Blank line for readability
+            lines.append("    customData = {")
+            for (key, value) in prim.metadata.sorted(by: { $0.key < $1.key }) {
+                lines.append("        string \(key) = \"\(value)\"")
+            }
+            lines.append("    }")
+        }
+        
+        lines.append("}")
+        
+        return lines.joined(separator: "\n")
     }
     
     /// Generate USD content for a cone primitive
-    func generateConeUSD(_ prim: USDPrim) throws -> String {
+    /*func generateConeUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -231,7 +270,7 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    }
+    } */
     
     /// Generate USD content for an Xform (transform group)
     func generateXformUSD(_ prim: USDPrim) throws -> String {
@@ -273,9 +312,9 @@ private extension USDFileManager {
         return lines.joined(separator: "\n")
     }
     
-    /// Format attribute value based on USD type
-    func formatAttributeValue(_ value: Any, type: String) -> String {
-        switch type {
+    /// Helper method to format attribute values for USD output
+    private func formatAttributeValue(_ value: Any, valueType: String) -> String {
+        switch valueType {
         case "double":
             if let doubleValue = value as? Double {
                 return String(doubleValue)
@@ -298,6 +337,32 @@ private extension USDFileManager {
         
         return String(describing: value)
     }
+    
+    /// Format attribute value based on USD type
+    /*func formatAttributeValue(_ value: Any, type: String) -> String {
+        switch type {
+        case "double":
+            if let doubleValue = value as? Double {
+                return String(doubleValue)
+            }
+        case "float":
+            if let floatValue = value as? Float {
+                return String(floatValue)
+            }
+        case "string":
+            if let stringValue = value as? String {
+                return "\"\(stringValue)\""
+            }
+        case "token":
+            if let tokenValue = value as? String {
+                return "\"\(tokenValue)\""
+            }
+        default:
+            break
+        }
+        
+        return String(describing: value)
+    } */
 }
 
 
@@ -463,8 +528,8 @@ extension USDFileManager {
     }
 
     /// Extract individual prim definition blocks from USD content
-    private func extractPrimBlocks(from content: String) -> [String] {
-    //public func extractPrimBlocks(from content: String) -> [String] {
+    //private func extractPrimBlocks(from content: String) -> [String] {
+    public func extractPrimBlocks(from content: String) -> [String] {
         var primBlocks: [String] = []
         let lines = content.components(separatedBy: .newlines)
         
@@ -527,7 +592,8 @@ extension USDFileManager {
     }
     
     /// Parse a complete USD prim definition block
-    private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+    //private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+    public func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
         let lines = primBlock.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
@@ -690,7 +756,8 @@ extension USDFileManager {
         }
     }
 
-    /// Parse Vector3 from string like "(0, 1, 0)"
+    
+    /// Parse Vector3 from string like "(0.0, 1.5, 0.0)" - Enhanced version
     private func parseVector3(_ valueString: String) -> Vector3D {
         let cleanValue = valueString.trimmingCharacters(in: CharacterSet(charactersIn: "()"))
         let components = cleanValue.components(separatedBy: ",").map {
@@ -701,13 +768,14 @@ extension USDFileManager {
               let x = Double(components[0]),
               let y = Double(components[1]),
               let z = Double(components[2]) else {
+            print("⚠️ Failed to parse Vector3 from: '\(valueString)'")
             return Vector3D.zero
         }
         
         return Vector3D(x: x, y: y, z: z)
     }
 
-    /// Parse Quaternion from string like "(0.707, -0.707, 0, 0)"
+    /// Parse Quaternion from string like "(1.0, 0.0, 0.0, 0.0)" - Enhanced version
     private func parseQuaternion(_ valueString: String) -> Quaternion {
         let cleanValue = valueString.trimmingCharacters(in: CharacterSet(charactersIn: "()"))
         let components = cleanValue.components(separatedBy: ",").map {
@@ -719,13 +787,15 @@ extension USDFileManager {
               let x = Double(components[1]),
               let y = Double(components[2]),
               let z = Double(components[3]) else {
+            print("⚠️ Failed to parse Quaternion from: '\(valueString)'")
             return Quaternion.identity
         }
         
         return Quaternion(w: w, x: x, y: y, z: z)
     }
 
-    /// Parse transform information from xformOp attributes
+    
+    /// Parse transform information from xformOp attributes - Direct parsing approach
     private func parseTransform(from lines: [String]) throws -> USDTransform? {
         var position = Vector3D.zero
         var orientation = Quaternion.identity
@@ -733,24 +803,47 @@ extension USDFileManager {
         
         for line in lines {
             if line.contains("xformOp:translate") {
-                if let translateAttribute = parseAttributeLine(line) {
-                    if let vector = translateAttribute.value as? Vector3D {
-                        position = vector
-                        hasTransform = true
-                    }
+                // Parse line like: double3 xformOp:translate = (0.0, 1.5, 0.0)
+                if let vector = parseTranslateLine(line) {
+                    position = vector
+                    hasTransform = true
                 }
             } else if line.contains("xformOp:orient") {
-                if let orientAttribute = parseAttributeLine(line) {
-                    if let quat = orientAttribute.value as? Quaternion {
-                        orientation = quat
-                        hasTransform = true
-                    }
+                // Parse line like: quatf xformOp:orient = (1.0, 0.0, 0.0, 0.0)
+                if let quat = parseOrientLine(line) {
+                    orientation = quat
+                    hasTransform = true
                 }
             }
         }
         
         return hasTransform ? USDTransform(position: position, orientation: orientation) : nil
     }
+
+    /// Parse translate line directly: double3 xformOp:translate = (0.0, 1.5, 0.0)
+    private func parseTranslateLine(_ line: String) -> Vector3D? {
+        // Find the equals sign and extract the value part
+        guard let equalsIndex = line.firstIndex(of: "=") else { return nil }
+        
+        let valueStart = line.index(after: equalsIndex)
+        let valueString = String(line[valueStart...]).trimmingCharacters(in: .whitespaces)
+        
+        // Parse Vector3 from string like "(0.0, 1.5, 0.0)"
+        return parseVector3(valueString)
+    }
+
+    /// Parse orient line directly: quatf xformOp:orient = (1.0, 0.0, 0.0, 0.0)
+    private func parseOrientLine(_ line: String) -> Quaternion? {
+        // Find the equals sign and extract the value part
+        guard let equalsIndex = line.firstIndex(of: "=") else { return nil }
+        
+        let valueStart = line.index(after: equalsIndex)
+        let valueString = String(line[valueStart...]).trimmingCharacters(in: .whitespaces)
+        
+        // Parse Quaternion from string like "(1.0, 0.0, 0.0, 0.0)"
+        return parseQuaternion(valueString)
+    }
+    
 
     /// Parse child prims for assemblies (Xform types)
     private func parseChildren(from lines: [String], parentType: String) throws -> [USDPrim] {
@@ -774,7 +867,7 @@ extension USDFileManager {
 
 
 
-// MARK: - Phase 1A Testing Helper
+// MARK: - Testing & Debug Helpers - Remove for Flight
 
 extension USDFileManager {
     
@@ -863,5 +956,52 @@ extension USDFileManager {
         
         return USDFile(stage: stage, rootPrims: [conePrim])
     }
+    
+    
+    /// Debug version of parseAttributes to see what lines are being processed/skipped
+    public func debugParseAttributes(from lines: [String]) throws -> [String: USDAttribute] {
+        var attributes: [String: USDAttribute] = [:]
+        
+        print("🔍 DEBUG: Processing \(lines.count) lines for attributes:")
+        
+        for (index, line) in lines.enumerated() {
+            print("   Line \(index + 1): \"\(line)\"")
+            
+            // Skip customData lines and structural lines
+            if line.contains("customData") {
+                print("      → SKIPPED: Contains customData")
+                continue
+            }
+            if line.contains("{") || line.contains("}") {
+                print("      → SKIPPED: Contains braces")
+                continue
+            }
+            if line.hasPrefix("def ") {
+                print("      → SKIPPED: def line")
+                continue
+            }
+            if line.hasPrefix("string ") {
+                print("      → SKIPPED: string line")
+                continue
+            }
+            if line.hasPrefix("uniform token") {
+                print("      → SKIPPED: uniform token")
+                continue
+            }
+            
+            // Try to parse as attribute line
+            print("      → PROCESSING: Attempting to parse as attribute")
+            if let attribute = parseAttributeLine(line) {
+                print("      → SUCCESS: Parsed \(attribute.name) = \(attribute.value)")
+                attributes[attribute.name] = attribute
+            } else {
+                print("      → FAILED: Could not parse as attribute")
+            }
+        }
+        
+        print("🔍 DEBUG: Found \(attributes.count) total attributes")
+        return attributes
+    }
+    
 }
 
