@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */; };
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
+		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
 		A9486F6C2E75997E00FEBE31 /* ModelDrawDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */; };
 		A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE52E78A85100329151 /* Quaternion.swift */; };
 		A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE42E78A85100329151 /* Vector3d.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.2.md; sourceTree = "<group>"; };
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
+		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
 		A9486F6B2E75997B00FEBE31 /* ModelDrawDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDrawDocument.swift; sourceTree = "<group>"; };
 		A96A5AE42E78A85100329151 /* Vector3d.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector3d.swift; sourceTree = "<group>"; };
 		A96A5AE52E78A85100329151 /* Quaternion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quaternion.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			children = (
 				A96A5AEF2E78AE0F00329151 /* USDFileManager.swift */,
 				A93192182E79D32D00025A3D /* USDContentGenerator.swift */,
+				A931921A2E79D56B00025A3D /* USDContentParser.swift */,
 			);
 			path = "USD File Management";
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A97FE4CD2E75DBED00540DEE /* Cone.swift in Sources */,
+				A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */,
 				A97FE4CF2E75DDA300540DEE /* Assembly.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
