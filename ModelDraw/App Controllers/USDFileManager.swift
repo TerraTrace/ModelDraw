@@ -79,10 +79,30 @@ class USDFileManager {
     }
     
     // MARK: - Phase 1A: Read operation placeholder
-    /// Read USD file from disk - Phase 1A: Not implemented yet
+    /// Read USD file from disk - Phase 2: Implementation
     func readUSDFile(from url: URL) throws -> USDFile {
-        throw USDFileError.unsupportedPrimType(type: "Reading not implemented in Phase 1A")
+        // Validate file exists
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            throw USDFileError.fileNotFound(path: url.path)
+        }
+        
+        // Validate file extension
+        guard url.pathExtension.lowercased() == "usd" else {
+            throw USDFileError.invalidFileExtension(expected: ".usd", actual: ".\(url.pathExtension)")
+        }
+        
+        // Read file content
+        let content = try String(contentsOf: url, encoding: .utf8)
+        
+        // Parse stage header and root prims
+        let stage = try parseStageHeader(content)
+        //let rootPrims = try parseRootPrims(content)
+        
+        //return USDFile(stage: stage, rootPrims: rootPrims)
+        return USDFile(stage: stage, rootPrims: [])
     }
+
+    
 }
 
 // MARK: - USD Content Generation
@@ -280,6 +300,166 @@ private extension USDFileManager {
         return String(describing: value)
     }
 }
+
+
+// MARK: - USD File Parsing Helper Methods
+
+private extension USDFileManager {
+    
+    // MARK: - USD File Reading Implementation
+
+
+    /// Parse USD stage header by reversing generateStageHeader logic
+    private func parseStageHeader(_ content: String) throws -> USDStage {
+        let lines = content.components(separatedBy: .newlines)
+        
+        // Find #usda version line
+        guard let usdaLine = lines.first(where: { $0.hasPrefix("#usda") }) else {
+            throw USDFileError.invalidUSDSyntax(line: 1, message: "Missing #usda header")
+        }
+        
+        // Find stage metadata section between first ( and matching )
+        guard let openParenIndex = content.firstIndex(of: "("),
+              let closeParenIndex = findMatchingCloseParen(in: content, startingAt: openParenIndex) else {
+            // No stage metadata - return minimal stage
+            return USDStage(defaultPrim: nil, metersPerUnit: 1.0, upAxis: "Y", customLayerData: [:])
+        }
+        
+        // Extract content between parentheses
+        let startIndex = content.index(after: openParenIndex)
+        let metadataContent = String(content[startIndex..<closeParenIndex])
+        
+        // Parse stage metadata fields
+        var defaultPrim: String?
+        var metersPerUnit: Double = 1.0
+        var upAxis: String = "Y"
+        var customLayerData: [String: String] = [:]
+        
+        // Parse each line of metadata
+        let metadataLines = metadataContent.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        var i = 0
+        while i < metadataLines.count {
+            let line = metadataLines[i]
+            
+            if line.hasPrefix("defaultPrim = ") {
+                defaultPrim = parseQuotedValue(from: line, key: "defaultPrim")
+                
+            } else if line.hasPrefix("metersPerUnit = ") {
+                if let value = parseNumericValue(from: line, key: "metersPerUnit") {
+                    metersPerUnit = value
+                }
+                
+            } else if line.hasPrefix("upAxis = ") {
+                upAxis = parseQuotedValue(from: line, key: "upAxis") ?? "Y"
+                
+            } else if line.hasPrefix("customLayerData = {") {
+                // Parse customLayerData block
+                i += 1  // Skip opening line
+                while i < metadataLines.count && !metadataLines[i].contains("}") {
+                    let dataLine = metadataLines[i].trimmingCharacters(in: .whitespaces)
+                    if dataLine.hasPrefix("string ") {
+                        parseCustomDataLine(dataLine, into: &customLayerData)
+                    }
+                    i += 1
+                }
+                // i will be incremented again at end of loop, which is correct
+            }
+            
+            i += 1
+        }
+        
+        return USDStage(
+            defaultPrim: defaultPrim,
+            metersPerUnit: metersPerUnit,
+            upAxis: upAxis,
+            customLayerData: customLayerData
+        )
+    }
+
+    // MARK: - Stage Header Parsing Helpers
+
+    /// Find matching closing parenthesis, accounting for nested parentheses
+    private func findMatchingCloseParen(in content: String, startingAt openIndex: String.Index) -> String.Index? {
+        var parenCount = 1
+        var currentIndex = content.index(after: openIndex)
+        
+        while currentIndex < content.endIndex && parenCount > 0 {
+            let char = content[currentIndex]
+            if char == "(" {
+                parenCount += 1
+            } else if char == ")" {
+                parenCount -= 1
+            }
+            
+            if parenCount == 0 {
+                return currentIndex
+            }
+            
+            currentIndex = content.index(after: currentIndex)
+        }
+        
+        return nil
+    }
+
+    /// Parse quoted string value from line like: defaultPrim = "OrientedSpacecraft"
+    private func parseQuotedValue(from line: String, key: String) -> String? {
+        let prefix = "\(key) = \""
+        guard line.hasPrefix(prefix) else { return nil }
+        
+        let valueStart = line.index(line.startIndex, offsetBy: prefix.count)
+        guard let valueEnd = line.lastIndex(of: "\""), valueEnd > valueStart else { return nil }
+        
+        return String(line[valueStart..<valueEnd])
+    }
+
+    /// Parse numeric value from line like: metersPerUnit = 1.0
+    private func parseNumericValue(from line: String, key: String) -> Double? {
+        let prefix = "\(key) = "
+        guard line.hasPrefix(prefix) else { return nil }
+        
+        let valueStart = line.index(line.startIndex, offsetBy: prefix.count)
+        let valueString = String(line[valueStart...]).trimmingCharacters(in: .whitespaces)
+        
+        return Double(valueString)
+    }
+
+    /// Parse custom data line like: string modelDrawType = "spacecraft"
+    private func parseCustomDataLine(_ line: String, into customData: inout [String: String]) {
+        // Expected format: string key = "value"
+        guard line.hasPrefix("string ") else { return }
+        
+        let withoutString = String(line.dropFirst(7))  // Remove "string "
+        guard let equalIndex = withoutString.firstIndex(of: "=") else { return }
+        
+        let key = String(withoutString[..<equalIndex]).trimmingCharacters(in: .whitespaces)
+        let valueWithQuotes = String(withoutString[withoutString.index(after: equalIndex)...])
+            .trimmingCharacters(in: .whitespaces)
+        
+        // Remove quotes
+        if valueWithQuotes.hasPrefix("\"") && valueWithQuotes.hasSuffix("\"") {
+            let value = String(valueWithQuotes.dropFirst().dropLast())
+            customData[key] = value
+        }
+    }
+    
+    
+    
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
 
 // MARK: - Phase 1A Testing Helper
 
