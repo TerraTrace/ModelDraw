@@ -45,6 +45,9 @@ class USDFileManager {
     static let shared = USDFileManager()
     private init() {}
     
+    private let contentGenerator = USDContentGenerator()
+
+    
     // MARK: - Public Interface
     
     /// Write USD file to disk - Phase 1A: Basic implementation
@@ -59,7 +62,7 @@ class USDFileManager {
         }
         
         // Generate USD content
-        let usdContent = try generateUSDContent(usdFile)
+        let usdContent = try contentGenerator.generateUSDContent(usdFile)
         
         // Write to file
         do {
@@ -109,15 +112,15 @@ class USDFileManager {
 private extension USDFileManager {
     
     /// Generate complete USD file content string
-    func generateUSDContent(_ usdFile: USDFile) throws -> String {
+    /*func generateUSDContent(_ usdFile: USDFile) throws -> String {
         let header = generateStageHeader(usdFile.stage)
         let prims = try usdFile.rootPrims.map { try generatePrimContent($0) }.joined(separator: "\n\n")
         
         return header + "\n\n" + prims + "\n"
-    }
+    } */
     
     /// Generate USD stage header with metadata
-    func generateStageHeader(_ stage: USDStage) -> String {
+    /*func generateStageHeader(_ stage: USDStage) -> String {
         var headerLines: [String] = ["#usda 1.0"]
         
         // Stage metadata in parentheses
@@ -145,10 +148,10 @@ private extension USDFileManager {
         }
         
         return headerLines.joined(separator: "\n")
-    }
+    } */
     
     /// Generate USD primitive content - Phase 1B: Cylinder and Cone support
-    func generatePrimContent(_ prim: USDPrim) throws -> String {
+    /*func generatePrimContent(_ prim: USDPrim) throws -> String {
         switch prim.type {
         case "Cylinder":
             return try generateCylinderUSD(prim)
@@ -159,11 +162,11 @@ private extension USDFileManager {
         default:
             throw USDFileError.unsupportedPrimType(type: prim.type)
         }
-    }
+    } */
     
     
     /// Generate USD content for a cylinder primitive - Updated structure with customData at end
-    func generateCylinderUSD(_ prim: USDPrim) throws -> String {
+    /*func generateCylinderUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -198,10 +201,10 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    }
+    } */
     
     /// Generate USD content for a cone primitive - Updated structure with customData at end
-    func generateConeUSD(_ prim: USDPrim) throws -> String {
+    /*func generateConeUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -236,10 +239,10 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    }
+    } */
     
     /// Generate USD content for an Xform assembly primitive - Updated structure with customData at end
-    func generateXformUSD(_ prim: USDPrim) throws -> String {
+    /*func generateXformUSD(_ prim: USDPrim) throws -> String {
         let sanitizedName = prim.name.replacingOccurrences(of: " ", with: "_")
         
         var lines: [String] = []
@@ -285,11 +288,11 @@ private extension USDFileManager {
         lines.append("}")
         
         return lines.joined(separator: "\n")
-    }
+    } */
     
     
     /// Helper method to format attribute values for USD output
-    private func formatAttributeValue(_ value: Any, valueType: String) -> String {
+    /*private func formatAttributeValue(_ value: Any, valueType: String) -> String {
         switch valueType {
         case "double":
             if let doubleValue = value as? Double {
@@ -312,7 +315,7 @@ private extension USDFileManager {
         }
         
         return String(describing: value)
-    }
+    } */
     
 }
 
