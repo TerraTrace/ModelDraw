@@ -464,6 +464,7 @@ extension USDFileManager {
 
     /// Extract individual prim definition blocks from USD content
     private func extractPrimBlocks(from content: String) -> [String] {
+    //public func extractPrimBlocks(from content: String) -> [String] {
         var primBlocks: [String] = []
         let lines = content.components(separatedBy: .newlines)
         
@@ -524,31 +525,40 @@ extension USDFileManager {
         // If we get here, we never found a complete block
         return nil
     }
-
-    /// Placeholder for prim definition parsing - to be implemented next
+    
+    /// Parse a complete USD prim definition block
     private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
-        // Extract prim type and name from first line
         let lines = primBlock.components(separatedBy: .newlines)
-        guard let firstLine = lines.first?.trimmingCharacters(in: .whitespaces) else {
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        guard !lines.isEmpty else {
             throw USDFileError.invalidUSDSyntax(line: 1, message: "Empty prim block")
         }
         
-        let (primType, primName) = try parsePrimHeader(firstLine)
+        // Parse header to get type and name
+        let (primType, primName) = try parsePrimHeader(lines[0])
         
-        // For now, return a minimal prim - we'll implement full parsing next
+        // Parse the prim content between the braces
+        let metadata = try parseCustomData(from: lines)
+        let attributes = try parseAttributes(from: lines)
+        let transform = try parseTransform(from: lines)
+        let children = try parseChildren(from: lines, parentType: primType)
+        
         return USDPrim(
             name: primName,
             type: primType,
-            attributes: [:],
-            transform: nil,
-            children: [],
-            metadata: [:]
+            attributes: attributes,
+            transform: transform,
+            children: children,
+            metadata: metadata
         )
     }
 
     /// Parse the prim header line to extract type and name
     /// Example: "def Cylinder \"PropellantTank\" (" -> ("Cylinder", "PropellantTank")
     private func parsePrimHeader(_ headerLine: String) throws -> (type: String, name: String) {
+    //public func parsePrimHeader(_ headerLine: String) throws -> (type: String, name: String) {
         // Expected format: def [Type] "[Name]" (
         let components = headerLine.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
         
@@ -572,6 +582,183 @@ extension USDFileManager {
         
         return (type: primType, name: primName)
     }
+    
+    
+    // MARK: - Prim Definition Parsing Helpers
+
+    /// Parse customData block from prim lines
+    private func parseCustomData(from lines: [String]) throws -> [String: String] {
+        var customData: [String: String] = [:]
+        var insideCustomData = false
+        
+        for line in lines {
+            if line.contains("customData = {") {
+                insideCustomData = true
+                continue
+            }
+            
+            if insideCustomData {
+                if line.contains("}") {
+                    insideCustomData = false
+                    continue
+                }
+                
+                // Parse line like: string material = "aluminum"
+                if line.hasPrefix("string ") {
+                    parseCustomDataLine(line, into: &customData)
+                }
+            }
+        }
+        
+        return customData
+    }
+
+    /// Parse geometry and other attributes from prim lines
+    private func parseAttributes(from lines: [String]) throws -> [String: USDAttribute] {
+        var attributes: [String: USDAttribute] = [:]
+        
+        for line in lines {
+            // Skip customData lines and structural lines
+            if line.contains("customData") || line.contains("{") || line.contains("}") ||
+               line.hasPrefix("def ") || line.hasPrefix("string ") || line.hasPrefix("uniform token") {
+                continue
+            }
+            
+            // Parse attribute lines like: double height = 2.0
+            if let attribute = parseAttributeLine(line) {
+                attributes[attribute.name] = attribute
+            }
+        }
+        
+        return attributes
+    }
+
+    /// Parse a single attribute line
+    private func parseAttributeLine(_ line: String) -> USDAttribute? {
+        // Handle different attribute formats:
+        // double height = 2.0
+        // double3 xformOp:translate = (0, 1, 0)
+        // quatf xformOp:orient = (0.707, -0.707, 0, 0)
+        
+        let components = line.components(separatedBy: "=")
+        guard components.count == 2 else { return nil }
+        
+        let leftSide = components[0].trimmingCharacters(in: .whitespaces)
+        let rightSide = components[1].trimmingCharacters(in: .whitespaces)
+        
+        // Parse left side: "double height" or "double3 xformOp:translate"
+        let leftComponents = leftSide.components(separatedBy: .whitespaces)
+        guard leftComponents.count == 2 else { return nil }
+        
+        let valueType = leftComponents[0]
+        let attributeName = leftComponents[1]
+        
+        // Skip transform attributes - they'll be handled by parseTransform
+        if attributeName.hasPrefix("xformOp:") {
+            return nil
+        }
+        
+        // Parse right side value based on type
+        let value = parseAttributeValue(rightSide, valueType: valueType)
+        
+        return USDAttribute(name: attributeName, value: value, valueType: valueType)
+    }
+
+    /// Parse attribute value based on USD type
+    private func parseAttributeValue(_ valueString: String, valueType: String) -> Any {
+        let cleanValue = valueString.trimmingCharacters(in: .whitespaces)
+        
+        switch valueType {
+        case "double":
+            return Double(cleanValue) ?? 0.0
+        case "float":
+            return Float(cleanValue) ?? 0.0
+        case "int":
+            return Int(cleanValue) ?? 0
+        case "string":
+            // Remove quotes
+            if cleanValue.hasPrefix("\"") && cleanValue.hasSuffix("\"") {
+                return String(cleanValue.dropFirst().dropLast())
+            }
+            return cleanValue
+        case "double3":
+            return parseVector3(cleanValue)
+        case "quatf":
+            return parseQuaternion(cleanValue)
+        default:
+            return cleanValue
+        }
+    }
+
+    /// Parse Vector3 from string like "(0, 1, 0)"
+    private func parseVector3(_ valueString: String) -> Vector3D {
+        let cleanValue = valueString.trimmingCharacters(in: CharacterSet(charactersIn: "()"))
+        let components = cleanValue.components(separatedBy: ",").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+        
+        guard components.count == 3,
+              let x = Double(components[0]),
+              let y = Double(components[1]),
+              let z = Double(components[2]) else {
+            return Vector3D.zero
+        }
+        
+        return Vector3D(x: x, y: y, z: z)
+    }
+
+    /// Parse Quaternion from string like "(0.707, -0.707, 0, 0)"
+    private func parseQuaternion(_ valueString: String) -> Quaternion {
+        let cleanValue = valueString.trimmingCharacters(in: CharacterSet(charactersIn: "()"))
+        let components = cleanValue.components(separatedBy: ",").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+        
+        guard components.count == 4,
+              let w = Double(components[0]),
+              let x = Double(components[1]),
+              let y = Double(components[2]),
+              let z = Double(components[3]) else {
+            return Quaternion.identity
+        }
+        
+        return Quaternion(w: w, x: x, y: y, z: z)
+    }
+
+    /// Parse transform information from xformOp attributes
+    private func parseTransform(from lines: [String]) throws -> USDTransform? {
+        var position = Vector3D.zero
+        var orientation = Quaternion.identity
+        var hasTransform = false
+        
+        for line in lines {
+            if line.contains("xformOp:translate") {
+                if let translateAttribute = parseAttributeLine(line) {
+                    if let vector = translateAttribute.value as? Vector3D {
+                        position = vector
+                        hasTransform = true
+                    }
+                }
+            } else if line.contains("xformOp:orient") {
+                if let orientAttribute = parseAttributeLine(line) {
+                    if let quat = orientAttribute.value as? Quaternion {
+                        orientation = quat
+                        hasTransform = true
+                    }
+                }
+            }
+        }
+        
+        return hasTransform ? USDTransform(position: position, orientation: orientation) : nil
+    }
+
+    /// Parse child prims for assemblies (Xform types)
+    private func parseChildren(from lines: [String], parentType: String) throws -> [USDPrim] {
+        // For now, return empty - child parsing will be handled by the main parseRootPrims
+        // since children appear as separate def blocks in the file
+        return []
+    }
+    
     
     
     

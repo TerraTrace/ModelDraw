@@ -317,7 +317,7 @@ func testUSDOrientedSpacecraft() {
 // MARK: - Test Methods for USD Parsing
 
 /// Test parseStageHeader method with existing USD files
-func testParseStageHeader() {
+/*func testParseStageHeader() {
     print("🧪 Testing parseStageHeader() method...")
     
     // Get path to Library folder where test files are stored
@@ -364,12 +364,12 @@ func testParseStageHeader() {
     }
     
     print("\n✅ parseStageHeader() testing complete!")
-}
+} */
 
 // MARK: - Enhanced Test with File Content Preview
 
 /// Test parseStageHeader with detailed file content preview
-func testParseStageHeaderWithPreview() {
+/*func testParseStageHeaderWithPreview() {
     print("🧪 Testing parseStageHeader() with content preview...")
     
     let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -398,4 +398,92 @@ func testParseStageHeaderWithPreview() {
     } catch {
         print("❌ Test failed: \(error)")
     }
-}
+} */
+
+
+// MARK: - Test Prim Block Extraction
+
+/// Test the prim block extraction logic
+/*func testPrimBlockExtraction() {
+    print("🧪 Testing prim block extraction...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    
+    // Test with the cylinder file first (simplest case)
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_Cylinder.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        print("✅ File read successfully")
+        
+        // Extract prim blocks
+        let primBlocks = USDFileManager.shared.extractPrimBlocks(from: content)
+        print("🔍 Found \(primBlocks.count) prim blocks")
+        
+        // Print each extracted block
+        for (index, block) in primBlocks.enumerated() {
+            print("\n📦 Prim Block \(index + 1):")
+            print("─────────────────────────")
+            
+            // Show first few lines of each block
+            let blockLines = block.components(separatedBy: .newlines)
+            let previewLines = blockLines.prefix(10)
+            
+            for (lineNum, line) in previewLines.enumerated() {
+                print("   \(lineNum + 1): \(line)")
+            }
+            
+            if blockLines.count > 10 {
+                print("   ... (\(blockLines.count - 10) more lines)")
+            }
+            print("─────────────────────────")
+        }
+        
+        // Test header parsing on each block
+        print("\n🔍 Testing header parsing:")
+        for (index, block) in primBlocks.enumerated() {
+            let lines = block.components(separatedBy: .newlines)
+            if let firstLine = lines.first?.trimmingCharacters(in: .whitespaces) {
+                do {
+                    let (primType, primName) = try USDFileManager.shared.parsePrimHeader(firstLine)
+                    print("   Block \(index + 1): \(primType) \"\(primName)\"")
+                } catch {
+                    print("   Block \(index + 1): ❌ Header parsing failed - \(error)")
+                }
+            }
+        }
+        
+    } catch {
+        print("❌ Test failed: \(error)")
+    }
+    
+    print("\n✅ Prim block extraction test complete!")
+} */
+
+/// Test with the more complex spacecraft assembly file
+/*func testComplexPrimExtraction() {
+    print("🧪 Testing complex prim extraction (OrientedSpacecraft)...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_OrientedSpacecraft.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        let primBlocks = USDFileManager.shared.extractPrimBlocks(from: content)
+        
+        print("✅ Found \(primBlocks.count) prim blocks in spacecraft assembly")
+        
+        for (index, block) in primBlocks.enumerated() {
+            let firstLine = block.components(separatedBy: .newlines).first ?? ""
+            print("   \(index + 1): \(firstLine.trimmingCharacters(in: .whitespaces))")
+        }
+        
+    } catch {
+        print("❌ Complex test failed: \(error)")
+    }
+} */
+
+
+
