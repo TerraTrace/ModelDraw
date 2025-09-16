@@ -312,3 +312,90 @@ func testUSDOrientedSpacecraft() {
         print("❌ Oriented spacecraft test failed: \(error.localizedDescription)")
     }
 }
+
+
+// MARK: - Test Methods for USD Parsing
+
+/// Test parseStageHeader method with existing USD files
+func testParseStageHeader() {
+    print("🧪 Testing parseStageHeader() method...")
+    
+    // Get path to Library folder where test files are stored
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    
+    // Test files to parse
+    let testFiles = [
+        "ModelDrawTest_Cylinder.usd",
+        "ModelDrawTest_Cone.usd",
+        "ModelDrawTest_OrientedSpacecraft.usd"
+    ]
+    
+    for fileName in testFiles {
+        print("\n📄 Testing file: \(fileName)")
+        let testFileURL = libraryURL.appendingPathComponent(fileName)
+        
+        do {
+            // Read file content
+            let content = try String(contentsOf: testFileURL, encoding: .utf8)
+            print("✅ File read successfully")
+            
+            // Parse stage header
+            let stage = try USDFileManager.shared.parseStageHeader(content)
+            
+            // Print parsed results
+            print("🔍 Parsed Stage Header:")
+            print("   defaultPrim: \(stage.defaultPrim ?? "nil")")
+            print("   metersPerUnit: \(stage.metersPerUnit)")
+            print("   upAxis: \(stage.upAxis)")
+            
+            if !stage.customLayerData.isEmpty {
+                print("   customLayerData:")
+                for (key, value) in stage.customLayerData.sorted(by: { $0.key < $1.key }) {
+                    print("      \(key): \(value)")
+                }
+            } else {
+                print("   customLayerData: (empty)")
+            }
+            
+        } catch {
+            print("❌ Failed to parse \(fileName): \(error)")
+        }
+    }
+    
+    print("\n✅ parseStageHeader() testing complete!")
+}
+
+// MARK: - Enhanced Test with File Content Preview
+
+/// Test parseStageHeader with detailed file content preview
+func testParseStageHeaderWithPreview() {
+    print("🧪 Testing parseStageHeader() with content preview...")
+    
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let libraryURL = documentsURL.appendingPathComponent("ModelDraw").appendingPathComponent("Library")
+    let testFileURL = libraryURL.appendingPathComponent("ModelDrawTest_Cylinder.usd")
+    
+    do {
+        let content = try String(contentsOf: testFileURL, encoding: .utf8)
+        
+        // Show first 20 lines of file content
+        print("📄 File content preview (first 20 lines):")
+        let lines = content.components(separatedBy: .newlines)
+        for (index, line) in lines.prefix(20).enumerated() {
+            print("   \(index + 1): \(line)")
+        }
+        
+        print("\n🔍 Parsing stage header...")
+        let stage = try USDFileManager.shared.parseStageHeader(content)
+        
+        print("✅ Successfully parsed!")
+        print("   defaultPrim: \(stage.defaultPrim ?? "nil")")
+        print("   metersPerUnit: \(stage.metersPerUnit)")
+        print("   upAxis: \(stage.upAxis)")
+        print("   customLayerData count: \(stage.customLayerData.count)")
+        
+    } catch {
+        print("❌ Test failed: \(error)")
+    }
+}

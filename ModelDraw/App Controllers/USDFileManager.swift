@@ -96,10 +96,9 @@ class USDFileManager {
         
         // Parse stage header and root prims
         let stage = try parseStageHeader(content)
-        //let rootPrims = try parseRootPrims(content)
+        let rootPrims = try parseRootPrims(content)
         
-        //return USDFile(stage: stage, rootPrims: rootPrims)
-        return USDFile(stage: stage, rootPrims: [])
+        return USDFile(stage: stage, rootPrims: rootPrims)
     }
 
     
@@ -304,13 +303,13 @@ private extension USDFileManager {
 
 // MARK: - USD File Parsing Helper Methods
 
-private extension USDFileManager {
+extension USDFileManager {
     
     // MARK: - USD File Reading Implementation
 
-
     /// Parse USD stage header by reversing generateStageHeader logic
     private func parseStageHeader(_ content: String) throws -> USDStage {
+    //public func parseStageHeader(_ content: String) throws -> USDStage {
         let lines = content.components(separatedBy: .newlines)
         
         // Find #usda version line
@@ -445,7 +444,134 @@ private extension USDFileManager {
         }
     }
     
+    // MARK: - Root Prim Parsing Helpers
     
+    /// Parse root-level USD prims from file content
+    private func parseRootPrims(_ content: String) throws -> [USDPrim] {
+        var rootPrims: [USDPrim] = []
+        
+        // Find all prim definition blocks
+        let primBlocks = extractPrimBlocks(from: content)
+        
+        // Parse each prim block
+        for primBlock in primBlocks {
+            let prim = try parsePrimDefinition(primBlock)
+            rootPrims.append(prim)
+        }
+        
+        return rootPrims
+    }
+
+    /// Extract individual prim definition blocks from USD content
+    private func extractPrimBlocks(from content: String) -> [String] {
+        var primBlocks: [String] = []
+        let lines = content.components(separatedBy: .newlines)
+        
+        var i = 0
+        while i < lines.count {
+            let line = lines[i].trimmingCharacters(in: .whitespaces)
+            
+            // Look for prim definition start: "def [Type] "[Name]""
+            if line.hasPrefix("def ") && line.contains("\"") {
+                // Found a prim definition - extract the complete block
+                if let primBlock = extractSinglePrimBlock(from: lines, startingAt: i) {
+                    primBlocks.append(primBlock.block)
+                    i = primBlock.endIndex + 1  // Move past this block
+                } else {
+                    i += 1  // Skip this line if extraction failed
+                }
+            } else {
+                i += 1
+            }
+        }
+        
+        return primBlocks
+    }
+
+    /// Extract a single prim block starting at the given line index
+    /// Returns the complete prim block text and the ending line index
+    private func extractSinglePrimBlock(from lines: [String], startingAt startIndex: Int) -> (block: String, endIndex: Int)? {
+        guard startIndex < lines.count else { return nil }
+        
+        var blockLines: [String] = []
+        var braceCount = 0
+        var foundOpenBrace = false
+        var i = startIndex
+        
+        // Process each line starting from the def line
+        while i < lines.count {
+            let line = lines[i]
+            blockLines.append(line)
+            
+            // Count braces to find the matching closing brace
+            for char in line {
+                if char == "{" {
+                    braceCount += 1
+                    foundOpenBrace = true
+                } else if char == "}" {
+                    braceCount -= 1
+                }
+            }
+            
+            // If we've found the opening brace and closed all braces, we're done
+            if foundOpenBrace && braceCount == 0 {
+                return (block: blockLines.joined(separator: "\n"), endIndex: i)
+            }
+            
+            i += 1
+        }
+        
+        // If we get here, we never found a complete block
+        return nil
+    }
+
+    /// Placeholder for prim definition parsing - to be implemented next
+    private func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+        // Extract prim type and name from first line
+        let lines = primBlock.components(separatedBy: .newlines)
+        guard let firstLine = lines.first?.trimmingCharacters(in: .whitespaces) else {
+            throw USDFileError.invalidUSDSyntax(line: 1, message: "Empty prim block")
+        }
+        
+        let (primType, primName) = try parsePrimHeader(firstLine)
+        
+        // For now, return a minimal prim - we'll implement full parsing next
+        return USDPrim(
+            name: primName,
+            type: primType,
+            attributes: [:],
+            transform: nil,
+            children: [],
+            metadata: [:]
+        )
+    }
+
+    /// Parse the prim header line to extract type and name
+    /// Example: "def Cylinder \"PropellantTank\" (" -> ("Cylinder", "PropellantTank")
+    private func parsePrimHeader(_ headerLine: String) throws -> (type: String, name: String) {
+        // Expected format: def [Type] "[Name]" (
+        let components = headerLine.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
+        
+        guard components.count >= 3,
+              components[0] == "def" else {
+            throw USDFileError.invalidUSDSyntax(line: 1, message: "Invalid prim header format")
+        }
+        
+        let primType = components[1]
+        
+        // Extract name from quoted string in remaining components
+        let remainingText = components[2...].joined(separator: " ")
+        guard let startQuote = remainingText.firstIndex(of: "\""),
+              let endQuote = remainingText.lastIndex(of: "\""),
+              startQuote < endQuote else {
+            throw USDFileError.invalidUSDSyntax(line: 1, message: "Could not extract prim name from quotes")
+        }
+        
+        let nameStart = remainingText.index(after: startQuote)
+        let primName = String(remainingText[nameStart..<endQuote])
+        
+        return (type: primType, name: primName)
+    }
     
     
     
