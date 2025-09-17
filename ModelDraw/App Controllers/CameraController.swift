@@ -476,4 +476,117 @@ class CameraController {
             // Note: Camera position stays unchanged - only rotation changes
             // The RealityView update block will apply this rotation via camera.look()
         }
+    
+    
+    // MARK: - Ray Casting for Drag-and-Drop
+
+    /// Cast a ray from cursor position to Y=0 plane intersection for precise object placement
+    /// Returns world position clamped to engineering grid bounds (-10m to +10m on X-Z plane)
+    /// - Parameters:
+    ///   - screenPoint: Cursor position in screen coordinates
+    ///   - viewSize: Size of the RealityView for coordinate conversion
+    /// - Returns: World position on Y=0 plane, clamped to grid bounds
+    func worldPositionFromCursor(_ screenPoint: CGPoint, viewSize: CGSize) -> SIMD3<Float> {
+        guard let viewModel = viewModel else {
+            print("⚠️ CameraController.worldPositionFromCursor: No ViewModel reference, returning origin")
+            return SIMD3<Float>(0, 0, 0)
+        }
+        
+        // Convert screen coordinates to normalized device coordinates (-1 to 1)
+        let normalizedX = (2.0 * Float(screenPoint.x) / Float(viewSize.width)) - 1.0
+        let normalizedY = 1.0 - (2.0 * Float(screenPoint.y) / Float(viewSize.height))  // Flip Y
+        
+        // Get camera position and create ray direction based on camera mode
+        let cameraPosition = viewModel.cameraPosition
+        let rayDirection: SIMD3<Float>
+        
+        switch viewModel.cameraMode {
+        case .sceneCenter:
+            // Scene center mode: camera always looks at origin
+            // Ray direction needs to account for perspective and cursor offset
+            let lookDirection = normalize(-cameraPosition)  // Look toward origin
+            
+            // Create right and up vectors for camera's local coordinate system
+            let worldUp = SIMD3<Float>(0, 1, 0)
+            let rightVector = normalize(cross(lookDirection, worldUp))
+            let upVector = cross(rightVector, lookDirection)
+            
+            // Apply field of view for perspective (assuming ~60° FOV)
+            let fovFactor: Float = tan(30.0 * Float.pi / 180.0)  // Half of 60° FOV
+            let aspectRatio = Float(viewSize.width) / Float(viewSize.height)
+            
+            // Calculate ray direction with perspective offset
+            rayDirection = normalize(
+                lookDirection +
+                rightVector * (normalizedX * fovFactor * aspectRatio) +
+                upVector * (normalizedY * fovFactor)
+            )
+            
+        case .freeFlier:
+            // Free flier mode: use camera rotation to determine look direction
+            let baseDirection = SIMD3<Float>(0, 0, -1)  // Forward in camera space
+            let lookDirection = viewModel.cameraRotation.act(baseDirection)
+            
+            // Create camera's local coordinate system
+            let rightVector = normalize(viewModel.cameraRotation.act(SIMD3<Float>(1, 0, 0)))
+            let upVector = normalize(viewModel.cameraRotation.act(SIMD3<Float>(0, 1, 0)))
+            
+            // Apply field of view for perspective
+            let fovFactor: Float = tan(30.0 * Float.pi / 180.0)
+            let aspectRatio = Float(viewSize.width) / Float(viewSize.height)
+            
+            rayDirection = normalize(
+                lookDirection +
+                rightVector * (normalizedX * fovFactor * aspectRatio) +
+                upVector * (normalizedY * fovFactor)
+            )
+        }
+        
+        // Calculate intersection with Y=0 plane
+        let intersectionPoint: SIMD3<Float>
+        
+        if abs(rayDirection.y) > 0.001 {  // Ray is not parallel to Y=0 plane
+            // Ray equation: point = cameraPosition + t * rayDirection
+            // For Y=0 plane: cameraPosition.y + t * rayDirection.y = 0
+            let t = -cameraPosition.y / rayDirection.y
+            
+            if t > 0 {  // Intersection is in front of camera
+                intersectionPoint = cameraPosition + t * rayDirection
+            } else {
+                // Ray points away from plane, use fallback
+                intersectionPoint = projectToPlaneAtDistance(cameraPosition: cameraPosition, rayDirection: rayDirection)
+            }
+        } else {
+            // Ray is parallel to Y=0 plane, use fallback
+            intersectionPoint = projectToPlaneAtDistance(cameraPosition: cameraPosition, rayDirection: rayDirection)
+        }
+        
+        // Clamp to engineering grid bounds (-10m to +10m on X and Z axes)
+        let gridBounds: Float = 10.0
+        let clampedPosition = SIMD3<Float>(
+            max(-gridBounds, min(gridBounds, intersectionPoint.x)),  // X: -10 to +10
+            0.0,  // Y: always on the ground plane
+            max(-gridBounds, min(gridBounds, intersectionPoint.z))   // Z: -10 to +10
+        )
+        
+        print("🎯 Ray cast: screen(\(screenPoint.x), \(screenPoint.y)) → world(\(clampedPosition.x), \(clampedPosition.y), \(clampedPosition.z))")
+        
+        return clampedPosition
+    }
+
+    /// Fallback projection for edge cases where ray doesn't intersect Y=0 plane
+    /// Projects forward from camera at current distance, then drops to Y=0 plane
+    private func projectToPlaneAtDistance(cameraPosition: SIMD3<Float>, rayDirection: SIMD3<Float>) -> SIMD3<Float> {
+        guard let viewModel = viewModel else {
+            return SIMD3<Float>(0, 0, 0)
+        }
+        
+        // Project forward by camera distance
+        let projectedPoint = cameraPosition + rayDirection * viewModel.cameraDistance
+        
+        // Drop to Y=0 plane
+        return SIMD3<Float>(projectedPoint.x, 0.0, projectedPoint.z)
+    }
+    
+    
 }
