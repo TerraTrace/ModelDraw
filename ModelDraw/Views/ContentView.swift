@@ -1,6 +1,6 @@
 //
-//  ContentView.swift - Updated for ViewModel-Driven Architecture
-//  ModelDraw
+//  ContentView.swift
+//  ModelDraw - Clean three-pane layout for file system navigation
 //
 
 import SwiftUI
@@ -9,128 +9,58 @@ struct ContentView: View {
     @Environment(ViewModel.self) private var model
     
     var body: some View {
-        Group {
-            if let _ = model.currentProject {
-                // Main project view
-                HSplitView {
-                    // Left Palette - Project Navigator
-                    LeftPaletteView()
-                        .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
-                    
-                    // Center - RealityKit 3D View
-                    CenterRealityView()
-                        .frame(minWidth: 400)
-                    
-                    // Right Palette - Properties
-                    RightPaletteView()
-                        .frame(minWidth: 250, idealWidth: 300, maxWidth: 400)
-                }
-            } else if model.isLoadingProjects {
-                // Loading state
-                VStack {
-                    ProgressView()
-                    Text("Loading projects...")
-                        .foregroundColor(.secondary)
-                }
-            } else if let error = model.projectError {
-                // Error state
-                VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.largeTitle)
-                        .foregroundColor(.orange)
-                    Text("Error Loading Projects")
-                        .font(.headline)
-                    Text(error)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                    Button("Retry") {
-                        model.refreshProjects()
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding()
-            } else {
-                // Project selection view
-                ProjectSelectionView()
-            }
+        HSplitView {
+            // Left Panel - File System Navigator
+            LeftPaletteView()
+                .frame(minWidth: 220, idealWidth: 280, maxWidth: 350)
+            
+            // Center Panel - 3D View (placeholder for now)
+            CenterView()
+                .frame(minWidth: 400)
+            
+            // Right Panel - Properties
+            RightPaletteView()
+                .frame(minWidth: 220, idealWidth: 280, maxWidth: 350)
         }
         .onAppear {
-            model.loadAvailableProjects()
+            print("📱 ContentView appeared - file system navigator ready")
         }
     }
 }
 
-// MARK: - Project Selection View
-struct ProjectSelectionView: View {
+// MARK: - Simple Center View Placeholder
+struct CenterView: View {
     @Environment(ViewModel.self) private var model
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Select Project")
+        VStack {
+            Text("3D View")
                 .font(.largeTitle)
-                .fontWeight(.bold)
+                .fontWeight(.light)
+                .foregroundColor(.secondary)
             
-            if model.availableProjects.isEmpty {
-                VStack(spacing: 12) {
-                    Image(systemName: "folder")
-                        .font(.largeTitle)
-                        .foregroundColor(.secondary)
-                    Text("No projects found")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text("Create a project in ~/Documents/ModelDraw/Projects/")
+            if let selectedItem = model.selectedItem {
+                Text("Selected: \(selectedItem.name)")
+                    .font(.headline)
+                    .padding(.top)
+                
+                Text("Type: \(selectedItem.itemType == .folder ? "Folder" : "USD File")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                if let url = selectedItem.url {
+                    Text("Path: \(url.path)")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                    
-                    Button("Refresh") {
-                        model.refreshProjects()
-                    }
-                    .buttonStyle(.borderedProminent)
+                        .padding(.top, 4)
                 }
             } else {
-                List(model.availableProjects, id: \.name) { project in
-                    ProjectRowView(project: project)
-                }
-                .listStyle(.plain)
-                .frame(maxWidth: 600, maxHeight: 400)
-            }
-        }
-        .padding()
-    }
-}
-
-// MARK: - Project Row View
-struct ProjectRowView: View {
-    @Environment(ViewModel.self) private var model
-    let project: ProjectInfo
-    
-    var body: some View {
-        Button(action: {
-            model.loadProject(project)
-        }) {
-            HStack {
-                Image(systemName: "folder")
-                    .foregroundColor(.blue)
-                    .frame(width: 20)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(project.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    Text("Modified: \(project.lastModified, style: .date)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
+                Text("No selection")
                     .foregroundColor(.secondary)
+                    .padding(.top)
             }
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.textBackgroundColor))
     }
 }
