@@ -40,8 +40,25 @@ class ViewModel {
         }
     }
     
-    var cameraPosition: SIMD3<Float> = SIMD3(0, 0, 5)
-    var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: SIMD3(0, 1, 0))
+    // MARK: - Camera Transform Properties
+        
+    /// Current camera position in 3D space
+    /// Updated by CameraController based on orbit/pan/zoom gestures
+    var cameraPosition: SIMD3<Float> = [0, 0, 5]
+    
+    /// Camera rotation quaternion for smooth orientation changes
+    /// Calculated by CameraController for orbit and pan movements
+    var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: [0, 1, 0])
+    
+    /// Camera distance from target for orbit calculations
+    /// Used by CameraController to maintain consistent orbit radius
+    var cameraDistance: Float = 10.0
+    
+    
+
+    
+    //var cameraPosition: SIMD3<Float> = SIMD3(0, 0, 5)
+    //var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: SIMD3(0, 1, 0))
     
     // MARK: - Services
     private let drawingManager = DrawingManager.shared
