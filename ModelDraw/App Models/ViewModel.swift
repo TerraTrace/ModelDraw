@@ -9,6 +9,49 @@ import RealityKit
 @Observable
 class ViewModel {
     
+    // MARK: - Navigator State
+    private(set) var navigatorData: [NavigatorItem] = []
+    private(set) var selectedItem: NavigatorItem?
+    
+    // MARK: - 3D Scene State (for future drag/drop)
+    private(set) var loadedUSDItems: [LoadedUSDItem] = []
+    
+    // MARK: - Camera State
+    var cameraPosition: SIMD3<Float> = SIMD3(0, 0, 5)
+    var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: SIMD3(0, 1, 0))
+    
+    // MARK: - Services
+    private let drawingManager = DrawingManager.shared
+    private let usdFileManager = USDFileManager.shared
+    
+    // MARK: - Initialization
+    init() {
+        loadNavigatorData()
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Refresh the navigator tree from file system
+    func loadNavigatorData() {
+        navigatorData = buildFileSystemNavigatorData()
+    }
+    
+    /// Select a navigator item
+    func selectItem(_ item: NavigatorItem?) {
+        selectedItem = item
+        
+        if let item = item {
+            print("📋 ViewModel: Selected \(item.itemType == .folder ? "folder" : "USD file"): \(item.name)")
+        } else {
+            print("📋 ViewModel: Cleared selection")
+        }
+    }
+    
+    /// Reload navigator data (for when files change)
+    func refreshNavigator() {
+        loadNavigatorData()
+        print("🔄 ViewModel: Navigator data refreshed")
+    }
 
 
 

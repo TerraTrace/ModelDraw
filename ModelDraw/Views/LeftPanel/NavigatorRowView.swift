@@ -1,28 +1,26 @@
 //
 //  NavigatorRowView.swift
-//  ModelDraw
-//
-//  Created by Mike Raftery on 9/14/25.
+//  ModelDraw - Updated for file system navigation with small system icons
 //
 
 import SwiftUI
 
-
-
-// MARK: - Navigator Row View (Clean, Xcode-style)
+// MARK: - Navigator Row View (Clean, Xcode-style with small icons)
 struct NavigatorRowView: View {
     let item: NavigatorItem
     
     var body: some View {
-        HStack(spacing: 8) {
-            // Icon based on item type
+        HStack(spacing: 6) {
+            // Small system icon
             Image(systemName: iconName)
                 .foregroundColor(iconColor)
-                .frame(width: 16, height: 16)
+                .font(.system(size: 11, weight: .regular))
+                .frame(width: 12, height: 12)
             
             // Item name
             Text(item.name)
                 .font(.system(size: 13))
+                .foregroundColor(.primary)
             
             Spacer()
         }
@@ -31,15 +29,19 @@ struct NavigatorRowView: View {
     
     private var iconName: String {
         switch item.itemType {
-        case .assembly:
+        case .folder:
             return "folder"
+        case .usdFile:
+            return "doc"
         }
     }
     
     private var iconColor: Color {
         switch item.itemType {
-        case .assembly:
+        case .folder:
             return .blue
+        case .usdFile:
+            return .orange
         }
     }
 }
