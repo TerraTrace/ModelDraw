@@ -17,6 +17,29 @@ class ViewModel {
     private(set) var loadedUSDItems: [LoadedUSDItem] = []
     
     // MARK: - Camera State
+    
+    // MARK: - Camera Control Properties
+    
+    /// Current camera mode - determines how camera behaves
+    var cameraMode: CameraMode = .sceneCenter
+    //var cameraMode: CameraMode = .freeFlier
+
+    /// Target entity for orbital camera mode - nil uses scene center
+    var targetEntity: Entity? = nil
+    
+    var shiftPressed = false
+    
+    /// Computed camera configuration from current mode and target
+    /// Automatically updates when cameraMode changes
+    var cameraConfiguration: CameraConfiguration {
+        switch cameraMode {
+        case .sceneCenter:
+            return .sceneCenter
+        case .freeFlier:
+            return .freeFlierMode
+        }
+    }
+    
     var cameraPosition: SIMD3<Float> = SIMD3(0, 0, 5)
     var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: SIMD3(0, 1, 0))
     
