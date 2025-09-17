@@ -13,13 +13,13 @@ struct CenterRealityView: View {
     var body: some View {
         RealityView { content in
             // Create the 3D scene
-            let scene = createScene(primitives: model.primitives, assemblies: model.assemblies)
+            let scene = createScene(assemblies: model.assemblies)
             content.add(scene)
             
         } update: { content in
             // Handle updates when project changes
             content.entities.removeAll()
-            let scene = createScene(primitives: model.primitives, assemblies: model.assemblies)
+            let scene = createScene(assemblies: model.assemblies)
             content.add(scene)
         }
         .gesture(
@@ -32,21 +32,21 @@ struct CenterRealityView: View {
                 }
         )
         .onAppear {
-            print("🌍 RealityKit view appeared with \(model.primitives.count) primitives")
+            //print("🌍 RealityKit view appeared with \(model.primitives.count) primitives")
         }
     }
 }
 
 // MARK: - RealityKit Scene Creation
 
-func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> Entity {
+func createScene(assemblies: [Assembly]) -> Entity {
     let rootEntity = Entity()
     
     // Add your primitives, but scaled down and positioned properly
     var yOffset: Float = -1.0  // Start below the red box
     
-    for primitive in primitives {
-        let entity = createPrimitiveEntity(primitive: primitive)
+    for assembly in assemblies {
+        let entity = createPrimitiveEntity(assembly: assembly)
         // Scale them down so they're not huge
         entity.scale = SIMD3<Float>(0.3, 0.3, 0.3)  // Make them 30% of original size
         entity.position = SIMD3<Float>(0, yOffset, 0)
@@ -72,36 +72,15 @@ func createScene(primitives: [GeometricPrimitive], assemblies: [Assembly]) -> En
     rootEntity.addChild(lightEntity)
     
     print("🔧 Created minimal test scene with red box at origin")
-    print("🔧 Scene contains \(primitives.count) primitives and \(assemblies.count) assemblies")
+    print("🔧 Scene contains \(assemblies.count) assemblies")
     
     return rootEntity
 }
 
-func createPrimitiveEntity(primitive: GeometricPrimitive) -> Entity {
+func createPrimitiveEntity(assembly: Assembly) -> Entity {
     let entity = Entity()
     
-    switch primitive {
-    case let cylinder as Cylinder:
-        let mesh = MeshResource.generateCylinder(
-            height: Float(cylinder.height),
-            radius: Float(cylinder.radius)
-        )
-        let material = SimpleMaterial(color: .blue, isMetallic: false)
-        entity.components.set(ModelComponent(mesh: mesh, materials: [material]))
-        
-    case let cone as Cone:
-        // For now, use a simple cylinder - we'll create proper cone geometry later
-        let mesh = MeshResource.generateCylinder(
-            height: Float(cone.height),
-            radius: Float(cone.baseRadius)
-        )
-        let material = SimpleMaterial(color: .orange, isMetallic: false)
-        entity.components.set(ModelComponent(mesh: mesh, materials: [material]))
-        
-    default:
-        print("⚠️ Unknown primitive type: \(type(of: primitive))")
-    }
+
     
-    print("🔧 Creating \(primitive.primitiveType)")
     return entity
 }

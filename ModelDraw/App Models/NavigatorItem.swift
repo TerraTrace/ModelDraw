@@ -25,7 +25,7 @@ struct NavigatorItem: Identifiable, Hashable, Equatable {
 
 enum NavigatorItemType: Hashable, Equatable {
     case assembly
-    case primitive(PrimitiveType)
-    case matingRule
+    //case primitive(PrimitiveType)
+    //case matingRule
 }
 

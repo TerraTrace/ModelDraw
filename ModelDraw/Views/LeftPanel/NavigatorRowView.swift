@@ -33,15 +33,6 @@ struct NavigatorRowView: View {
         switch item.itemType {
         case .assembly:
             return "folder"
-        case .primitive(let type):
-            switch type {
-            case .cylinder:
-                return "cylinder"
-            case .cone:
-                return "cone"
-            }
-        case .matingRule:
-            return "link"
         }
     }
     
@@ -49,12 +40,6 @@ struct NavigatorRowView: View {
         switch item.itemType {
         case .assembly:
             return .blue
-        case .primitive(.cylinder):
-            return .blue
-        case .primitive(.cone):
-            return .orange
-        case .matingRule:
-            return .secondary
         }
     }
 }

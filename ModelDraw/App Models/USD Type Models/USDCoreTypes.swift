@@ -33,6 +33,8 @@ struct USDStage {
     }
 }
 
+typealias Assembly = USDPrim
+
 /// USD primitive representation
 struct USDPrim {
     let name: String

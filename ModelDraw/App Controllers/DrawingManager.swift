@@ -8,6 +8,36 @@
 
 import Foundation
 
+
+// MARK: - Error Types
+enum DrawingManagerError: Error, LocalizedError {
+    case projectAlreadyExists(name: String)
+    case templateNotFound(name: String)
+    case configurationNotFound(path: String)
+    case missingLibraryComponent(path: String)
+    case invalidProjectFile(path: String)
+    case corruptedData(description: String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .projectAlreadyExists(let name):
+            return "Project '\(name)' already exists"
+        case .templateNotFound(let name):
+            return "Template '\(name)' not found"
+        case .configurationNotFound(let path):
+            return "Configuration not found at '\(path)'"
+        case .missingLibraryComponent(let path):
+            return "Library component not found at '\(path)'"
+        case .invalidProjectFile(let path):
+            return "Invalid project file at '\(path)'"
+        case .corruptedData(let description):
+            return "Corrupted data: \(description)"
+        }
+    }
+}
+
+
+
 /// Singleton manager for ModelDraw project file system operations.
 /// Handles project discovery, loading, library component resolution, and template-based project creation.
 /// Manages the three-tier hierarchy: Project → Configuration → Assembly with library component references.
@@ -75,34 +105,7 @@ class DrawingManager {
     }
     
     private func createInitialTemplate() throws {
-        let basicTemplate = templatesURL.appendingPathComponent("Basic-Spacecraft")
-        try fileManager.createDirectory(at: basicTemplate, withIntermediateDirectories: true)
-        
-        // Create template project file
-        let templateProject = ProjectMetadata(
-            name: "Basic Spacecraft Template",
-            description: "Template for basic spacecraft projects",
-            responsibleEngineer: "",
-            missionClass: "Generic",
-            targetLaunchDate: nil,
-            createdDate: Date()
-        )
-        
-        let projectFile = ProjectFile(
-            metadata: templateProject,
-            configurations: ["Main-Configuration"],
-            libraryDependencies: []
-        )
-        
-        try saveProjectFile(projectFile, to: basicTemplate.appendingPathComponent("Basic_Spacecraft_Template.project"))
-        
-        // Create main configuration folder
-        let mainConfig = basicTemplate.appendingPathComponent("Main-Configuration")
-        try fileManager.createDirectory(at: mainConfig, withIntermediateDirectories: true)
-        
-        // Create basic assembly file
-        let mainAssembly = Assembly(name: "Main Configuration")
-        try saveAssemblyFile(mainAssembly, to: mainConfig.appendingPathComponent("Main_Configuration.modeldraw"))
+
     }
     
     // MARK: - Project Discovery
@@ -148,109 +151,22 @@ class DrawingManager {
     
     
     // MARK: - Project Loading (Updated for Flexibility)
-    func loadProject(from projectInfo: ProjectInfo) throws -> ProjectData {
-        currentProjectURL = projectInfo.folderURL
-        
-        let projectFile = try loadProjectFile(from: projectInfo.projectFileURL)
-        var allAssemblies: [Assembly] = []
-        var allPrimitives: [GeometricPrimitive] = []
-        var actualConfigurations: [String] = []
-        
-        // Load each configuration that actually exists
-        for configName in projectFile.configurations {
-            let configURL = projectInfo.folderURL.appendingPathComponent(configName)
-            
-            if fileManager.fileExists(atPath: configURL.path) {
-                do {
-                    let (assemblies, primitives) = try loadConfiguration(from: configURL)
-                    allAssemblies.append(contentsOf: assemblies)
-                    allPrimitives.append(contentsOf: primitives)
-                    actualConfigurations.append(configName)
-                    print("✅ DrawingManager: Loaded configuration '\(configName)' with \(assemblies.count) assemblies, \(primitives.count) primitives")
-                } catch {
-                    print("⚠️ DrawingManager: Failed to load configuration '\(configName)': \(error)")
-                    // Continue with other configurations instead of failing entirely
-                }
-            } else {
-                print("ℹ️ DrawingManager: Skipping missing configuration '\(configName)'")
-            }
-        }
-        
-        return ProjectData(
-            metadata: projectFile.metadata,
-            configurations: actualConfigurations, // Only include configurations that were successfully loaded
-            assemblies: allAssemblies,
-            primitives: allPrimitives,
-            libraryDependencies: projectFile.libraryDependencies
-        )
+    func loadProject(from projectInfo: ProjectInfo) throws {
+
+ 
     }
     
-    private func loadConfiguration(from configURL: URL) throws -> (assemblies: [Assembly], primitives: [GeometricPrimitive]) {
-        guard fileManager.fileExists(atPath: configURL.path) else {
-            throw DrawingManagerError.configurationNotFound(path: configURL.path)
-        }
-        
-        // Check if it's actually a directory
-        var isDirectory: ObjCBool = false
-        guard fileManager.fileExists(atPath: configURL.path, isDirectory: &isDirectory), isDirectory.boolValue else {
-            throw DrawingManagerError.configurationNotFound(path: configURL.path)
-        }
-        
-        let (assemblies, primitives) = try scanAssemblyHierarchy(configURL)
-        
-        // It's OK to have empty configurations
-        if assemblies.isEmpty && primitives.isEmpty {
-            print("ℹ️ DrawingManager: Configuration '\(configURL.lastPathComponent)' is empty (no .modeldraw files)")
-        }
-        
-        return (assemblies, primitives)
+    private func loadConfiguration(from configURL: URL) throws  {
+
     }
 
     
-    private func scanAssemblyHierarchy(_ folderURL: URL) throws -> (assemblies: [Assembly], primitives: [GeometricPrimitive]) {
-        var assemblies: [Assembly] = []
-        var primitives: [GeometricPrimitive] = []
-        
-        let contents = try fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: [.isDirectoryKey])
-        
-        for itemURL in contents {
-            if itemURL.pathExtension == "modeldraw" {
-                // Load the assembly or primitive
-                let data = try Data(contentsOf: itemURL)
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601
-                
-                // Try to decode as assembly first, then as primitive
-                if let assembly = try? decoder.decode(Assembly.self, from: data) {
-                    assemblies.append(assembly)
-                } else if let anyPrimitive = try? decoder.decode(AnyPrimitive.self, from: data) {
-                    primitives.append(anyPrimitive.primitive)
-                }
-            } else if try itemURL.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true {
-                // Recursively scan subdirectories
-                let (subAssemblies, subPrimitives) = try scanAssemblyHierarchy(itemURL)
-                assemblies.append(contentsOf: subAssemblies)
-                primitives.append(contentsOf: subPrimitives)
-            }
-        }
-        
-        return (assemblies, primitives)
+    private func scanAssemblyHierarchy(_ folderURL: URL) throws  {
     }
     
     // MARK: - Library Component Resolution
-    func resolveLibraryComponent(at path: String) throws -> GeometricPrimitive {
-        let libraryComponentURL = libraryURL.appendingPathComponent(path)
-        
-        guard fileManager.fileExists(atPath: libraryComponentURL.path) else {
-            throw DrawingManagerError.missingLibraryComponent(path: path)
-        }
-        
-        let data = try Data(contentsOf: libraryComponentURL)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        
-        let anyPrimitive = try decoder.decode(AnyPrimitive.self, from: data)
-        return anyPrimitive.primitive
+    func resolveLibraryComponent(at path: String) throws  {
+
     }
     
     // MARK: - Project Creation
@@ -316,40 +232,24 @@ class DrawingManager {
     }
     
     private func saveAssemblyFile(_ assembly: Assembly, to url: URL) throws {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(assembly)
-        try data.write(to: url)
+
     }
 }
 
-// MARK: - Error Types
-enum DrawingManagerError: Error, LocalizedError {
-    case projectAlreadyExists(name: String)
-    case templateNotFound(name: String)
-    case configurationNotFound(path: String)
-    case missingLibraryComponent(path: String)
-    case invalidProjectFile(path: String)
-    case corruptedData(description: String)
+
+// MARK: - ??
+
+extension DrawingManager {
+
+ 
     
-    var errorDescription: String? {
-        switch self {
-        case .projectAlreadyExists(let name):
-            return "Project '\(name)' already exists"
-        case .templateNotFound(let name):
-            return "Template '\(name)' not found"
-        case .configurationNotFound(let path):
-            return "Configuration not found at '\(path)'"
-        case .missingLibraryComponent(let path):
-            return "Library component not found at '\(path)'"
-        case .invalidProjectFile(let path):
-            return "Invalid project file at '\(path)'"
-        case .corruptedData(let description):
-            return "Corrupted data: \(description)"
-        }
-    }
+
 }
+
+
+
+
+
 
 // MARK: - Data Structures
 struct ProjectInfo {
@@ -363,7 +263,6 @@ struct ProjectData {
     let metadata: ProjectMetadata
     let configurations: [String]
     let assemblies: [Assembly]
-    let primitives: [GeometricPrimitive]
     let libraryDependencies: [String]
 }
 

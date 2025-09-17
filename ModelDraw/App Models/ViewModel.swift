@@ -32,10 +32,6 @@ class ViewModel {
         currentProject?.assemblies ?? []
     }
     
-    var primitives: [GeometricPrimitive] {
-        currentProject?.primitives ?? []
-    }
-    
     var projectName: String {
         currentProject?.metadata.name ?? "No Project"
     }
@@ -76,25 +72,7 @@ class ViewModel {
     }
     
     func loadProject(_ projectInfo: ProjectInfo) {
-        isLoadingProjects = true
-        projectError = nil
-        
-        do {
-            currentProject = try DrawingManager.shared.loadProject(from: projectInfo)
-            print("✅ ViewModel: Loaded project '\(projectInfo.name)'")
-            
-            // Auto-select first assembly
-            if let firstAssembly = assemblies.first {
-                selectItem(.assembly(firstAssembly.id))
-            } else {
-                selectedItem = nil
-            }
-        } catch {
-            projectError = "Failed to load project '\(projectInfo.name)': \(error.localizedDescription)"
-            print("❌ ViewModel: Failed to load project: \(error)")
-        }
-        
-        isLoadingProjects = false
+
     }
     
     func refreshProjects() {
@@ -131,52 +109,12 @@ class ViewModel {
             NavigatorItem(
                 name: configName,
                 itemType: .assembly, // or create a new .configuration type
-                children: buildAssemblyNodes(for: configName)
+                children: []
             )
         }
     }
 
-    /*private func buildAssemblyNodes(for configName: String) -> [NavigatorItem] {
-        return assembliesForConfiguration(configName).map { assembly in
-            NavigatorItem(
-                name: assembly.name,
-                itemType: .assembly,
-                children: buildPrimitiveNodes(for: assembly)
-            )
-        }
-    } */
 
-    /* private func buildPrimitiveNodes(for assembly: Assembly) -> [NavigatorItem] {
-        return primitivesIn(assembly: assembly).map { primitive in
-            NavigatorItem(
-                name: primitive.primitiveType.rawValue.capitalized,
-                itemType: .primitive(primitive.primitiveType),
-                children: nil
-            )
-        }
-    } */
-
-    private func buildAssemblyNodes(for configName: String) -> [NavigatorItem] {
-        return assembliesForConfiguration(configName).map { assembly in
-            NavigatorItem(
-                id: assembly.id,  // Use the actual Assembly UUID
-                name: assembly.name,
-                itemType: .assembly,
-                children: buildPrimitiveNodes(for: assembly)
-            )
-        }
-    }
-
-    private func buildPrimitiveNodes(for assembly: Assembly) -> [NavigatorItem] {
-        return primitivesIn(assembly: assembly).map { primitive in
-            NavigatorItem(
-                id: primitive.id,  // Use the actual Primitive UUID
-                name: primitive.primitiveType.rawValue.capitalized,
-                itemType: .primitive(primitive.primitiveType),
-                children: nil
-            )
-        }
-    }
     
     private func assembliesForConfiguration(_ configName: String) -> [Assembly] {
         // For now, return all assemblies - could be filtered by configuration later
@@ -202,22 +140,7 @@ class ViewModel {
         cameraRotation = simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0))
     }
     
-    // MARK: - Data Access Helpers
-    func assembly(withId id: UUID) -> Assembly? {
-        assemblies.first { $0.id == id }
-    }
+
     
-    func primitive(withId id: UUID) -> GeometricPrimitive? {
-        primitives.first { $0.id == id }
-    }
-    
-    func primitivesIn(assembly: Assembly) -> [GeometricPrimitive] {
-        assembly.children.compactMap { child in
-            if case .primitive(let id) = child {
-                return primitive(withId: id)
-            }
-            return nil
-        }
-    }
 }
 

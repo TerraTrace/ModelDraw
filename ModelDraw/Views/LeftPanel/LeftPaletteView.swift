@@ -21,43 +21,6 @@ struct LeftPaletteView: View {
             .padding()
             .background(Color(.controlBackgroundColor))
             
-            // OutlineGroup-based navigator with direct UUID selection
-            List(model.navigatorData, children: \.children, selection: Binding(
-                get: {
-                    switch model.selectedItem {
-                    case .assembly(let id), .primitive(let id):
-                        return id
-                    case .none:
-                        return nil
-                    }
-                },
-                set: { selectedID in
-                    print("OutlineGroup selected ID: \(selectedID?.uuidString ?? "nil")")
-                    
-                    guard let id = selectedID else {
-                        print("Clearing selection")
-                        model.selectItem(nil)
-                        return
-                    }
-                    
-                    if model.assemblies.contains(where: { $0.id == id }) {
-                        print("Selected assembly: \(id)")
-                        model.selectItem(.assembly(id))
-                    } else if model.primitives.contains(where: { $0.id == id }) {
-                        print("Selected primitive: \(id)")
-                        model.selectItem(.primitive(id))
-                    } else {
-                        print("Selected non-data item (project/config), clearing selection")
-                        model.selectItem(nil)
-                    }
-                }
-            )) { item in
-                NavigatorRowView(item: item)
-            }
-            .listStyle(.sidebar)
-            .onChange(of: model.selectedItem) {
-                print("Selected: \(String(describing: model.selectedItem))")
-            }
         }
     }
 }
