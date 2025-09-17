@@ -1,6 +1,6 @@
 //
-//  LeftPaletteView.swift - Updated for OutlineGroup with Direct UUID Mapping
-//  ModelDraw
+//  LeftPaletteView.swift
+//  ModelDraw - Updated for OutlineGroup file system navigator
 //
 
 import SwiftUI
@@ -10,17 +10,50 @@ struct LeftPaletteView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header with project info
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Projects")
+            // Header
+            HStack {
+                Text("Navigator")
                     .font(.headline)
-                Text(model.projectName)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .fontWeight(.medium)
+                Spacer()
+                
+                // Refresh button
+                Button(action: {
+                    model.refreshNavigator()
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 12))
+                }
+                .buttonStyle(.borderless)
+                .help("Refresh file tree")
             }
-            .padding()
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .background(Color(.controlBackgroundColor))
             
+            // File system navigator with OutlineGroup
+            List(
+                model.navigatorData,
+                children: \.children,
+                selection: Binding(
+                    get: { model.selectedItem },
+                    set: { selectedItem in
+                        model.selectItem(selectedItem)
+                    }
+                )
+            ) { item in
+                NavigatorRowView(item: item)
+                    .tag(item)
+            }
+            .listStyle(.sidebar)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(minWidth: 220)
+        .onAppear {
+            // Load navigator data when view appears
+            if model.navigatorData.isEmpty {
+                model.loadNavigatorData()
+            }
         }
     }
 }
