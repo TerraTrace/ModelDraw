@@ -15,17 +15,20 @@ struct NavigatorItem: Identifiable, Hashable, Equatable {
     var itemType: NavigatorItemType
     var children: [NavigatorItem]? = nil
     
-    init(id: UUID = UUID(), name: String, itemType: NavigatorItemType, children: [NavigatorItem]?) {
+    // Store the file system URL for drag/drop operations
+    var url: URL?
+    
+    init(id: UUID = UUID(), name: String, itemType: NavigatorItemType, children: [NavigatorItem]?, url: URL? = nil) {
         self.id = id
         self.name = name
         self.itemType = itemType
         self.children = children
+        self.url = url
     }
 }
 
+// MARK: - Simplified Navigator Item Types
 enum NavigatorItemType: Hashable, Equatable {
-    case assembly
-    //case primitive(PrimitiveType)
-    //case matingRule
+    case folder
+    case usdFile
 }
-

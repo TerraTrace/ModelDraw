@@ -169,72 +169,7 @@ class DrawingManager {
 
     }
     
-    // MARK: - Project Creation
-    func createProject(named name: String, from templateName: String = "Basic-Spacecraft") throws -> ProjectInfo {
-        let sanitizedName = name.replacingOccurrences(of: " ", with: "_")
-        let projectURL = projectsURL.appendingPathComponent(sanitizedName)
-        
-        // Check if project already exists
-        guard !fileManager.fileExists(atPath: projectURL.path) else {
-            throw DrawingManagerError.projectAlreadyExists(name: name)
-        }
-        
-        // Copy template
-        let templateURL = templatesURL.appendingPathComponent(templateName)
-        guard fileManager.fileExists(atPath: templateURL.path) else {
-            throw DrawingManagerError.templateNotFound(name: templateName)
-        }
-        
-        try fileManager.copyItem(at: templateURL, to: projectURL)
-        
-        // Update project metadata
-        let projectFileName = sanitizedName + ".project"
-        let projectFileURL = projectURL.appendingPathComponent(projectFileName)
-        
-        // Rename template project file
-        let templateProjectFile = try fileManager.contentsOfDirectory(at: projectURL, includingPropertiesForKeys: nil)
-            .first { $0.pathExtension == "project" }
-        
-        if let templateFile = templateProjectFile {
-            try fileManager.moveItem(at: templateFile, to: projectFileURL)
-        }
-        
-        // Update project metadata
-        var projectFile = try loadProjectFile(from: projectFileURL)
-        projectFile.metadata.name = name
-        projectFile.metadata.createdDate = Date()
-        try saveProjectFile(projectFile, to: projectFileURL)
-        
-        print("📁 DrawingManager: Created project '\(name)' at \(projectURL.path)")
-        
-        return ProjectInfo(
-            name: name,
-            folderURL: projectURL,
-            projectFileURL: projectFileURL,
-            lastModified: Date()
-        )
-    }
-    
-    // MARK: - File I/O Operations
-    private func loadProjectFile(from url: URL) throws -> ProjectFile {
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(ProjectFile.self, from: data)
-    }
-    
-    private func saveProjectFile(_ projectFile: ProjectFile, to url: URL) throws {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(projectFile)
-        try data.write(to: url)
-    }
-    
-    private func saveAssemblyFile(_ assembly: Assembly, to url: URL) throws {
 
-    }
-}
 
 
 // MARK: - ??
@@ -247,44 +182,3 @@ extension DrawingManager {
 }
 
 
-
-
-
-
-// MARK: - Data Structures
-struct ProjectInfo {
-    let name: String
-    let folderURL: URL
-    let projectFileURL: URL
-    let lastModified: Date
-}
-
-struct ProjectData {
-    let metadata: ProjectMetadata
-    let configurations: [String]
-    let assemblies: [Assembly]
-    let libraryDependencies: [String]
-}
-
-struct ProjectFile: Codable {
-    var metadata: ProjectMetadata
-    let configurations: [String]
-    let libraryDependencies: [String]
-}
-
-struct ProjectMetadata: Codable {
-    var name: String
-    var description: String
-    var responsibleEngineer: String
-    var missionClass: String
-    var targetLaunchDate: String?
-    var createdDate: Date
-}
-
-struct LibraryReference: Codable {
-    let libraryPath: String
-    let instanceID: String
-    let position: [Float] // SIMD3<Float> as array for JSON
-    let orientation: [Float] // Quaternion as array for JSON
-    let anchorPoint: String
-}
