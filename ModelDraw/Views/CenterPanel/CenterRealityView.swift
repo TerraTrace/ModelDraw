@@ -11,8 +11,16 @@ struct CenterRealityView: View {
     @Environment(ViewModel.self) private var model
     
     var body: some View {
-
+        RealityView { content in
+            // Create and add the engineering grid immediately
+            let grid = createEngineeringGrid()
+            content.add(grid)
+            
+            print("🎯 CenterRealityView: Engineering grid added to scene")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+    
 }
 
 // MARK: - RealityKit Scene Creation

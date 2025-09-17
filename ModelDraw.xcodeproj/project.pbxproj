@@ -12,6 +12,7 @@
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
 		A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */; };
 		A93192232E7AD07F00025A3D /* modeldraw_dev_spec_v019.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */; };
+		A93192252E7B10FB00025A3D /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192242E7B10FB00025A3D /* CameraController.swift */; };
 		A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE52E78A85100329151 /* Quaternion.swift */; };
 		A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE42E78A85100329151 /* Vector3d.swift */; };
 		A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */; };
@@ -36,6 +37,7 @@
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
 		A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedUSDItem.swift; sourceTree = "<group>"; };
 		A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v019.md; sourceTree = "<group>"; };
+		A93192242E7B10FB00025A3D /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		A96A5AE42E78A85100329151 /* Vector3d.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector3d.swift; sourceTree = "<group>"; };
 		A96A5AE52E78A85100329151 /* Quaternion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quaternion.swift; sourceTree = "<group>"; };
 		A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDCoreTypes.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				A97FE4E12E77557000540DEE /* DrawingManager.swift */,
+				A93192242E7B10FB00025A3D /* CameraController.swift */,
 				A93192172E79D31500025A3D /* USD File Management */,
 				A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */,
 			);
@@ -284,6 +287,7 @@
 				A96A5AF22E78AE9100329151 /* USDFileManagerTests.swift in Sources */,
 				A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */,
 				A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */,
+				A93192252E7B10FB00025A3D /* CameraController.swift in Sources */,
 				A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */,
 				A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */,
 			);

@@ -16,7 +16,7 @@ struct ContentView: View {
                 .frame(minWidth: 160, idealWidth: 180, maxWidth: 250)
 
             // Center Panel - 3D View (takes all remaining space)
-            CenterView()
+            CenterRealityView()
                 .frame(maxWidth: .infinity)
             
             // Right Panel - Properties (conditionally shown, fixed width)
@@ -46,7 +46,7 @@ struct ContentView: View {
 }
 
 // MARK: - Simple Center View Placeholder
-struct CenterView: View {
+/*struct CenterView: View {
     @Environment(ViewModel.self) private var model
     
     var body: some View {
@@ -80,4 +80,4 @@ struct CenterView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.textBackgroundColor))
     }
-}
+} */
