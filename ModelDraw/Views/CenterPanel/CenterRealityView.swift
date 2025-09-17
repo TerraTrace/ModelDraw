@@ -10,8 +10,18 @@ import RealityKit
 struct CenterRealityView: View {
     @Environment(ViewModel.self) private var model
     
+    /// Camera controller for scene-wide navigation
+    @State private var cameraController = CameraController()
+    
+    /// Primary perspective camera for mode-aware navigation
+    @State private var camera: PerspectiveCamera = PerspectiveCamera()
+
+    
     var body: some View {
         RealityView { content in
+            content.camera = .virtual
+            content.add(camera)
+
             // Create and add the engineering grid immediately
             let grid = createEngineeringGrid()
             content.add(grid)
