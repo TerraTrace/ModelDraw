@@ -23,9 +23,6 @@ class ViewModel {
     /// Current camera mode - determines how camera behaves
     var cameraMode: CameraMode = .sceneCenter
     //var cameraMode: CameraMode = .freeFlier
-
-    /// Target entity for orbital camera mode - nil uses scene center
-    var targetEntity: Entity? = nil
     
     var shiftPressed = false
     
@@ -55,14 +52,10 @@ class ViewModel {
     var cameraDistance: Float = 10.0
     
     
-
-    
-    //var cameraPosition: SIMD3<Float> = SIMD3(0, 0, 5)
-    //var cameraRotation: simd_quatf = simd_quatf(angle: 0, axis: SIMD3(0, 1, 0))
-    
     // MARK: - Services
     private let drawingManager = DrawingManager.shared
     private let usdFileManager = USDFileManager.shared
+    
     
     // MARK: - Initialization
     init() {

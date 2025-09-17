@@ -27,8 +27,66 @@ struct CenterRealityView: View {
             content.add(grid)
             
             print("🎯 CenterRealityView: Engineering grid added to scene")
+        } update: { content in
+            // Enhanced camera update - routes based on camera MODE, not shift state
+            switch model.cameraMode {
+            case .sceneCenter:
+                // Scene center mode: Always use camera.look() to look at origin
+                // (Pivot gestures in scene center mode are temporary - camera snaps back)
+                camera.look(at: .zero, from: model.cameraPosition, relativeTo: nil)
+                //print("🎯 Camera update: SceneCenter mode - looking at origin")
+                
+            case .freeFlier:
+                // FreeFlier mode: Always apply position and rotation directly
+                camera.position = model.cameraPosition
+                camera.orientation = model.cameraRotation
+                //print("🎯 Camera update: FreeFlier mode - pos=\(model.cameraPosition)")
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .gesture(
+            SimultaneousGesture(
+                DragGesture()
+                    .onChanged { value in
+                        // Route gesture based on current camera mode
+                        switch model.cameraMode {
+                        case .sceneCenter:
+                            // Scene center mode: orbit vs pivot based on shift
+                            if model.shiftPressed {
+                                print("🎯 SceneCenter + Shift: pivot gesture")
+                                cameraController.handleCameraPivotGesture(translation: value.translation)
+                            } else {
+                                print("🎯 SceneCenter: orbit gesture")
+                                cameraController.handleSimpleOrbitGesture(translation: value.translation)
+                            }
+                            
+                        case .freeFlier:
+                            // FreeFlier mode: translate vs pivot based on shift
+                            if model.shiftPressed {
+                                print("🎯 FreeFlier + Shift: pivot gesture")
+                                cameraController.handleFreeFlierTranslateGesture(translation: value.translation)
+                            } else {
+                                print("🎯 FreeFlier: translate gesture")
+                                cameraController.handleCameraPivotGesture(translation: value.translation)
+                            }
+                        }
+                    },
+                MagnificationGesture()
+                    .onChanged { value in
+                        cameraController.handleZoomGesture(zoomFactor: Float(value))
+                    }
+            )
+        )
+        .onAppear {
+            print("🎯 SolarSystemView.onAppear called")
+            cameraController.viewModel = model
+            cameraController.configure(for: model.cameraConfiguration)
+        }
+        .onChange(of: model.cameraConfiguration) { _, newConfiguration in
+            cameraController.configure(for: newConfiguration)
+        }
+
+        //.frame(maxWidth: .infinity, maxHeight: .infinity)
+        
     }
     
 }
@@ -39,6 +97,7 @@ extension CenterRealityView {
     
     /// Create a 20m x 20m engineering grid with 1m spacing using thin cylinder entities
     /// Returns a single parent Entity containing all grid lines for easy management
+    /// FIXED: Proper cylinder rotations to ensure all lines lie flat on X-Z plane at Y=0
     private func createEngineeringGrid() -> Entity {
         let gridContainer = Entity()
         gridContainer.name = "EngineeringGrid"
@@ -68,7 +127,8 @@ extension CenterRealityView {
             // Position line: center at origin, extend along X-axis
             lineEntity.transform.translation = SIMD3<Float>(0, 0, zPosition)
             
-            // Rotate cylinder to align along X-axis (90° around Z-axis)
+            // FIXED: Rotate cylinder from Y-axis to X-axis, lying flat on X-Z plane
+            // 90° rotation around Z-axis puts cylinder along X-axis
             lineEntity.transform.rotation = simd_quatf(angle: Float.pi/2, axis: [0, 0, 1])
             
             gridContainer.addChild(lineEntity)
@@ -85,13 +145,16 @@ extension CenterRealityView {
             // Position line: center at origin, extend along Z-axis
             lineEntity.transform.translation = SIMD3<Float>(xPosition, 0, 0)
             
-            // No rotation needed - cylinder default orientation aligns with Z-axis
+            // FIXED: Rotate cylinder from Y-axis to Z-axis, lying flat on X-Z plane
+            // 90° rotation around X-axis puts cylinder along Z-axis
+            lineEntity.transform.rotation = simd_quatf(angle: Float.pi/2, axis: [1, 0, 0])
             
             gridContainer.addChild(lineEntity)
         }
         
-        print("✅ Engineering grid created: \(numLines * 2) total lines")
+        print("✅ Engineering grid created: \(numLines * 2) total lines, all lying flat on X-Z plane at Y=0")
         return gridContainer
     }
+    
     
 }
