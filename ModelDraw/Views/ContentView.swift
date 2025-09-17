@@ -7,20 +7,37 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ViewModel.self) private var model
+    @State private var showRightPanel: Bool = false
     
     var body: some View {
         HSplitView {
-            // Left Panel - File System Navigator
+            // Left Panel - File System Navigator (resizable)
             LeftPaletteView()
-                .frame(minWidth: 220, idealWidth: 280, maxWidth: 350)
-            
-            // Center Panel - 3D View (placeholder for now)
+                .frame(minWidth: 160, idealWidth: 180, maxWidth: 250)
+
+            // Center Panel - 3D View (takes all remaining space)
             CenterView()
-                .frame(minWidth: 400)
+                .frame(maxWidth: .infinity)
             
-            // Right Panel - Properties
-            RightPaletteView()
-                .frame(minWidth: 220, idealWidth: 280, maxWidth: 350)
+            // Right Panel - Properties (conditionally shown, fixed width)
+            if showRightPanel {
+                RightPaletteView()
+                    .frame(width: 280)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        showRightPanel.toggle()
+                    }
+                }) {
+                    Image(systemName: showRightPanel ? "sidebar.trailing" : "sidebar.trailing")
+                        .symbolVariant(showRightPanel ? .fill : .none)
+                }
+                .help(showRightPanel ? "Hide Properties" : "Show Properties")
+            }
         }
         .onAppear {
             print("📱 ContentView appeared - file system navigator ready")
