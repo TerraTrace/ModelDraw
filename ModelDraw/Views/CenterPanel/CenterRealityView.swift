@@ -78,52 +78,12 @@ struct CenterRealityView: View {
         // Add this to CenterRealityView after your existing .gesture() modifier
         // This handles single USD file drops only
 
-        /*.dropDestination(for: URL.self) { urls, location in
-            // Get the first URL only (simplified approach)
+        .dropDestination(for: URL.self) { urls, location in
+            // Handle drop logic here
             guard let firstUrl = urls.first else { return false }
-            
-            // Handle different types of drops
-            if firstUrl.hasDirectoryPath {
-                print("📁 Folder drop not yet implemented: \(firstUrl.lastPathComponent)")
-                return false
-            }
-            
-            // Check if it's a USD file
-            guard firstUrl.pathExtension.lowercased() == "usd" else {
-                print("⚠️ Only USD files supported: \(firstUrl.lastPathComponent)")
-                return false
-            }
-            
-            // Get view size for ray casting (you'll need to capture this properly)
-            let viewSize = CGSize(width: 800, height: 600) // TODO: Use actual view size
-            
-            // Use ray casting to get world position
-            let worldPosition = cameraController.worldPositionFromCursor(location, viewSize: viewSize)
-            
-            print("🎯 Dropping USD file: \(firstUrl.lastPathComponent) at position: \(worldPosition)")
-            
-            // Load USD file asynchronously
-            Task {
-                do {
-                    if let entity = await drawingManager.loadUSDFile(at: firstUrl, position: worldPosition) {
-                        await MainActor.run {
-                            content.add(entity)
-                            print("✅ USD entity added to scene")
-                        }
-                    } else {
-                        print("❌ Failed to load USD file")
-                    }
-                } catch {
-                    print("❌ Error loading USD file: \(error)")
-                }
-            }
-            
-            return true // Accept the drop
-        } isTargeted: { isTargeted in
-            if isTargeted {
-                print("🎯 Drop target active - ready for USD file")
-            }
-        } */
+            // Process the URL
+            return true
+        }
         .onAppear {
             print("🎯 SolarSystemView.onAppear called")
             cameraController.viewModel = model
