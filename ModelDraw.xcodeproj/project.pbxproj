@@ -11,9 +11,10 @@
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
 		A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */; };
+		A93192212E7ACED200025A3D /* DraggedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192202E7ACED000025A3D /* DraggedItem.swift */; };
+		A93192232E7AD07F00025A3D /* modeldraw_dev_spec_v019.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */; };
 		A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE52E78A85100329151 /* Quaternion.swift */; };
 		A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE42E78A85100329151 /* Vector3d.swift */; };
-		A96A5AEB2E78ACC300329151 /* modeldraw_dev_spec_v018.md in Resources */ = {isa = PBXBuildFile; fileRef = A96A5AEA2E78ACC300329151 /* modeldraw_dev_spec_v018.md */; };
 		A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */; };
 		A96A5AF02E78AE1100329151 /* USDFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AEF2E78AE0F00329151 /* USDFileManager.swift */; };
 		A96A5AF22E78AE9100329151 /* USDFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */; };
@@ -35,9 +36,10 @@
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
 		A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedUSDItem.swift; sourceTree = "<group>"; };
+		A93192202E7ACED000025A3D /* DraggedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggedItem.swift; sourceTree = "<group>"; };
+		A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v019.md; sourceTree = "<group>"; };
 		A96A5AE42E78A85100329151 /* Vector3d.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector3d.swift; sourceTree = "<group>"; };
 		A96A5AE52E78A85100329151 /* Quaternion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quaternion.swift; sourceTree = "<group>"; };
-		A96A5AEA2E78ACC300329151 /* modeldraw_dev_spec_v018.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v018.md; sourceTree = "<group>"; };
 		A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDCoreTypes.swift; sourceTree = "<group>"; };
 		A96A5AEF2E78AE0F00329151 /* USDFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDFileManager.swift; sourceTree = "<group>"; };
 		A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDFileManagerTests.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				A97FE4E72E782F5000540DEE /* NavigatorItem.swift */,
 				A97FE4E52E78115E00540DEE /* SelectedItem.swift */,
 				A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */,
+				A93192202E7ACED000025A3D /* DraggedItem.swift */,
 				A96A5AE42E78A85100329151 /* Vector3d.swift */,
 				A96A5AE52E78A85100329151 /* Quaternion.swift */,
 			);
@@ -181,7 +184,7 @@
 		A9DEB6062E741D300024A4A4 /* Specs */ = {
 			isa = PBXGroup;
 			children = (
-				A96A5AEA2E78ACC300329151 /* modeldraw_dev_spec_v018.md */,
+				A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */,
 				A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */,
 			);
 			path = Specs;
@@ -256,7 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */,
-				A96A5AEB2E78ACC300329151 /* modeldraw_dev_spec_v018.md in Resources */,
+				A93192232E7AD07F00025A3D /* modeldraw_dev_spec_v019.md in Resources */,
 				A9DEB6012E741D090024A4A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +274,7 @@
 				A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */,
 				A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
+				A93192212E7ACED200025A3D /* DraggedItem.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
 				A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */,
 				A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */,
