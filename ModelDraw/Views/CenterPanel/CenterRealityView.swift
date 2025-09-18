@@ -12,8 +12,9 @@ struct CenterRealityView: View {
     @State private var cameraController = CameraController()
     private let drawingManager = DrawingManager.shared
 
-    /// Primary perspective camera for mode-aware navigation
     @State private var camera: PerspectiveCamera = PerspectiveCamera()
+    @State private var mousePosition: CGPoint = .zero
+    @State private var isMouseInCanvas: Bool = false
 
     
     var body: some View {
@@ -40,6 +41,36 @@ struct CenterRealityView: View {
                 camera.position = model.cameraPosition
                 camera.orientation = model.cameraRotation
                 //print("🎯 Camera update: FreeFlier mode - pos=\(model.cameraPosition)")
+            }
+        }
+        .overlay {
+            // Cursor circle overlay for placement mode
+            if model.isPlacementMode && isMouseInCanvas {
+                Circle()
+                    .stroke(Color.blue, lineWidth: 1.5)
+                    .frame(width: 20, height: 20)
+                    .position(mousePosition)
+                    .allowsHitTesting(false) // Let clicks pass through to RealityView
+            }
+        }
+        .onContinuousHover { phase in
+            switch phase {
+            case .active(let location):
+                mousePosition = location
+                isMouseInCanvas = true
+            case .ended:
+                isMouseInCanvas = false
+            }
+        }
+        .onTapGesture { location in
+            if model.isPlacementMode {
+                // Convert 2D click to 3D world coordinates (stub for now)
+                let worldPosition = SIMD3<Float>(
+                    Float(location.x / 100.0), // Simple conversion - replace with proper ray casting
+                    0.0, // Place on ground plane
+                    Float(location.y / 100.0)
+                )
+                model.placeItemAtLocation(worldPosition)
             }
         }
         .gesture(
