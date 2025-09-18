@@ -78,12 +78,10 @@ struct CenterRealityView: View {
         // Add this to CenterRealityView after your existing .gesture() modifier
         // This handles single USD file drops only
 
-        .dropDestination(for: URL.self) { urls, location in
-            // Handle drop logic here
-            guard let firstUrl = urls.first else { return false }
-            // Process the URL
-            return true
-        }
+        // Replace the incomplete .dropDestination in CenterRealityView with this:
+
+        // Replace the incomplete .dropDestination in CenterRealityView with this:
+
         .onAppear {
             print("🎯 SolarSystemView.onAppear called")
             cameraController.viewModel = model
