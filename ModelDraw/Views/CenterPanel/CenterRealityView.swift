@@ -42,6 +42,16 @@ struct CenterRealityView: View {
                 camera.orientation = model.cameraRotation
                 //print("🎯 Camera update: FreeFlier mode - pos=\(model.cameraPosition)")
             }
+            
+            // Only check for entities when flag indicates new ones exist
+            if model.hasNewEntities {
+                let newEntities = model.getNewEntitiesForScene()
+                for entity in newEntities {
+                    content.add(entity)
+                    print("🎯 CenterRealityView: Added entity '\(entity.name)' to scene")
+                }
+            }
+
         }
         .overlay {
             // Cursor circle overlay for placement mode

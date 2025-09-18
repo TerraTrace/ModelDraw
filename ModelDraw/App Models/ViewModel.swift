@@ -56,7 +56,7 @@ class ViewModel {
     var cameraDistance: Float = 10.0
     
         
-    // MARK: - + Button State
+    // MARK: - Properties for Adding Entities
     /// Tracks if user clicked "+" button and is waiting for canvas placement
     private(set) var isPlacementMode: Bool = false
 
@@ -65,6 +65,8 @@ class ViewModel {
     var isAddButtonEnabled: Bool {
         return selectedItem != nil
     }
+    
+    var hasNewEntities: Bool = false
 
     // MARK: - Initialization
     init() {
@@ -114,6 +116,16 @@ class ViewModel {
         print("🎯 ViewModel: Entered placement mode - waiting for canvas click")
     }
 
+    /// Get entities that need to be added to the scene
+    func getNewEntitiesForScene() -> [Entity] {
+        let newEntities = loadedUSDItems.compactMap { $0.entity }
+        
+        // Clear the loaded items since they're now being added to scene
+        loadedUSDItems.removeAll()
+        hasNewEntities = false  // Clear flag
+
+        return newEntities
+    }
     
     /// Place item at canvas location and exit placement mode
     func placeItemAtLocation(_ location: SIMD3<Float>) {
@@ -134,6 +146,7 @@ class ViewModel {
         print("✅ ViewModel: Item placed - exited placement mode")
     }
 
+    /// Load single USD file using USDEntityConverter
     /// Load single USD file using USDEntityConverter
     private func loadAndPlaceSingleUSDFile(_ item: NavigatorItem, at location: SIMD3<Float>) {
         guard let url = item.url else {
@@ -159,9 +172,8 @@ class ViewModel {
                     )
                     
                     loadedUSDItems.append(loadedItem)
+                    hasNewEntities = true  // Set flag to trigger RealityView update
                     print("✅ ViewModel: Loaded and placed \(item.name) at \(location)")
-                    
-                    // TODO: Add entity to RealityView scene
                 } else {
                     print("❌ ViewModel: Failed to convert USD prim to entity")
                 }
