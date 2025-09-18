@@ -12,6 +12,9 @@ class ViewModel {
     // MARK: - Services
     private let drawingManager = DrawingManager.shared
     private let usdFileManager = USDFileManager.shared
+    
+    private let lastProjectKey = "ModelDraw_LastActiveProject"
+
 
     // MARK: - Navigator State
     private(set) var navigatorData: [NavigatorItem] = []
@@ -71,8 +74,10 @@ class ViewModel {
     // MARK: - Initialization
     init() {
         loadNavigatorData()
+        loadLastActiveProject()
     }
     
+
     // MARK: - Public Methods
     
     /// Refresh the navigator tree from file system
@@ -86,6 +91,87 @@ class ViewModel {
         selectedItem = nil
         print("🔄 ViewModel: Navigator data refreshed")
     }
+    
+    
+    // MARK: - Pproject Persistence Methods
+    
+    /// Load the last active project and auto-load its USD files
+    func loadLastActiveProject() {
+        guard let lastProject = UserDefaults.standard.string(forKey: lastProjectKey) else {
+            print("📂 No last project found")
+            return
+        }
+        
+        print("📂 Loading last active project: \(lastProject)")
+        
+        // Find the project folder in navigatorData
+        guard let projectsFolder = navigatorData.first(where: { $0.name == "Projects" }),
+              let targetProject = projectsFolder.children?.first(where: { $0.name == lastProject }) else {
+            print("⚠️ Last project '\(lastProject)' not found in navigator")
+            return
+        }
+        
+        // Auto-load all USD files from this project
+        autoLoadProjectUSDFiles(targetProject)
+    }
+    
+    /// Set the active project (call when user selects a new project folder)
+    func setActiveProject(_ projectName: String) {
+        UserDefaults.standard.set(projectName, forKey: lastProjectKey)
+        print("💾 Set active project: \(projectName)")
+    }
+
+    /// Auto-load all USD files from a project folder
+    private func autoLoadProjectUSDFiles(_ projectFolder: NavigatorItem) {
+        guard projectFolder.itemType == .folder,
+              let usdFiles = projectFolder.children?.filter({ $0.itemType == .usdFile }) else {
+            print("📄 No USD files found in project")
+            return
+        }
+        
+        print("📄 Auto-loading \(usdFiles.count) USD files from \(projectFolder.name)")
+        
+        // Load each USD file into the scene
+        for (index, usdFile) in usdFiles.enumerated() {
+            let position = SIMD3<Float>(
+                Float(index * 3) - Float(usdFiles.count) * 1.5, // Spread them out in X
+                0,
+                0
+            )
+            loadUSDFileToScene(usdFile, at: position)
+        }
+    }
+
+    /// Load a USD file to the scene at a specific position
+    private func loadUSDFileToScene(_ item: NavigatorItem, at position: SIMD3<Float>) {
+        guard let url = item.url else { return }
+        
+        // Use your existing USD loading pipeline
+        switch item.itemType {
+        case .usdFile:
+            // Reuse the same logic from placeItemAtLocation but with specific position
+            do {
+                let usdFile = try usdFileManager.readUSDFile(from: url)
+                
+                if let prim = usdFile.rootPrims.first,
+                   let entity = USDEntityConverter.shared.convertToEntity(usdPrim: prim) {
+                    entity.position = position
+                    entity.name = item.name
+                    
+                    let loadedItem = LoadedUSDItem(sourceURL: url, entity: entity, position: position)
+                    loadedUSDItems.append(loadedItem)
+                    hasNewEntities = true
+                    
+                    print("✅ Auto-loaded '\(item.name)' at position \(position)")
+                }
+            } catch {
+                print("❌ Failed to auto-load '\(item.name)': \(error)")
+            }
+        case .folder:
+            break // Don't auto-load folders
+        }
+    }
+    
     
     // MARK: - USD File Placement Methods
 
