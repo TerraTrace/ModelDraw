@@ -15,6 +15,7 @@ struct CenterRealityView: View {
     @State private var camera: PerspectiveCamera = PerspectiveCamera()
     @State private var mousePosition: CGPoint = .zero
     @State private var isMouseInCanvas: Bool = false
+    @State private var realityViewSize: CGSize = .zero
 
     
     var body: some View {
@@ -74,12 +75,7 @@ struct CenterRealityView: View {
         }
         .onTapGesture { location in
             if model.isPlacementMode {
-                // Convert 2D click to 3D world coordinates (stub for now)
-                let worldPosition = SIMD3<Float>(
-                    Float(location.x / 100.0), // Simple conversion - replace with proper ray casting
-                    0.0, // Place on ground plane
-                    Float(location.y / 100.0)
-                )
+                let worldPosition = cameraController.worldPositionFromCursor(location, viewSize: realityViewSize)
                 model.placeItemAtLocation(worldPosition)
             }
         }
@@ -131,7 +127,20 @@ struct CenterRealityView: View {
         .onChange(of: model.cameraConfiguration) { _, newConfiguration in
             cameraController.configure(for: newConfiguration)
         }
-
+        .background(
+            // Use a clear color with GeometryReader to get the dimensions
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        realityViewSize = proxy.size
+                        print("RealityView size: \(realityViewSize)")
+                    }
+                    .onChange(of: proxy.size) { newSize in
+                        realityViewSize = newSize
+                        print("RealityView size changed to: \(newSize)")
+                    }
+            }
+        )
         //.frame(maxWidth: .infinity, maxHeight: .infinity)
         
     }
