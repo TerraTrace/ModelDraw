@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import RealityKit
+import SwiftUI
 
 
 // MARK: - Error Types
@@ -107,5 +109,140 @@ class DrawingManager {
     private func createInitialTemplate() throws {
         
     }
+    
+    
+    // Add this method to DrawingManager class
+
+    func loadUSDEntity(from url: URL) -> Entity? {
+        do {
+            // Read USD file using existing infrastructure
+            let usdFile = try USDFileManager.shared.readUSDFile(from: url)
+            
+            // Create parent container entity
+            let parentEntity = Entity()
+            parentEntity.name = url.deletingPathExtension().lastPathComponent
+            
+            // Process each top-level prim in the USD file
+            for prim in usdFile.rootPrims {
+                if let childEntity = createEntity(from: prim) {
+                    parentEntity.addChild(childEntity)
+                }
+            }
+            
+            print("✅ USD entity created with \(parentEntity.children.count) children: \(parentEntity.name)")
+            return parentEntity
+            
+        } catch {
+            print("❌ Failed to load USD entity: \(error)")
+            return nil
+        }
+    }
+
+    // MARK: - Private Helper Methods
+
+    private func createEntity(from prim: USDPrim) -> Entity? {
+        switch prim.type {
+        case "Xform":
+            return createXformEntity(from: prim)
+        case "Cylinder":
+            return createCylinderEntity(from: prim)
+        case "Cone":
+            return createConeEntity(from: prim)
+        default:
+            print("⚠️ Unsupported prim type: \(prim.type)")
+            return nil
+        }
+    }
+
+    private func createXformEntity(from prim: USDPrim) -> Entity? {
+        let entity = Entity()
+        entity.name = prim.name
+        
+        // Apply transform if available
+        if let transform = prim.transform {
+            applyTransform(transform, to: entity)
+        }
+        
+        // Process children recursively
+        for childPrim in prim.children {
+            if let childEntity = createEntity(from: childPrim) {
+                entity.addChild(childEntity)
+            }
+        }
+        
+        return entity
+    }
+
+    private func createCylinderEntity(from prim: USDPrim) -> ModelEntity? {
+        guard let heightAttr = prim.attributes["height"],
+              let radiusAttr = prim.attributes["radius"],
+              let height = heightAttr.value as? Double,
+              let radius = radiusAttr.value as? Double else {
+            print("⚠️ Invalid cylinder parameters for: \(prim.name)")
+            return nil
+        }
+        
+        // Create cylinder geometry
+        let mesh = MeshResource.generateCylinder(height: Float(height), radius: Float(radius))
+        
+        // Create basic material (can be enhanced later)
+        let material = SimpleMaterial(color: .gray, isMetallic: false)
+        
+        // Create ModelEntity
+        let entity = ModelEntity(mesh: mesh, materials: [material])
+        entity.name = prim.name
+        
+        // Apply transform if available
+        if let transform = prim.transform {
+            applyTransform(transform, to: entity)
+        }
+        
+        return entity
+    }
+
+    private func createConeEntity(from prim: USDPrim) -> ModelEntity? {
+        guard let heightAttr = prim.attributes["height"],
+              let radiusAttr = prim.attributes["radius"],
+              let height = heightAttr.value as? Double,
+              let radius = radiusAttr.value as? Double else {
+            print("⚠️ Invalid cone parameters for: \(prim.name)")
+            return nil
+        }
+        
+        // Create cone geometry
+        let mesh = MeshResource.generateCone(height: Float(height), radius: Float(radius))
+        
+        // Create basic material (can be enhanced later)
+        let material = SimpleMaterial(color: .lightGray, isMetallic: false)
+        
+        // Create ModelEntity
+        let entity = ModelEntity(mesh: mesh, materials: [material])
+        entity.name = prim.name
+        
+        // Apply transform if available
+        if let transform = prim.transform {
+            applyTransform(transform, to: entity)
+        }
+        
+        return entity
+    }
+
+    private func applyTransform(_ transform: USDTransform, to entity: Entity) {
+        // Apply position
+        entity.position = SIMD3<Float>(
+            Float(transform.position.x),
+            Float(transform.position.y),
+            Float(transform.position.z)
+        )
+        
+        // Apply orientation (quaternion)
+        entity.orientation = simd_quatf(
+            ix: Float(transform.orientation.w),
+            iy: Float(transform.orientation.x),
+            iz: Float(transform.orientation.y),
+            r: Float(transform.orientation.z)
+        )
+    }
+    
 }
     
