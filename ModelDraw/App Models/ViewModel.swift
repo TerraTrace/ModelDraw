@@ -84,6 +84,8 @@ class ViewModel {
         selectedItem = nil
         print("🔄 ViewModel: Navigator data refreshed")
     }
+    
+    // MARK: - USD File Placement Methods
 
     /// Select a navigator item
     func selectItem(_ item: NavigatorItem?) {
@@ -112,18 +114,72 @@ class ViewModel {
         print("🎯 ViewModel: Entered placement mode - waiting for canvas click")
     }
 
+    
     /// Place item at canvas location and exit placement mode
     func placeItemAtLocation(_ location: SIMD3<Float>) {
         guard isPlacementMode, let item = selectedItem else { return }
         
         print("📍 ViewModel: Placing \(item.name) at \(location)")
-        //addUSDItemToScene(item: item, at: location)
+        
+        // Use USDEntityConverter instead of stub
+        switch item.itemType {
+        case .usdFile:
+            loadAndPlaceSingleUSDFile(item, at: location)
+        case .folder:
+            loadAndPlaceFolderAsAssembly(item, at: location)
+        }
         
         // Exit placement mode
         isPlacementMode = false
         print("✅ ViewModel: Item placed - exited placement mode")
     }
 
+    /// Load single USD file using USDEntityConverter
+    private func loadAndPlaceSingleUSDFile(_ item: NavigatorItem, at location: SIMD3<Float>) {
+        guard let url = item.url else {
+            print("❌ ViewModel: No URL for item \(item.name)")
+            return
+        }
+        
+        do {
+            // Read USD file using USDFileManager
+            let usdFile = try usdFileManager.readUSDFile(from: url)
+            
+            // Convert first root prim to entity
+            if let firstPrim = usdFile.rootPrims.first {
+                if let entity = USDEntityConverter.shared.convertToEntity(usdPrim: firstPrim) {
+                    // Position entity at click location
+                    entity.position = location
+                    
+                    // Create LoadedUSDItem for tracking
+                    let loadedItem = LoadedUSDItem(
+                        sourceURL: url,
+                        entity: entity,
+                        position: location
+                    )
+                    
+                    loadedUSDItems.append(loadedItem)
+                    print("✅ ViewModel: Loaded and placed \(item.name) at \(location)")
+                    
+                    // TODO: Add entity to RealityView scene
+                } else {
+                    print("❌ ViewModel: Failed to convert USD prim to entity")
+                }
+            } else {
+                print("❌ ViewModel: No root prims found in USD file")
+            }
+            
+        } catch {
+            print("❌ ViewModel: Failed to load USD file \(item.name): \(error)")
+        }
+    }
+
+    /// Load folder as assembly (stub for now)
+    private func loadAndPlaceFolderAsAssembly(_ item: NavigatorItem, at location: SIMD3<Float>) {
+        print("📁 ViewModel: Folder assembly loading not yet implemented for \(item.name)")
+        // TODO: Implement folder → assembly loading
+    }
+    
     
 }
 
