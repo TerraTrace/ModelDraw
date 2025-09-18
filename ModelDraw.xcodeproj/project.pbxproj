@@ -13,6 +13,7 @@
 		A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */; };
 		A93192232E7AD07F00025A3D /* modeldraw_dev_spec_v019.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */; };
 		A93192252E7B10FB00025A3D /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192242E7B10FB00025A3D /* CameraController.swift */; };
+		A93192282E7C2AF600025A3D /* USDEntityConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192272E7C2AF400025A3D /* USDEntityConverter.swift */; };
 		A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE52E78A85100329151 /* Quaternion.swift */; };
 		A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AE42E78A85100329151 /* Vector3d.swift */; };
 		A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */; };
@@ -38,6 +39,7 @@
 		A931921C2E7AC45200025A3D /* LoadedUSDItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedUSDItem.swift; sourceTree = "<group>"; };
 		A93192222E7AD07F00025A3D /* modeldraw_dev_spec_v019.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = modeldraw_dev_spec_v019.md; sourceTree = "<group>"; };
 		A93192242E7B10FB00025A3D /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		A93192272E7C2AF400025A3D /* USDEntityConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDEntityConverter.swift; sourceTree = "<group>"; };
 		A96A5AE42E78A85100329151 /* Vector3d.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vector3d.swift; sourceTree = "<group>"; };
 		A96A5AE52E78A85100329151 /* Quaternion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quaternion.swift; sourceTree = "<group>"; };
 		A96A5AED2E78ADCC00329151 /* USDCoreTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDCoreTypes.swift; sourceTree = "<group>"; };
@@ -78,6 +80,14 @@
 				A931921A2E79D56B00025A3D /* USDContentParser.swift */,
 			);
 			path = "USD File Management";
+			sourceTree = "<group>";
+		};
+		A93192262E7C2A7C00025A3D /* USD Entity Converters */ = {
+			isa = PBXGroup;
+			children = (
+				A93192272E7C2AF400025A3D /* USDEntityConverter.swift */,
+			);
+			path = "USD Entity Converters";
 			sourceTree = "<group>";
 		};
 		A9486F6D2E75998700FEBE31 /* App Models */ = {
@@ -143,6 +153,7 @@
 			children = (
 				A97FE4E12E77557000540DEE /* DrawingManager.swift */,
 				A93192242E7B10FB00025A3D /* CameraController.swift */,
+				A93192262E7C2A7C00025A3D /* USD Entity Converters */,
 				A93192172E79D31500025A3D /* USD File Management */,
 				A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */,
 			);
@@ -271,6 +282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A93192282E7C2AF600025A3D /* USDEntityConverter.swift in Sources */,
 				A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */,
 				A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
