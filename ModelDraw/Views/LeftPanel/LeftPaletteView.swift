@@ -94,25 +94,9 @@ struct LeftPaletteView: View {
         }
     }
     
-    
     private func addSelectedItemToCanvas() {
-            // Stub implementation - this will add the selected item to canvas
-            print("🎯 Adding selected item to canvas")
-            
-            guard let selectedItem = model.selectedItem else {
-                print("❌ No item selected")
-                return
-            }
-            
-            print("📁 Selected item: \(selectedItem.name) (\(selectedItem.itemType))")
-            
-            if let canvasClickLocation = model.canvasClickLocation {
-                print("📍 Canvas click location: \(canvasClickLocation)")
-                // TODO: Implement actual USD loading and 3D placement here
-                //model.addUSDItemToScene(item: selectedItem, at: canvasClickLocation)
-            } else {
-                print("❌ No canvas click location available")
-            }
-        }
+        model.enterPlacementMode()
+    }
+    
     
 }

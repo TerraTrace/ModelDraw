@@ -57,13 +57,13 @@ class ViewModel {
     
         
     // MARK: - + Button State
-    /// Tracks if canvas has been clicked to set placement location
-    private(set) var canvasClickLocation: SIMD3<Float>?
-    
+    /// Tracks if user clicked "+" button and is waiting for canvas placement
+    private(set) var isPlacementMode: Bool = false
+
     /// Computed property for + button enabled state
-    /// Enabled when: selectedItem exists AND canvasClickLocation exists
+    /// Enabled when: selectedItem exists (no canvas click required)
     var isAddButtonEnabled: Bool {
-        return selectedItem != nil && canvasClickLocation != nil
+        return selectedItem != nil
     }
 
     // MARK: - Initialization
@@ -77,25 +77,51 @@ class ViewModel {
     func loadNavigatorData() {
         navigatorData = buildFileSystemNavigatorData()
     }
-    
-    /// Select a navigator item
-    func selectItem(_ item: NavigatorItem?) {
-        selectedItem = item
         
-        if let item = item {
-            print("📋 ViewModel: Selected \(item.itemType == .folder ? "folder" : "USD file"): \(item.name)")
-        } else {
-            print("📋 ViewModel: Cleared selection")
-        }
-    }
-    
     /// Reload navigator data (for when files change)
     func refreshNavigator() {
         loadNavigatorData()
         print("🔄 ViewModel: Navigator data refreshed")
     }
 
+    /// Select a navigator item
+    func selectItem(_ item: NavigatorItem?) {
+        selectedItem = item
+        
+        // Exit placement mode when selecting a different item
+        if isPlacementMode {
+            isPlacementMode = false
+            print("🚪 ViewModel: Exited placement mode due to new selection")
+        }
+        
+        if let item = item {
+            print("📋 ViewModel: Selected \(item.itemType == .folder ? "folder" : "USD file"): \(item.name)")
+            print("✅ ViewModel: + button enabled")
+        } else {
+            print("📋 ViewModel: Cleared selection")
+            print("❌ ViewModel: + button disabled")
+        }
+    }
 
+    /// Enter placement mode when + button is clicked
+    func enterPlacementMode() {
+        guard selectedItem != nil else { return }
+        
+        isPlacementMode = true
+        print("🎯 ViewModel: Entered placement mode - waiting for canvas click")
+    }
+
+    /// Place item at canvas location and exit placement mode
+    func placeItemAtLocation(_ location: SIMD3<Float>) {
+        guard isPlacementMode, let item = selectedItem else { return }
+        
+        print("📍 ViewModel: Placing \(item.name) at \(location)")
+        //addUSDItemToScene(item: item, at: location)
+        
+        // Exit placement mode
+        isPlacementMode = false
+        print("✅ ViewModel: Item placed - exited placement mode")
+    }
 
     
 }
