@@ -47,6 +47,8 @@ struct LeftPaletteView: View {
                     }) {
                         Image(systemName: "plus")
                             .font(.system(size: 12))
+                            .fontWeight(model.isAddButtonEnabled ? .bold : .regular)
+                            .foregroundColor(model.isAddButtonEnabled ? .blue : .secondary)
                     }
                     .buttonStyle(.borderless)
                     .help("Add selected item to canvas")
@@ -61,7 +63,7 @@ struct LeftPaletteView: View {
                             .font(.system(size: 12))
                     }
                     .buttonStyle(.borderless)
-                    .help("Refresh file tree")
+                    .help("Refresh file tree & clear selections")
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)

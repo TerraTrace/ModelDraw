@@ -81,6 +81,7 @@ class ViewModel {
     /// Reload navigator data (for when files change)
     func refreshNavigator() {
         loadNavigatorData()
+        selectedItem = nil
         print("🔄 ViewModel: Navigator data refreshed")
     }
 
