@@ -9,6 +9,10 @@ import RealityKit
 @Observable
 class ViewModel {
     
+    // MARK: - Services
+    private let drawingManager = DrawingManager.shared
+    private let usdFileManager = USDFileManager.shared
+
     // MARK: - Navigator State
     private(set) var navigatorData: [NavigatorItem] = []
     private(set) var selectedItem: NavigatorItem?
@@ -51,12 +55,17 @@ class ViewModel {
     /// Used by CameraController to maintain consistent orbit radius
     var cameraDistance: Float = 10.0
     
+        
+    // MARK: - + Button State
+    /// Tracks if canvas has been clicked to set placement location
+    private(set) var canvasClickLocation: SIMD3<Float>?
     
-    // MARK: - Services
-    private let drawingManager = DrawingManager.shared
-    private let usdFileManager = USDFileManager.shared
-    
-    
+    /// Computed property for + button enabled state
+    /// Enabled when: selectedItem exists AND canvasClickLocation exists
+    var isAddButtonEnabled: Bool {
+        return selectedItem != nil && canvasClickLocation != nil
+    }
+
     // MARK: - Initialization
     init() {
         loadNavigatorData()

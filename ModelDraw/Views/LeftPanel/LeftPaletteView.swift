@@ -41,6 +41,18 @@ struct LeftPaletteView: View {
                         .fontWeight(.medium)
                     Spacer()
                     
+                    // Add button (disabled by default until selection + canvas click)
+                    Button(action: {
+                        addSelectedItemToCanvas()
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 12))
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Add selected item to canvas")
+                    .disabled(!model.isAddButtonEnabled) // This will control enable/disable state
+                    Spacer().frame(width: 20)
+
                     // Refresh button
                     Button(action: {
                         model.refreshNavigator()
@@ -81,4 +93,26 @@ struct LeftPaletteView: View {
             }
         }
     }
+    
+    
+    private func addSelectedItemToCanvas() {
+            // Stub implementation - this will add the selected item to canvas
+            print("🎯 Adding selected item to canvas")
+            
+            guard let selectedItem = model.selectedItem else {
+                print("❌ No item selected")
+                return
+            }
+            
+            print("📁 Selected item: \(selectedItem.name) (\(selectedItem.itemType))")
+            
+            if let canvasClickLocation = model.canvasClickLocation {
+                print("📍 Canvas click location: \(canvasClickLocation)")
+                // TODO: Implement actual USD loading and 3D placement here
+                //model.addUSDItemToScene(item: selectedItem, at: canvasClickLocation)
+            } else {
+                print("❌ No canvas click location available")
+            }
+        }
+    
 }
