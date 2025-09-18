@@ -21,7 +21,7 @@ struct ContentView: View {
             
             // Right Panel - Properties (conditionally shown, fixed width)
             if showRightPanel {
-                RightPaletteView()
+                RightPanelView()
                     .frame(width: 280)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }

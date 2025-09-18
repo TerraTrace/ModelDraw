@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9280AB32E7C82B400FE161A /* PropertiesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AB22E7C82B100FE161A /* PropertiesSection.swift */; };
+		A9280AB52E7C831800FE161A /* SelectedItemProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AB42E7C831400FE161A /* SelectedItemProperties.swift */; };
+		A9280AB92E7C85CE00FE161A /* PropertiesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AB82E7C85CD00FE161A /* PropertiesHeaderView.swift */; };
+		A9280ABB2E7C863400FE161A /* ItemHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ABA2E7C863300FE161A /* ItemHeaderView.swift */; };
+		A9280ABD2E7C865400FE161A /* ItemDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ABC2E7C865300FE161A /* ItemDetailsView.swift */; };
+		A9280ABF2E7C868600FE161A /* PropertyRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ABE2E7C868400FE161A /* PropertyRowView.swift */; };
+		A9280AC12E7C86A500FE161A /* EmptySelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC02E7C86A300FE161A /* EmptySelectionView.swift */; };
+		A9280AC32E7C86D200FE161A /* ToolsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC22E7C86D100FE161A /* ToolsSection.swift */; };
+		A9280AC52E7C86F400FE161A /* ToolsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC42E7C86F200FE161A /* ToolsHeaderView.swift */; };
+		A9280AC72E7C871200FE161A /* ToolGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC62E7C871000FE161A /* ToolGroupView.swift */; };
+		A9280AC92E7C873200FE161A /* ToolButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC82E7C873000FE161A /* ToolButtonView.swift */; };
 		A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */; };
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
@@ -21,7 +32,7 @@
 		A96A5AF22E78AE9100329151 /* USDFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */; };
 		A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D12E76EBF900540DEE /* LeftPaletteView.swift */; };
 		A97FE4D42E76EC3D00540DEE /* CenterRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */; };
-		A97FE4D62E76EC8800540DEE /* RightPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D52E76EC8600540DEE /* RightPaletteView.swift */; };
+		A97FE4D62E76EC8800540DEE /* RightPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D52E76EC8600540DEE /* RightPanelView.swift */; };
 		A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */; };
 		A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E12E77557000540DEE /* DrawingManager.swift */; };
 		A97FE4E62E78116000540DEE /* SelectedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E52E78115E00540DEE /* SelectedItem.swift */; };
@@ -33,6 +44,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A9280AB22E7C82B100FE161A /* PropertiesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesSection.swift; sourceTree = "<group>"; };
+		A9280AB42E7C831400FE161A /* SelectedItemProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItemProperties.swift; sourceTree = "<group>"; };
+		A9280AB82E7C85CD00FE161A /* PropertiesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesHeaderView.swift; sourceTree = "<group>"; };
+		A9280ABA2E7C863300FE161A /* ItemHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemHeaderView.swift; sourceTree = "<group>"; };
+		A9280ABC2E7C865300FE161A /* ItemDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailsView.swift; sourceTree = "<group>"; };
+		A9280ABE2E7C868400FE161A /* PropertyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyRowView.swift; sourceTree = "<group>"; };
+		A9280AC02E7C86A300FE161A /* EmptySelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptySelectionView.swift; sourceTree = "<group>"; };
+		A9280AC22E7C86D100FE161A /* ToolsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsSection.swift; sourceTree = "<group>"; };
+		A9280AC42E7C86F200FE161A /* ToolsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsHeaderView.swift; sourceTree = "<group>"; };
+		A9280AC62E7C871000FE161A /* ToolGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolGroupView.swift; sourceTree = "<group>"; };
+		A9280AC82E7C873000FE161A /* ToolButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolButtonView.swift; sourceTree = "<group>"; };
 		A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.2.md; sourceTree = "<group>"; };
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
@@ -47,7 +69,7 @@
 		A96A5AF12E78AE8C00329151 /* USDFileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDFileManagerTests.swift; sourceTree = "<group>"; };
 		A97FE4D12E76EBF900540DEE /* LeftPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftPaletteView.swift; sourceTree = "<group>"; };
 		A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterRealityView.swift; sourceTree = "<group>"; };
-		A97FE4D52E76EC8600540DEE /* RightPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightPaletteView.swift; sourceTree = "<group>"; };
+		A97FE4D52E76EC8600540DEE /* RightPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightPanelView.swift; sourceTree = "<group>"; };
 		A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorRowView.swift; sourceTree = "<group>"; };
 		A97FE4E12E77557000540DEE /* DrawingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingManager.swift; sourceTree = "<group>"; };
 		A97FE4E52E78115E00540DEE /* SelectedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItem.swift; sourceTree = "<group>"; };
@@ -72,6 +94,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A9280ACA2E7C874D00FE161A /* Tool Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9280AC22E7C86D100FE161A /* ToolsSection.swift */,
+				A9280AC42E7C86F200FE161A /* ToolsHeaderView.swift */,
+				A9280AC62E7C871000FE161A /* ToolGroupView.swift */,
+				A9280AC82E7C873000FE161A /* ToolButtonView.swift */,
+			);
+			path = "Tool Views";
+			sourceTree = "<group>";
+		};
+		A9280ACB2E7C875E00FE161A /* Property Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9280AB22E7C82B100FE161A /* PropertiesSection.swift */,
+				A9280AB82E7C85CD00FE161A /* PropertiesHeaderView.swift */,
+				A9280AB42E7C831400FE161A /* SelectedItemProperties.swift */,
+				A9280ABA2E7C863300FE161A /* ItemHeaderView.swift */,
+				A9280ABC2E7C865300FE161A /* ItemDetailsView.swift */,
+				A9280ABE2E7C868400FE161A /* PropertyRowView.swift */,
+				A9280AC02E7C86A300FE161A /* EmptySelectionView.swift */,
+			);
+			path = "Property Views";
+			sourceTree = "<group>";
+		};
 		A93192172E79D31500025A3D /* USD File Management */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,7 +182,9 @@
 		A97FE4DA2E76F05A00540DEE /* RightPanel */ = {
 			isa = PBXGroup;
 			children = (
-				A97FE4D52E76EC8600540DEE /* RightPaletteView.swift */,
+				A97FE4D52E76EC8600540DEE /* RightPanelView.swift */,
+				A9280ACB2E7C875E00FE161A /* Property Views */,
+				A9280ACA2E7C874D00FE161A /* Tool Views */,
 			);
 			path = RightPanel;
 			sourceTree = "<group>";
@@ -284,13 +333,19 @@
 			files = (
 				A93192282E7C2AF600025A3D /* USDEntityConverter.swift in Sources */,
 				A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */,
+				A9280ABB2E7C863400FE161A /* ItemHeaderView.swift in Sources */,
+				A9280AC12E7C86A500FE161A /* EmptySelectionView.swift in Sources */,
+				A9280ABD2E7C865400FE161A /* ItemDetailsView.swift in Sources */,
 				A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
 				A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */,
 				A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */,
 				A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */,
-				A97FE4D62E76EC8800540DEE /* RightPaletteView.swift in Sources */,
+				A9280AC52E7C86F400FE161A /* ToolsHeaderView.swift in Sources */,
+				A97FE4D62E76EC8800540DEE /* RightPanelView.swift in Sources */,
+				A9280AB32E7C82B400FE161A /* PropertiesSection.swift in Sources */,
+				A9280AB92E7C85CE00FE161A /* PropertiesHeaderView.swift in Sources */,
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
 				A97FE4E62E78116000540DEE /* SelectedItem.swift in Sources */,
 				A97FE4D42E76EC3D00540DEE /* CenterRealityView.swift in Sources */,
@@ -299,8 +354,13 @@
 				A96A5AF22E78AE9100329151 /* USDFileManagerTests.swift in Sources */,
 				A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */,
 				A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */,
+				A9280AB52E7C831800FE161A /* SelectedItemProperties.swift in Sources */,
+				A9280AC32E7C86D200FE161A /* ToolsSection.swift in Sources */,
+				A9280ABF2E7C868600FE161A /* PropertyRowView.swift in Sources */,
+				A9280AC72E7C871200FE161A /* ToolGroupView.swift in Sources */,
 				A93192252E7B10FB00025A3D /* CameraController.swift in Sources */,
 				A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */,
+				A9280AC92E7C873200FE161A /* ToolButtonView.swift in Sources */,
 				A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
