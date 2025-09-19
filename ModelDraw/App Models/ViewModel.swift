@@ -229,8 +229,6 @@ class ViewModel {
     func getNewEntitiesForScene() -> [Entity] {
         let newEntities = loadedUSDItems.compactMap { $0.entity }
         
-        // Clear the loaded items since they're now being added to scene
-        loadedUSDItems.removeAll()
         hasNewEntities = false  // Clear flag
 
         return newEntities
