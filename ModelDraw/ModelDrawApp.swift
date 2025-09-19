@@ -27,6 +27,7 @@ struct ModelDrawApp: App {
             //testSimpleSpacecraftParsing()
             //testSimpleSpacecraftBlockExtraction()
             //testUSDReadWriteCycle()
+            //try USDFileManager.testUSDReferenceParsingCargoDragon()
             
         } catch {
             print("❌ Failed to initialize DrawingManager: \(error)")

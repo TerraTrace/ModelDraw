@@ -127,8 +127,6 @@ class USDMeshConverter {
         /// - Parameter attribute: USD attribute containing vertex positions
         /// - Returns: Array of SIMD3<Float> positions or nil if parsing fails
         private func parseVertexPositions(from attribute: USDAttribute) -> [SIMD3<Float>]? {
-            print("🔍 DEBUG: Points attribute type = \(type(of: attribute.value))")
-            print("🔍 DEBUG: Points attribute value = \(attribute.value)")
             
             // USD points are typically stored as Vec3f array
             // Format: [(x1,y1,z1), (x2,y2,z2), ...]
@@ -136,22 +134,20 @@ class USDMeshConverter {
             guard let pointsArray = attribute.value as? [[Double]] else {
                 // Try alternative format - flat array [x1,y1,z1,x2,y2,z2,...]
                 if let flatArray = attribute.value as? [Double] {
-                    print("🔍 DEBUG: Found flat array format with \(flatArray.count) values")
                     return parseFlatVertexArray(flatArray)
                 }
                 
                 // Try string format (might need parsing)
                 if let stringValue = attribute.value as? String {
-                    print("🔍 DEBUG: Found string format: \(stringValue)")
                     return parseStringVertexArray(stringValue)
                 }
                 
                 print("❌ USDMeshConverter: Unable to parse points attribute format")
-                print("❌ DEBUG: Actual type = \(type(of: attribute.value))")
+                //print("❌ DEBUG: Actual type = \(type(of: attribute.value))")
                 return nil
             }
             
-            print("🔍 DEBUG: Found nested array format with \(pointsArray.count) points")
+            //print("🔍 DEBUG: Found nested array format with \(pointsArray.count) points")
             
             var vertices: [SIMD3<Float>] = []
             
@@ -272,26 +268,26 @@ class USDMeshConverter {
     
     /// Parse face indices from USD faceVertexIndices attribute
     private func parseFaceIndices(from attribute: USDAttribute) -> [UInt32]? {
-        print("🔍 DEBUG: Indices attribute type = \(type(of: attribute.value))")
-        print("🔍 DEBUG: Indices attribute value = \(attribute.value)")
+        //print("🔍 DEBUG: Indices attribute type = \(type(of: attribute.value))")
+        //print("🔍 DEBUG: Indices attribute value = \(attribute.value)")
         
         var indices: [UInt32] = []
         
         if let intArray = attribute.value as? [Int] {
             indices = intArray.map { UInt32($0) }
-            print("🔍 DEBUG: Found Int array format with \(indices.count) indices")
+            //print("🔍 DEBUG: Found Int array format with \(indices.count) indices")
         } else if let int32Array = attribute.value as? [Int32] {
             indices = int32Array.map { UInt32($0) }
-            print("🔍 DEBUG: Found Int32 array format with \(indices.count) indices")
+            //print("🔍 DEBUG: Found Int32 array format with \(indices.count) indices")
         } else if let uint32Array = attribute.value as? [UInt32] {
             indices = uint32Array
-            print("🔍 DEBUG: Found UInt32 array format with \(indices.count) indices")
+            //print("🔍 DEBUG: Found UInt32 array format with \(indices.count) indices")
         } else if let stringValue = attribute.value as? String {
-            print("🔍 DEBUG: Found string format for indices: \(stringValue)")
+            //print("🔍 DEBUG: Found string format for indices: \(stringValue)")
             indices = parseStringIndicesArray(stringValue)
         } else {
-            print("❌ USDMeshConverter: Unable to parse faceVertexIndices format")
-            print("❌ DEBUG: Actual type = \(type(of: attribute.value))")
+            //print("❌ USDMeshConverter: Unable to parse faceVertexIndices format")
+            //print("❌ DEBUG: Actual type = \(type(of: attribute.value))")
             return nil
         }
         
@@ -301,7 +297,7 @@ class USDMeshConverter {
             return nil
         }
         
-        print("🔍 DEBUG: Successfully parsed \(indices.count) indices (\(indices.count/3) triangles)")
+        //print("🔍 DEBUG: Successfully parsed \(indices.count) indices (\(indices.count/3) triangles)")
         return indices
     }
     
@@ -320,7 +316,7 @@ class USDMeshConverter {
             }
         }
         
-        print("🔍 DEBUG: Parsed \(indices.count) indices from string format")
+        //print("🔍 DEBUG: Parsed \(indices.count) indices from string format")
         return indices
     }
     

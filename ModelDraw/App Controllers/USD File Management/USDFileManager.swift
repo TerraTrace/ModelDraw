@@ -185,7 +185,77 @@ extension USDFileManager {
 
 extension USDFileManager {
     
+    // MARK: - Reference Parsing Test (Add to USDFileManagerTests.swift extension)
+    
+    /// Test USD reference parsing with the real CargoDragon.usd scene file
+    /// Add this method to the existing USDFileManager test extension
+    static func testUSDReferenceParsingCargoDragon() throws {
+        print("\n🧪 Testing USD Reference Parsing - Real CargoDragon Scene...")
+        
+        // Use the real CargoDragon.usd file
+        let cargodragonURL = URL(fileURLWithPath: "/Users/michaelraftery_1/Library/Containers/com.TerraTrace.ModelDraw/Data/Documents/ModelDraw/Projects/CargoDragon/CargoDragon.usd")
+
+        
+        // Check if file exists
+        guard FileManager.default.fileExists(atPath: cargodragonURL.path) else {
+            print("⚠️ CargoDragon.usd not found at expected location")
+            print("   Expected: \(cargodragonURL.path)")
+            return
+        }
+        
+        print("   📂 Found CargoDragon.usd at: \(cargodragonURL.path)")
+        
+        // Read it using USDFileManager
+        let usdFile = try USDFileManager.shared.readUSDFile(from: cargodragonURL)
+        
+        // Validate stage
+        print("   🏗️ Stage defaultPrim: \(usdFile.stage.defaultPrim ?? "nil")")
+        print("   🏗️ Root prims count: \(usdFile.rootPrims.count)")
+        
+        // Find the scene assembly
+        guard let sceneAssembly = usdFile.rootPrims.first else {
+            print("❌ No root prims found")
+            return
+        }
+        
+        print("   📦 Scene assembly: '\(sceneAssembly.name)' type: '\(sceneAssembly.type)'")
+        print("   👶 Children count: \(sceneAssembly.children.count)")
+        
+        // Check each child for references
+        for (index, child) in sceneAssembly.children.enumerated() {
+            print("   🔍 Child \(index + 1): '\(child.name)' type: '\(child.type)'")
+            print("      hasReferences: \(child.hasReferences)")
+            print("      references count: \(child.references.count)")
+            
+            if let primaryRef = child.primaryReference {
+                print("      reference path: '\(primaryRef.filePath)'")
+                
+                // Test URL resolution
+                let sceneDir = cargodragonURL.deletingLastPathComponent()
+                let resolvedURL = primaryRef.resolveURL(relativeTo: sceneDir)
+                print("      resolved URL: \(resolvedURL.path)")
+                print("      file exists: \(FileManager.default.fileExists(atPath: resolvedURL.path))")
+            }
+        }
+        
+        // Check customData
+        print("   📊 CustomData: \(sceneAssembly.metadata)")
+        
+        print("   ✅ USD Reference Parsing Test completed!")
+    
+    }
+
+    
+    
+    
+    
+    
+    
+    
 
 
 }
+
+
+
 
