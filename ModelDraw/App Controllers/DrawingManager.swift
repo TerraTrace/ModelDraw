@@ -138,6 +138,202 @@ class DrawingManager {
         }
     }
 
+    
+    // MARK: - USD Scene File Loading (ADD TO DrawingManager)
+    
+    /// Load project from USD scene file
+    /// - Parameter projectFolder: NavigatorItem representing the project folder
+    /// - Returns: Array of LoadedUSDItem entities ready for 3D scene
+    func loadProjectFromSceneFile(_ projectFolder: NavigatorItem) -> [LoadedUSDItem] {
+        guard projectFolder.itemType == .folder,
+              let projectURL = projectFolder.url else {
+            print("❌ DrawingManager: Invalid project folder")
+            return []
+        }
+        
+        // Look for matching scene file: CargoDragon.usd in CargoDragon/ folder
+        let sceneFileName = "\(projectFolder.name).usd"
+        let sceneFileURL = projectURL.appendingPathComponent(sceneFileName)
+        
+        // Scene file MUST exist
+        guard FileManager.default.fileExists(atPath: sceneFileURL.path) else {
+            print("❌ DrawingManager: Scene file REQUIRED but not found: \(sceneFileName)")
+            print("   💡 Create \(sceneFileName) to define this project")
+            return []
+        }
+        
+        print("🎬 DrawingManager: Loading project from scene file: \(sceneFileName)")
+        
+        do {
+            // Read the scene file
+            let sceneFile = try USDFileManager.shared.readUSDFile(from: sceneFileURL)
+            
+            // Extract scene information
+            if let sceneAssembly = sceneFile.rootPrims.first {
+                print("📦 DrawingManager: Scene '\(sceneAssembly.name)' has \(sceneAssembly.children.count) components")
+                
+                // Load each referenced component
+                let loadedItems = loadReferencedComponents(from: sceneAssembly, sceneURL: sceneFileURL)
+                
+                // Store scene metadata for later use
+                storeSceneMetadata(sceneAssembly.metadata)
+                
+                return loadedItems
+            }
+            
+        } catch {
+            print("❌ DrawingManager: Failed to read scene file: \(error)")
+        }
+        
+        return []
+    }
+    
+    /// Load all components referenced in the scene assembly
+    /// - Parameters:
+    ///   - sceneAssembly: Root prim from scene file
+    ///   - sceneURL: URL of the scene file for resolving relative paths
+    /// - Returns: Array of loaded USD items
+    private func loadReferencedComponents(from sceneAssembly: USDPrim, sceneURL: URL) -> [LoadedUSDItem] {
+        let sceneDir = sceneURL.deletingLastPathComponent()
+        var loadedItems: [LoadedUSDItem] = []
+        
+        for (index, component) in sceneAssembly.children.enumerated() {
+            print("🔍 DrawingManager: Processing component '\(component.name)'")
+            
+            if component.hasReferences, let reference = component.primaryReference {
+                // Load referenced component
+                let componentURL = reference.resolveURL(relativeTo: sceneDir)
+                if let loadedItem = loadReferencedComponent(component, from: componentURL) {
+                    loadedItems.append(loadedItem)
+                }
+            } else {
+                // Component has no references - treat as inline geometry
+                print("⚠️ DrawingManager: Component '\(component.name)' has no references, treating as inline")
+                if let loadedItem = loadInlineComponent(component, index: index) {
+                    loadedItems.append(loadedItem)
+                }
+            }
+        }
+        
+        return loadedItems
+    }
+    
+    /// Load a single referenced component with its scene transform
+    /// - Parameters:
+    ///   - component: Component prim from scene file
+    ///   - componentURL: URL to the referenced component file
+    /// - Returns: LoadedUSDItem or nil if loading fails
+    private func loadReferencedComponent(_ component: USDPrim, from componentURL: URL) -> LoadedUSDItem? {
+        guard FileManager.default.fileExists(atPath: componentURL.path) else {
+            print("❌ DrawingManager: Referenced file not found: \(componentURL.path)")
+            return nil
+        }
+        
+        do {
+            // Read the referenced component file
+            let componentFile = try USDFileManager.shared.readUSDFile(from: componentURL)
+            
+            // Convert first root prim to entity
+            if let firstPrim = componentFile.rootPrims.first,
+               let entity = USDEntityConverter.shared.convertToEntity(usdPrim: firstPrim) {
+                
+                // Apply scene transform (position from scene file)
+                if let transform = component.transform {
+                    entity.position = SIMD3<Float>(
+                        Float(transform.position.x),
+                        Float(transform.position.y),
+                        Float(transform.position.z)
+                    )
+                    // TODO: Apply orientation from transform.orientation
+                } else {
+                    // Default position if no transform specified
+                    entity.position = SIMD3<Float>(0, 0, 0)
+                }
+                
+                // Use component name from scene (not original file name)
+                entity.name = component.name
+                
+                // Create LoadedUSDItem for tracking
+                let loadedItem = LoadedUSDItem(
+                    sourceURL: componentURL,
+                    entity: entity,
+                    position: entity.position
+                )
+                
+                print("✅ DrawingManager: Loaded referenced component '\(component.name)' from '\(componentURL.lastPathComponent)'")
+                return loadedItem
+            }
+            
+        } catch {
+            print("❌ DrawingManager: Failed to read referenced component '\(component.name)': \(error)")
+        }
+        
+        return nil
+    }
+    
+    /// Load inline component (no external references)
+    /// - Parameters:
+    ///   - component: Inline component prim
+    ///   - index: Component index for positioning
+    /// - Returns: LoadedUSDItem or nil if conversion fails
+    private func loadInlineComponent(_ component: USDPrim, index: Int) -> LoadedUSDItem? {
+        // Convert inline prim directly to entity
+        if let entity = USDEntityConverter.shared.convertToEntity(usdPrim: component) {
+            // Position inline components in a simple layout
+            let position = SIMD3<Float>(Float(index * 3), 0, 0)
+            entity.position = position
+            
+            // Create LoadedUSDItem (no source URL for inline)
+            let loadedItem = LoadedUSDItem(
+                sourceURL: URL(fileURLWithPath: "inline://\(component.name)"),
+                entity: entity,
+                position: position
+            )
+            
+            print("✅ DrawingManager: Loaded inline component '\(component.name)'")
+            return loadedItem
+        }
+        
+        return nil
+    }
+    
+    /// Store scene metadata for application state
+    /// - Parameter metadata: CustomData from scene file
+    private func storeSceneMetadata(_ metadata: [String: String]) {
+        print("🎛️ DrawingManager: Storing scene metadata...")
+        
+        // Store in UserDefaults for now (could be more sophisticated later)
+        for (key, value) in metadata {
+            let prefKey = "SceneMetadata_\(key)"
+            UserDefaults.standard.set(value, forKey: prefKey)
+            print("   📊 \(key): \(value)")
+        }
+    }
+    
+    /// Get stored scene metadata
+    /// - Parameter key: Metadata key to retrieve
+    /// - Returns: Stored value or nil
+    func getSceneMetadata(_ key: String) -> String? {
+        let prefKey = "SceneMetadata_\(key)"
+        return UserDefaults.standard.string(forKey: prefKey)
+    }
+    
+    /// Check if a project folder has a scene file
+    /// - Parameter projectFolder: NavigatorItem for project folder
+    /// - Returns: True if scene file exists
+    func hasSceneFile(_ projectFolder: NavigatorItem) -> Bool {
+        guard projectFolder.itemType == .folder,
+              let projectURL = projectFolder.url else {
+            return false
+        }
+        
+        let sceneFileName = "\(projectFolder.name).usd"
+        let sceneFileURL = projectURL.appendingPathComponent(sceneFileName)
+        return FileManager.default.fileExists(atPath: sceneFileURL.path)
+    }
+    
+    
+    
     // MARK: - Private Helper Methods
 
     private func createEntity(from prim: USDPrim) -> Entity? {
