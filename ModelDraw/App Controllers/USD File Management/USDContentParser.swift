@@ -342,24 +342,107 @@ class USDContentParser {
         return customData
     }
     
-    /// Parse geometry and other attributes from prim lines
+    /// Parse geometry and other attributes from prim lines (ENHANCED for arrays)
     func parseAttributes(from lines: [String]) throws -> [String: USDAttribute] {
         var attributes: [String: USDAttribute] = [:]
+        var i = 0
         
-        for line in lines {
+        while i < lines.count {
+            let line = lines[i]
+            
             // Skip customData lines and structural lines
             if line.contains("customData") || line.contains("{") || line.contains("}") ||
-               line.hasPrefix("def ") || line.hasPrefix("string ") || line.hasPrefix("uniform token") {
+                line.hasPrefix("def ") || line.hasPrefix("string ") || line.hasPrefix("uniform token") {
+                i += 1
                 continue
             }
             
-            // Parse attribute lines like: double height = 2.0
-            if let attribute = parseAttributeLine(line) {
-                attributes[attribute.name] = attribute
+            // Check if this line starts a multi-line array attribute
+            if isMultiLineArrayStart(line) {
+                let (attribute, nextIndex) = try parseMultiLineArrayAttribute(from: lines, startingAt: i)
+                if let attribute = attribute {
+                    attributes[attribute.name] = attribute
+                }
+                i = nextIndex
+            } else {
+                // Parse single-line attribute
+                if let attribute = parseAttributeLine(line) {
+                    attributes[attribute.name] = attribute
+                }
+                i += 1
             }
         }
         
         return attributes
+    }
+    
+    /// Check if a line starts a multi-line array attribute
+    private func isMultiLineArrayStart(_ line: String) -> Bool {
+        // Look for pattern like: point3f[] points = [
+        // or: int[] faceVertexIndices = [
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        
+        // Must contain [] for array type and end with = [
+        return trimmed.contains("[]") && trimmed.hasSuffix("= [")
+    }
+
+    /// Parse multi-line array attribute starting from a given line index
+    private func parseMultiLineArrayAttribute(from lines: [String], startingAt startIndex: Int) throws -> (USDAttribute?, Int) {
+        guard startIndex < lines.count else { return (nil, startIndex + 1) }
+        
+        let headerLine = lines[startIndex]
+        
+        // Parse header line: point3f[] points = [
+        let components = headerLine.components(separatedBy: "=")
+        guard components.count == 2 else { return (nil, startIndex + 1) }
+        
+        let leftSide = components[0].trimmingCharacters(in: .whitespaces)
+        let leftComponents = leftSide.components(separatedBy: .whitespaces)
+        guard leftComponents.count == 2 else { return (nil, startIndex + 1) }
+        
+        let valueType = leftComponents[0]  // e.g., "point3f[]"
+        let attributeName = leftComponents[1]  // e.g., "points"
+        
+        // Collect all lines until we find the closing ]
+        var arrayContent: [String] = []
+        var i = startIndex + 1  // Start after the header line
+        var foundClosing = false
+        
+        while i < lines.count && !foundClosing {
+            let line = lines[i].trimmingCharacters(in: .whitespaces)
+            
+            if line == "]" || line.hasSuffix("]") {
+                // Found closing bracket
+                if line != "]" {
+                    // Line contains content before the ]
+                    let contentBeforeBracket = line.replacingOccurrences(of: "]", with: "").trimmingCharacters(in: .whitespaces)
+                    if !contentBeforeBracket.isEmpty {
+                        arrayContent.append(contentBeforeBracket)
+                    }
+                }
+                foundClosing = true
+            } else if !line.isEmpty && !line.hasPrefix("#") {
+                // Add non-empty, non-comment lines
+                arrayContent.append(line)
+            }
+            
+            i += 1
+        }
+        
+        // Parse the collected array content
+        let fullArrayString = arrayContent.joined(separator: ", ")
+        let cleanedContent = fullArrayString.replacingOccurrences(of: ",", with: ", ")
+        
+        // Create the attribute
+        let attribute = USDAttribute(
+            name: attributeName,
+            value: cleanedContent,
+            valueType: valueType
+        )
+        
+        print("🔍 DEBUG: Parsed multi-line array '\(attributeName)' with content: \(cleanedContent)")
+        
+        return (attribute, i)
     }
     
     /// Parse a single attribute line
