@@ -94,6 +94,59 @@ class USDContentParser {
         )
     }
     
+    
+    // MARK: - USD Reference Parsing
+        
+        /// Parse USD references from prim header metadata
+        /// - Parameter headerLine: Prim definition line like 'def "Name" ( references = @./file.usd@ )'
+        /// - Returns: Array of parsed USDReference objects
+        func parseReferences(from headerLine: String) -> [USDReference] {
+            var references: [USDReference] = []
+            
+            // Look for references in parentheses: ( references = @./file.usd@ )
+            guard let openParen = headerLine.firstIndex(of: "("),
+                  let closeParen = headerLine.lastIndex(of: ")") else {
+                return references  // No metadata parentheses
+            }
+            
+            let metadataSection = String(headerLine[headerLine.index(after: openParen)..<closeParen])
+            
+            // Parse references = @./filename.usd@ syntax
+            if let referencePath = extractReferencePath(from: metadataSection) {
+                let reference = USDReference(referencePath: referencePath)
+                references.append(reference)
+            }
+            
+            return references
+        }
+        
+        /// Extract reference path from metadata section
+        /// - Parameter metadata: Content between parentheses
+        /// - Returns: Reference path string like "@./filename.usd@" or nil
+        private func extractReferencePath(from metadata: String) -> String? {
+            // Look for pattern: references = @./filename.usd@
+            let trimmed = metadata.trimmingCharacters(in: .whitespaces)
+            
+            // Simple pattern matching for references line
+            if trimmed.contains("references = ") {
+                // Find everything after "references = "
+                if let equalIndex = trimmed.range(of: "references = ") {
+                    let afterEquals = String(trimmed[equalIndex.upperBound...]).trimmingCharacters(in: .whitespaces)
+                    
+                    // Extract @...@ path
+                    if let startAt = afterEquals.firstIndex(of: "@"),
+                       let endAt = afterEquals.lastIndex(of: "@"),
+                       startAt != endAt {
+                        return String(afterEquals[startAt...endAt])
+                    }
+                }
+            }
+            
+            return nil
+        }
+            
+    
+    
     // MARK: - Root Prim Parsing
     
     /// Parse root-level USD prims from file content
@@ -174,10 +227,53 @@ class USDContentParser {
         return nil
     }
     
+    
     // MARK: - Prim Definition Parsing
     
-    /// Parse a complete USD prim definition block with nested children support
+    /// Parse prim definition with reference support (UPDATED METHOD)
     func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
+        let lines = primBlock.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        guard !lines.isEmpty else {
+            throw USDFileError.invalidUSDSyntax(line: 1, message: "Empty prim block")
+        }
+        
+        // Parse header to get type, name, AND references
+        let headerLine = lines[0]
+        let (primType, primName) = try parsePrimHeader(headerLine)
+        let references = parseReferences(from: headerLine)  // ← NEW: Parse references
+        
+        // Split content into parent content and child blocks
+        let (parentLines, childBlocks) = try separateParentAndChildContent(from: lines)
+        
+        // Parse parent content only
+        let metadata = try parseCustomData(from: parentLines)
+        let attributes = try parseAttributes(from: parentLines)
+        let transform = try parseTransform(from: parentLines)
+        
+        // Recursively parse child prims
+        var children: [USDPrim] = []
+        for childBlock in childBlocks {
+            let childPrim = try parsePrimDefinition(childBlock)
+            children.append(childPrim)
+        }
+        
+        return USDPrim(
+            name: primName,
+            type: primType,
+            attributes: attributes,
+            transform: transform,
+            children: children,
+            metadata: metadata,
+            references: references  // ← NEW: Include references
+        )
+    }
+
+    
+    /// Parse a complete USD prim definition block with nested children support
+    /*func parsePrimDefinition(_ primBlock: String) throws -> USDPrim {
         let lines = primBlock.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
@@ -212,7 +308,7 @@ class USDContentParser {
             children: children,
             metadata: metadata
         )
-    }
+    } */
     
     /// Parse the prim header line to extract type and name
     private func parsePrimHeader(_ headerLine: String) throws -> (type: String, name: String) {
