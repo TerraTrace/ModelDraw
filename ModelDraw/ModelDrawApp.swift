@@ -26,7 +26,7 @@ struct ModelDrawApp: App {
             //testAttributeParsingDebug()
             //testSimpleSpacecraftParsing()
             //testSimpleSpacecraftBlockExtraction()
-            testUSDReadWriteCycle()
+            //testUSDReadWriteCycle()
             
         } catch {
             print("❌ Failed to initialize DrawingManager: \(error)")

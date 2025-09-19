@@ -18,6 +18,13 @@
 		A9280AC52E7C86F400FE161A /* ToolsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC42E7C86F200FE161A /* ToolsHeaderView.swift */; };
 		A9280AC72E7C871200FE161A /* ToolGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC62E7C871000FE161A /* ToolGroupView.swift */; };
 		A9280AC92E7C873200FE161A /* ToolButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AC82E7C873000FE161A /* ToolButtonView.swift */; };
+		A9280ACD2E7CDB5E00FE161A /* ProjectNavigatorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ACC2E7CDB5D00FE161A /* ProjectNavigatorSection.swift */; };
+		A9280ACF2E7CDB8D00FE161A /* ProjectNavigatorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ACE2E7CDB8A00FE161A /* ProjectNavigatorHeaderView.swift */; };
+		A9280AD12E7CDBBB00FE161A /* ProjectNavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD02E7CDBBA00FE161A /* ProjectNavigatorRowView.swift */; };
+		A9280AD32E7CDBED00FE161A /* ProjectNavigatorEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD22E7CDBEB00FE161A /* ProjectNavigatorEmptyView.swift */; };
+		A9280AD52E7CDC4C00FE161A /* FileNavigatorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */; };
+		A9280AD82E7CDCA100FE161A /* FileNavigatorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */; };
+		A9280ADA2E7CDCC700FE161A /* FileNavigatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */; };
 		A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */; };
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
@@ -33,7 +40,6 @@
 		A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D12E76EBF900540DEE /* LeftPaletteView.swift */; };
 		A97FE4D42E76EC3D00540DEE /* CenterRealityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */; };
 		A97FE4D62E76EC8800540DEE /* RightPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D52E76EC8600540DEE /* RightPanelView.swift */; };
-		A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */; };
 		A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E12E77557000540DEE /* DrawingManager.swift */; };
 		A97FE4E62E78116000540DEE /* SelectedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E52E78115E00540DEE /* SelectedItem.swift */; };
 		A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97FE4E72E782F5000540DEE /* NavigatorItem.swift */; };
@@ -55,6 +61,13 @@
 		A9280AC42E7C86F200FE161A /* ToolsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsHeaderView.swift; sourceTree = "<group>"; };
 		A9280AC62E7C871000FE161A /* ToolGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolGroupView.swift; sourceTree = "<group>"; };
 		A9280AC82E7C873000FE161A /* ToolButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolButtonView.swift; sourceTree = "<group>"; };
+		A9280ACC2E7CDB5D00FE161A /* ProjectNavigatorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorSection.swift; sourceTree = "<group>"; };
+		A9280ACE2E7CDB8A00FE161A /* ProjectNavigatorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorHeaderView.swift; sourceTree = "<group>"; };
+		A9280AD02E7CDBBA00FE161A /* ProjectNavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorRowView.swift; sourceTree = "<group>"; };
+		A9280AD22E7CDBEB00FE161A /* ProjectNavigatorEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorEmptyView.swift; sourceTree = "<group>"; };
+		A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorSection.swift; sourceTree = "<group>"; };
+		A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorHeaderView.swift; sourceTree = "<group>"; };
+		A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorItemView.swift; sourceTree = "<group>"; };
 		A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.2.md; sourceTree = "<group>"; };
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
@@ -70,7 +83,6 @@
 		A97FE4D12E76EBF900540DEE /* LeftPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftPaletteView.swift; sourceTree = "<group>"; };
 		A97FE4D32E76EC3C00540DEE /* CenterRealityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterRealityView.swift; sourceTree = "<group>"; };
 		A97FE4D52E76EC8600540DEE /* RightPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightPanelView.swift; sourceTree = "<group>"; };
-		A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorRowView.swift; sourceTree = "<group>"; };
 		A97FE4E12E77557000540DEE /* DrawingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingManager.swift; sourceTree = "<group>"; };
 		A97FE4E52E78115E00540DEE /* SelectedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedItem.swift; sourceTree = "<group>"; };
 		A97FE4E72E782F5000540DEE /* NavigatorItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorItem.swift; sourceTree = "<group>"; };
@@ -117,6 +129,27 @@
 				A9280AC02E7C86A300FE161A /* EmptySelectionView.swift */,
 			);
 			path = "Property Views";
+			sourceTree = "<group>";
+		};
+		A9280AD62E7CDC5700FE161A /* Project Navigator Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9280ACC2E7CDB5D00FE161A /* ProjectNavigatorSection.swift */,
+				A9280ACE2E7CDB8A00FE161A /* ProjectNavigatorHeaderView.swift */,
+				A9280AD02E7CDBBA00FE161A /* ProjectNavigatorRowView.swift */,
+				A9280AD22E7CDBEB00FE161A /* ProjectNavigatorEmptyView.swift */,
+			);
+			path = "Project Navigator Views";
+			sourceTree = "<group>";
+		};
+		A9280ADB2E7CDCF500FE161A /* File Navigator Views */ = {
+			isa = PBXGroup;
+			children = (
+				A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */,
+				A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */,
+				A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */,
+			);
+			path = "File Navigator Views";
 			sourceTree = "<group>";
 		};
 		A93192172E79D31500025A3D /* USD File Management */ = {
@@ -174,7 +207,8 @@
 			isa = PBXGroup;
 			children = (
 				A97FE4D12E76EBF900540DEE /* LeftPaletteView.swift */,
-				A97FE4D72E76F02F00540DEE /* NavigatorRowView.swift */,
+				A9280AD62E7CDC5700FE161A /* Project Navigator Views */,
+				A9280ADB2E7CDCF500FE161A /* File Navigator Views */,
 			);
 			path = LeftPanel;
 			sourceTree = "<group>";
@@ -331,6 +365,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9280AD82E7CDCA100FE161A /* FileNavigatorHeaderView.swift in Sources */,
 				A93192282E7C2AF600025A3D /* USDEntityConverter.swift in Sources */,
 				A931921D2E7AC45300025A3D /* LoadedUSDItem.swift in Sources */,
 				A9280ABB2E7C863400FE161A /* ItemHeaderView.swift in Sources */,
@@ -339,13 +374,16 @@
 				A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */,
 				A97FE4D22E76EBFA00540DEE /* LeftPaletteView.swift in Sources */,
 				A9DEB6052E741D2B0024A4A4 /* ViewModel.swift in Sources */,
+				A9280ACF2E7CDB8D00FE161A /* ProjectNavigatorHeaderView.swift in Sources */,
 				A96A5AE62E78A85100329151 /* Quaternion.swift in Sources */,
 				A96A5AE72E78A85100329151 /* Vector3d.swift in Sources */,
 				A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */,
 				A9280AC52E7C86F400FE161A /* ToolsHeaderView.swift in Sources */,
+				A9280AD12E7CDBBB00FE161A /* ProjectNavigatorRowView.swift in Sources */,
 				A97FE4D62E76EC8800540DEE /* RightPanelView.swift in Sources */,
 				A9280AB32E7C82B400FE161A /* PropertiesSection.swift in Sources */,
 				A9280AB92E7C85CE00FE161A /* PropertiesHeaderView.swift in Sources */,
+				A9280ACD2E7CDB5E00FE161A /* ProjectNavigatorSection.swift in Sources */,
 				A9DEB6022E741D090024A4A4 /* ContentView.swift in Sources */,
 				A97FE4E62E78116000540DEE /* SelectedItem.swift in Sources */,
 				A97FE4D42E76EC3D00540DEE /* CenterRealityView.swift in Sources */,
@@ -356,10 +394,12 @@
 				A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */,
 				A9280AB52E7C831800FE161A /* SelectedItemProperties.swift in Sources */,
 				A9280AC32E7C86D200FE161A /* ToolsSection.swift in Sources */,
+				A9280ADA2E7CDCC700FE161A /* FileNavigatorItemView.swift in Sources */,
 				A9280ABF2E7C868600FE161A /* PropertyRowView.swift in Sources */,
 				A9280AC72E7C871200FE161A /* ToolGroupView.swift in Sources */,
+				A9280AD32E7CDBED00FE161A /* ProjectNavigatorEmptyView.swift in Sources */,
 				A93192252E7B10FB00025A3D /* CameraController.swift in Sources */,
-				A97FE4D82E76F03000540DEE /* NavigatorRowView.swift in Sources */,
+				A9280AD52E7CDC4C00FE161A /* FileNavigatorSection.swift in Sources */,
 				A9280AC92E7C873200FE161A /* ToolButtonView.swift in Sources */,
 				A96A5AEE2E78ADDC00329151 /* USDCoreTypes.swift in Sources */,
 			);

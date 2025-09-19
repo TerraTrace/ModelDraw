@@ -186,7 +186,7 @@ class CameraController {
             
             // Set camera to orbit around origin with appropriate distance
             // note that sceneCenter camera ALWAYS points at [0,0,0]
-            viewModel.cameraPosition = [-4.0, 2, 0]  // Camera at -X axis
+            viewModel.cameraPosition = [-8.0, 5, 0]  // Camera at -X axis
             //viewModel.cameraRotation = simd_quatf(angle: 0, axis: [0, 1, 0])
             // for a camera facing AWAY from the vernal equinox, use the following
             //viewModel.cameraPosition = [4.0, 0, 0]  // Camera at +X axis

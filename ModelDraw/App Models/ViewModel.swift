@@ -20,6 +20,10 @@ class ViewModel {
     private(set) var navigatorData: [NavigatorItem] = []
     private(set) var selectedItem: NavigatorItem?
     
+    /// ID of currently selected entity in the 3D scene
+    var selectedSceneEntityID: UUID? = nil
+
+    
     // MARK: - 3D Scene State (for future drag/drop)
     private(set) var loadedUSDItems: [LoadedUSDItem] = []
     
@@ -92,6 +96,11 @@ class ViewModel {
         print("🔄 ViewModel: Navigator data refreshed")
     }
     
+    /// Select an entity in the 3D scene by ID
+    func selectSceneEntity(_ entityID: UUID) {
+        selectedSceneEntityID = entityID
+        print("🎯 Selected scene entity with ID: \(entityID)")
+    }
     
     // MARK: - Pproject Persistence Methods
     
@@ -187,6 +196,13 @@ class ViewModel {
         
         if let item = item {
             print("📋 ViewModel: Selected \(item.itemType == .folder ? "folder" : "USD file"): \(item.name)")
+            
+            // Check if user selected a project folder
+            if item.itemType == .folder && (item.name == "CargoDragon" || item.name == "StarLiner") {
+                setActiveProject(item.name)
+                autoLoadProjectUSDFiles(item)  // Load the USD files immediately
+            }
+            
             print("✅ ViewModel: + button enabled")
         } else {
             print("📋 ViewModel: Cleared selection")
@@ -194,6 +210,13 @@ class ViewModel {
         }
     }
 
+    // Helper to detect if a folder is a project folder
+    private func isProjectFolder(_ item: NavigatorItem) -> Bool {
+        // Check if this folder is directly under "Projects"
+        // You'd need to track parent relationships or check the path
+        return item.name == "CargoDragon" || item.name == "StarLiner" // Simple for now
+    }
+    
     /// Enter placement mode when + button is clicked
     func enterPlacementMode() {
         guard selectedItem != nil else { return }
