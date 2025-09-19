@@ -19,8 +19,8 @@ class USDEntityConverter {
     
     // MARK: - Specialized Converters (Conductor's Band Sections)
     private let primitiveConverter = PrimitiveConverter()
-    // Future: private let meshConverter = MeshConverter()
-    // Future: private let assemblyConverter = AssemblyConverter()
+    private let meshConverter = USDMeshConverter()
+    // Future: private let assemblyConverter = USDAssemblyConverter()
     
     // MARK: - Main Conductor Method
     
@@ -36,6 +36,10 @@ class USDEntityConverter {
             return primitiveConverter.convertCylinder(usdPrim)
         case "Cone":
             return primitiveConverter.convertCone(usdPrim)
+        case "Mesh":
+            return meshConverter.convertMesh(usdPrim)
+        case "GeomMesh":
+            return meshConverter.convertMesh(usdPrim)
         case "Xform":
             // Assembly - has children, needs special handling
             return convertAssembly(usdPrim)

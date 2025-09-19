@@ -167,8 +167,8 @@
 		A93192262E7C2A7C00025A3D /* USD Entity Converters */ = {
 			isa = PBXGroup;
 			children = (
-				A9280ADE2E7D6AFB00FE161A /* USDMeshConverter.swift */,
 				A93192272E7C2AF400025A3D /* USDEntityConverter.swift */,
+				A9280ADE2E7D6AFB00FE161A /* USDMeshConverter.swift */,
 			);
 			path = "USD Entity Converters";
 			sourceTree = "<group>";
