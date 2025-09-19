@@ -24,7 +24,7 @@
 		A9280AD32E7CDBED00FE161A /* ProjectNavigatorEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD22E7CDBEB00FE161A /* ProjectNavigatorEmptyView.swift */; };
 		A9280AD52E7CDC4C00FE161A /* FileNavigatorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */; };
 		A9280AD82E7CDCA100FE161A /* FileNavigatorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */; };
-		A9280ADA2E7CDCC700FE161A /* FileNavigatorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */; };
+		A9280ADD2E7CE2D400FE161A /* NavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ADC2E7CE2D200FE161A /* NavigatorRowView.swift */; };
 		A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */; };
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
@@ -67,7 +67,7 @@
 		A9280AD22E7CDBEB00FE161A /* ProjectNavigatorEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorEmptyView.swift; sourceTree = "<group>"; };
 		A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorSection.swift; sourceTree = "<group>"; };
 		A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorHeaderView.swift; sourceTree = "<group>"; };
-		A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorItemView.swift; sourceTree = "<group>"; };
+		A9280ADC2E7CE2D200FE161A /* NavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorRowView.swift; sourceTree = "<group>"; };
 		A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.2.md; sourceTree = "<group>"; };
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 			children = (
 				A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */,
 				A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */,
-				A9280AD92E7CDCC500FE161A /* FileNavigatorItemView.swift */,
+				A9280ADC2E7CE2D200FE161A /* NavigatorRowView.swift */,
 			);
 			path = "File Navigator Views";
 			sourceTree = "<group>";
@@ -390,11 +390,11 @@
 				A96A5AF02E78AE1100329151 /* USDFileManager.swift in Sources */,
 				A9DEB6032E741D090024A4A4 /* ModelDrawApp.swift in Sources */,
 				A96A5AF22E78AE9100329151 /* USDFileManagerTests.swift in Sources */,
+				A9280ADD2E7CE2D400FE161A /* NavigatorRowView.swift in Sources */,
 				A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */,
 				A97FE4E22E77557600540DEE /* DrawingManager.swift in Sources */,
 				A9280AB52E7C831800FE161A /* SelectedItemProperties.swift in Sources */,
 				A9280AC32E7C86D200FE161A /* ToolsSection.swift in Sources */,
-				A9280ADA2E7CDCC700FE161A /* FileNavigatorItemView.swift in Sources */,
 				A9280ABF2E7C868600FE161A /* PropertyRowView.swift in Sources */,
 				A9280AC72E7C871200FE161A /* ToolGroupView.swift in Sources */,
 				A9280AD32E7CDBED00FE161A /* ProjectNavigatorEmptyView.swift in Sources */,

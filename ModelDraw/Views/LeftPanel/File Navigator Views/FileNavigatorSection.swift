@@ -8,7 +8,6 @@
 import SwiftUI
 
 
-// MARK: - File Navigator Section (Bottom)
 struct FileNavigatorSection: View {
     @Environment(ViewModel.self) private var model
     
@@ -17,20 +16,15 @@ struct FileNavigatorSection: View {
             // File Navigator Header
             FileNavigatorHeaderView()
             
-            // File Navigator Content
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 2) {
-                    ForEach(model.navigatorData, id: \.id) { item in
-                        FileNavigatorItemView(item: item, level: 0)
-                    }
+            // File Navigator Content - RESTORED OutlineGroup
+            List {
+                OutlineGroup(model.navigatorData, children: \.children) { item in
+                    NavigatorRowView(item: item)
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .listStyle(.sidebar)  // This gives proper macOS sidebar styling
         }
         .frame(minHeight: 300) // Minimum height for file section
     }
 }
-
 
