@@ -22,29 +22,9 @@ struct CenterRealityView: View {
         RealityView { content in
             content.camera = .virtual
             content.add(camera)
-
-            // Create and add the engineering grid immediately
-            let grid = createEngineeringGrid()
-            content.add(grid)
             
-            print("🎯 CenterRealityView: Engineering grid added to scene")
-        } update: { content in
-            // Enhanced camera update - routes based on camera MODE, not shift state
-            switch model.cameraMode {
-            case .sceneCenter:
-                // Scene center mode: Always use camera.look() to look at origin
-                // (Pivot gestures in scene center mode are temporary - camera snaps back)
-                camera.look(at: .zero, from: model.cameraPosition, relativeTo: nil)
-                //print("🎯 Camera update: SceneCenter mode - looking at origin")
-                
-            case .freeFlier:
-                // FreeFlier mode: Always apply position and rotation directly
-                camera.position = model.cameraPosition
-                camera.orientation = model.cameraRotation
-                //print("🎯 Camera update: FreeFlier mode - pos=\(model.cameraPosition)")
-            }
+            camera.look(at: .zero, from: model.cameraPosition, relativeTo: nil)
             
-            // Only check for entities when flag indicates new ones exist
             if model.hasNewEntities {
                 let newEntities = model.getNewEntitiesForScene()
                 for entity in newEntities {
@@ -53,7 +33,12 @@ struct CenterRealityView: View {
                 }
             }
 
-        }
+            // Create and add the engineering grid immediately
+            let grid = createEngineeringGrid()
+            content.add(grid)
+            
+            print("🎯 CenterRealityView: Engineering grid added to scene")
+        } update: { content in }  // trying to keep .update empty if possible
         .overlay {
             // Cursor circle overlay for placement mode
             if model.isPlacementMode && isMouseInCanvas {
