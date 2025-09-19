@@ -104,24 +104,40 @@ class ViewModel {
     
     // MARK: - Pproject Persistence Methods
     
-    /// Load the last active project and auto-load its USD files
+    /// Load the last active project using DrawingManager
     func loadLastActiveProject() {
-        guard let lastProject = UserDefaults.standard.string(forKey: lastProjectKey) else {
-            print("📂 No last project found")
+        guard let projectFolder = findActiveProject() else {
+            print("📂 No active project found")
             return
         }
         
-        print("📂 Loading last active project: \(lastProject)")
+        print("📂 Loading active project: \(projectFolder.name)")
+        
+        // Use DrawingManager to load the project
+        let loadedItems = drawingManager.loadProjectFromSceneFile(projectFolder)
+        
+        // Update ViewModel state
+        self.loadedUSDItems = loadedItems
+        self.hasNewEntities = !loadedItems.isEmpty
+        
+        print("✅ ViewModel: Loaded \(loadedItems.count) items from scene file")
+    }
+    
+    /// Find the active project folder in navigator data
+    /// - Returns: NavigatorItem for active project or nil if not found
+    private func findActiveProject() -> NavigatorItem? {
+        guard let lastProject = UserDefaults.standard.string(forKey: lastProjectKey) else {
+            return nil
+        }
         
         // Find the project folder in navigatorData
         guard let projectsFolder = navigatorData.first(where: { $0.name == "Projects" }),
               let targetProject = projectsFolder.children?.first(where: { $0.name == lastProject }) else {
-            print("⚠️ Last project '\(lastProject)' not found in navigator")
-            return
+            print("⚠️ Project '\(lastProject)' not found in navigator")
+            return nil
         }
         
-        // Auto-load all USD files from this project
-        autoLoadProjectUSDFiles(targetProject)
+        return targetProject
     }
     
     /// Set the active project (call when user selects a new project folder)
@@ -129,57 +145,8 @@ class ViewModel {
         UserDefaults.standard.set(projectName, forKey: lastProjectKey)
         print("💾 Set active project: \(projectName)")
     }
+    
 
-    /// Auto-load all USD files from a project folder
-    private func autoLoadProjectUSDFiles(_ projectFolder: NavigatorItem) {
-        guard projectFolder.itemType == .folder,
-              let usdFiles = projectFolder.children?.filter({ $0.itemType == .usdFile }) else {
-            print("📄 No USD files found in project")
-            return
-        }
-        
-        print("📄 Auto-loading \(usdFiles.count) USD files from \(projectFolder.name)")
-        
-        // Load each USD file into the scene
-        for (index, usdFile) in usdFiles.enumerated() {
-            let position = SIMD3<Float>(
-                Float(index * 3) - Float(usdFiles.count) * 1.5, // Spread them out in X
-                0,
-                0
-            )
-            loadUSDFileToScene(usdFile, at: position)
-        }
-    }
-
-    /// Load a USD file to the scene at a specific position
-    private func loadUSDFileToScene(_ item: NavigatorItem, at position: SIMD3<Float>) {
-        guard let url = item.url else { return }
-        
-        // Use your existing USD loading pipeline
-        switch item.itemType {
-        case .usdFile:
-            // Reuse the same logic from placeItemAtLocation but with specific position
-            do {
-                let usdFile = try usdFileManager.readUSDFile(from: url)
-                
-                if let prim = usdFile.rootPrims.first,
-                   let entity = USDEntityConverter.shared.convertToEntity(usdPrim: prim) {
-                    entity.position = position
-                    entity.name = item.name
-                    
-                    let loadedItem = LoadedUSDItem(sourceURL: url, entity: entity, position: position)
-                    loadedUSDItems.append(loadedItem)
-                    hasNewEntities = true
-                    
-                    print("✅ Auto-loaded '\(item.name)' at position \(position)")
-                }
-            } catch {
-                print("❌ Failed to auto-load '\(item.name)': \(error)")
-            }
-        case .folder:
-            break // Don't auto-load folders
-        }
-    }
     
     
     // MARK: - USD File Placement Methods
@@ -200,14 +167,14 @@ class ViewModel {
             // Check if user selected a project folder
             if item.itemType == .folder && (item.name == "CargoDragon" || item.name == "StarLiner") {
                 setActiveProject(item.name)
-                autoLoadProjectUSDFiles(item)  // Load the USD files immediately
+                //autoLoadProjectUSDFiles(item)  // Load the USD files immediately
             }
             
             print("✅ ViewModel: + button enabled")
         } else {
             print("📋 ViewModel: Cleared selection")
             print("❌ ViewModel: + button disabled")
-        }
+        } 
     }
 
     // Helper to detect if a folder is a project folder
