@@ -25,6 +25,7 @@
 		A9280AD52E7CDC4C00FE161A /* FileNavigatorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */; };
 		A9280AD82E7CDCA100FE161A /* FileNavigatorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */; };
 		A9280ADD2E7CE2D400FE161A /* NavigatorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ADC2E7CE2D200FE161A /* NavigatorRowView.swift */; };
+		A9280ADF2E7D6AFD00FE161A /* USDMeshConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9280ADE2E7D6AFB00FE161A /* USDMeshConverter.swift */; };
 		A93192162E79C8E300025A3D /* usd_file_manager_spec_v1.2.md in Resources */ = {isa = PBXBuildFile; fileRef = A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */; };
 		A93192192E79D32F00025A3D /* USDContentGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93192182E79D32D00025A3D /* USDContentGenerator.swift */; };
 		A931921B2E79D57600025A3D /* USDContentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A931921A2E79D56B00025A3D /* USDContentParser.swift */; };
@@ -68,6 +69,7 @@
 		A9280AD42E7CDC4900FE161A /* FileNavigatorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorSection.swift; sourceTree = "<group>"; };
 		A9280AD72E7CDC9F00FE161A /* FileNavigatorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNavigatorHeaderView.swift; sourceTree = "<group>"; };
 		A9280ADC2E7CE2D200FE161A /* NavigatorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigatorRowView.swift; sourceTree = "<group>"; };
+		A9280ADE2E7D6AFB00FE161A /* USDMeshConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDMeshConverter.swift; sourceTree = "<group>"; };
 		A93192152E79C8E300025A3D /* usd_file_manager_spec_v1.2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = usd_file_manager_spec_v1.2.md; sourceTree = "<group>"; };
 		A93192182E79D32D00025A3D /* USDContentGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentGenerator.swift; sourceTree = "<group>"; };
 		A931921A2E79D56B00025A3D /* USDContentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDContentParser.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 		A93192262E7C2A7C00025A3D /* USD Entity Converters */ = {
 			isa = PBXGroup;
 			children = (
+				A9280ADE2E7D6AFB00FE161A /* USDMeshConverter.swift */,
 				A93192272E7C2AF400025A3D /* USDEntityConverter.swift */,
 			);
 			path = "USD Entity Converters";
@@ -380,6 +383,7 @@
 				A97FE4E82E782F5200540DEE /* NavigatorItem.swift in Sources */,
 				A9280AC52E7C86F400FE161A /* ToolsHeaderView.swift in Sources */,
 				A9280AD12E7CDBBB00FE161A /* ProjectNavigatorRowView.swift in Sources */,
+				A9280ADF2E7D6AFD00FE161A /* USDMeshConverter.swift in Sources */,
 				A97FE4D62E76EC8800540DEE /* RightPanelView.swift in Sources */,
 				A9280AB32E7C82B400FE161A /* PropertiesSection.swift in Sources */,
 				A9280AB92E7C85CE00FE161A /* PropertiesHeaderView.swift in Sources */,
