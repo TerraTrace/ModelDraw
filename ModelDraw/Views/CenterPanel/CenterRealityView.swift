@@ -93,7 +93,8 @@ struct CenterRealityView: View {
                     },
                 MagnificationGesture()
                     .onChanged { value in
-                        cameraController.handleZoomGesture(zoomFactor: Float(value))
+                        cameraController.handleZoomGesture(zoomFactor: Float(value), camera: camera)
+                        print("🎯 MagnificationGesture")
                     }
             )
         )

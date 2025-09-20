@@ -44,6 +44,7 @@ class CameraController {
 
     /// Primary perspective camera for orbital visualization
     private var primaryCamera: PerspectiveCamera?
+    private var cameraDistance: Float = 10.0
 
     
     // MARK: - ViewModel Reference
@@ -310,8 +311,51 @@ class CameraController {
     /// Handle zoom gesture for camera distance adjustment (trackpad pinch)
     /// Updates camera distance while maintaining current orbital position
     /// FIXED: Now preserves both orbital and elevation angles during zoom
+    /// - Parameters:
+    ///   - zoomFactor: Zoom multiplier (>1.0 = zoom in, <1.0 = zoom out)
+    ///   - camera: PerspectiveCamera to update directly via Entity.Observable
+    func handleZoomGesture(zoomFactor: Float, camera: PerspectiveCamera) {
+        // Apply zoom limits to prevent camera going too close or too far
+        // Reasonable limits for spacecraft mission visualization
+        guard zoomFactor > 0.1 && zoomFactor < 10.0 else {
+            print("🔍 Zoom factor \(zoomFactor) outside safe limits, ignoring")
+            return
+        }
+        
+        // Calculate new distance by applying zoom factor to current distance
+        // Division by factor: factor > 1.0 = zoom in (closer), factor < 1.0 = zoom out (farther)
+        let currentDistance = cameraDistance  // Use local property
+        let newDistance = max(1.0, min(50.0, currentDistance / zoomFactor))  // Enforce distance bounds
+        
+        // Update local distance for orbit radius tracking
+        cameraDistance = newDistance
+        
+        // Calculate new position preserving both orbital AND elevation angles
+        let currentOrbitalAngle = orbitalAngle
+        let currentElevationAngle = elevationAngle
+        
+        // Calculate new camera position using spherical coordinates
+        let cosElevation = cos(currentElevationAngle)
+        let sinElevation = sin(currentElevationAngle)
+        
+        let newPosition = SIMD3<Float>(
+            newDistance * cosElevation * sin(currentOrbitalAngle),    // X position
+            newDistance * sinElevation,                               // Y position
+            newDistance * cosElevation * cos(currentOrbitalAngle)     // Z position
+        )
+        
+        // Direct Entity.Observable update
+        camera.position = newPosition
+        
+        print("🔍 Zoom applied: factor=\(zoomFactor), oldDistance=\(currentDistance), newDistance=\(newDistance)")
+        print("🔍 Position preserved: orbital=\(currentOrbitalAngle), elevation=\(currentElevationAngle)")
+    }
+    
+    /// Handle zoom gesture for camera distance adjustment (trackpad pinch)
+    /// Updates camera distance while maintaining current orbital position
+    /// FIXED: Now preserves both orbital and elevation angles during zoom
     /// - Parameter zoomFactor: Zoom multiplier (>1.0 = zoom in, <1.0 = zoom out)
-    func handleZoomGesture(zoomFactor: Float) {
+    /*func handleZoomGesture(zoomFactor: Float) {
         guard let viewModel = viewModel else {
             print("⚠️ CameraController.handleZoomGesture: No ViewModel reference available")
             return
@@ -343,7 +387,7 @@ class CameraController {
         
         print("🔍 Zoom applied: factor=\(zoomFactor), oldDistance=\(currentDistance), newDistance=\(newDistance)")
         print("🔍 Position preserved: orbital=\(currentOrbitalAngle), elevation=\(currentElevationAngle)")
-    }
+    } */
 
     /// Handle scroll wheel zoom events for mouse users
     /// - Parameter deltaY: Scroll wheel delta (positive = zoom in, negative = zoom out)
