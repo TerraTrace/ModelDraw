@@ -22,7 +22,7 @@ struct CenterRealityView: View {
         RealityView { content in
             content.camera = .virtual
             content.add(camera)
-            cameraController.primaryCamera? = camera
+            cameraController.primaryCamera = camera
             
             camera.look(at: .zero, from: model.cameraPosition, relativeTo: nil)
             
@@ -75,7 +75,7 @@ struct CenterRealityView: View {
                             // Scene center mode: orbit vs pivot based on shift
                             if model.shiftPressed {
                                 print("🎯 SceneCenter + Shift: pivot gesture")
-                                cameraController.handleCameraPivotGesture(translation: value.translation)
+                                cameraController.handleCameraPivotGesture(translation: value.translation, camera: camera)
                             } else {
                                 print("🎯 SceneCenter: orbit gesture")
                                 cameraController.handleSimpleOrbitGesture(translation: value.translation, camera: camera)
@@ -89,7 +89,7 @@ struct CenterRealityView: View {
                                 cameraController.handleFreeFlierTranslateGesture(translation: value.translation)
                             } else {
                                 print("🎯 FreeFlier: translate gesture")
-                                cameraController.handleCameraPivotGesture(translation: value.translation)
+                                cameraController.handleCameraPivotGesture(translation: value.translation, camera: camera)
                             }
                         }
                     },

@@ -589,11 +589,50 @@ class CameraController {
     
     // MARK: - Camera Pivot Gesture Handler
         
+    /// Handle camera pivot gesture for free-look rotation around current position
+    /// Migrated to Entity.Observable - directly updates camera Entity instead of ViewModel
+    /// Horizontal drag = yaw rotation around world Y-axis, Vertical drag = pitch around local X-axis
+    /// - Parameters:
+    ///   - translation: 2D drag translation from SwiftUI DragGesture
+    ///   - camera: PerspectiveCamera to update directly via Entity.Observable
+    func handleCameraPivotGesture(translation: CGSize, camera: PerspectiveCamera) {
+        // Use proven sensitivity values for smooth free-look camera control
+        let rotationSensitivity: Float = 0.002  // Matches other gesture sensitivities
+        
+        // Calculate rotation deltas from drag translation
+        let horizontalDelta = Float(translation.width) * rotationSensitivity
+        let verticalDelta = Float(translation.height) * rotationSensitivity
+        
+        // Get current camera rotation quaternion from Entity.Observable source
+        let currentRotation = camera.orientation
+        
+        // Create horizontal rotation (yaw) around world Y-axis
+        // Positive horizontalDelta = rotate left, negative = rotate right
+        let yawRotation = simd_quatf(angle: -horizontalDelta, axis: SIMD3<Float>(0, 1, 0))
+        
+        // Create vertical rotation (pitch) around camera's local X-axis
+        // Positive verticalDelta = rotate down, negative = rotate up
+        let pitchRotation = simd_quatf(angle: verticalDelta, axis: SIMD3<Float>(1, 0, 0))
+        
+        // Apply rotations: first pitch (local), then yaw (world)
+        // Order matters for proper free-look behavior
+        let newRotation = yawRotation * currentRotation * pitchRotation
+        
+        // Direct Entity.Observable update - SwiftUI automatically observes changes
+        camera.orientation = newRotation
+        
+        print("🎮 Camera pivot: yaw=\(horizontalDelta), pitch=\(verticalDelta)")
+        print("🎮 New rotation: \(newRotation)")
+        
+        // Note: Camera position stays unchanged - only rotation changes
+    }
+    
+    
         /// Handle camera pivot gesture for free-look rotation around current position
         /// Camera stays in same location but rotates to look in different directions
         /// Uses same sensitivity as orbit gesture for consistent control feel
         /// - Parameter translation: 2D drag translation from SwiftUI DragGesture
-        func handleCameraPivotGesture(translation: CGSize) {
+        /*func handleCameraPivotGesture(translation: CGSize) {
             guard let viewModel = viewModel else {
                 print("⚠️ CameraController.handleCameraPivotGesture: No ViewModel reference available")
                 return
@@ -630,7 +669,7 @@ class CameraController {
             
             // Note: Camera position stays unchanged - only rotation changes
             // The RealityView update block will apply this rotation via camera.look()
-        }
+        } */
     
     
     // MARK: - Ray Casting for Drag-and-Drop
