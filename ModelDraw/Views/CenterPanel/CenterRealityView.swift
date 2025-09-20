@@ -22,6 +22,7 @@ struct CenterRealityView: View {
         RealityView { content in
             content.camera = .virtual
             content.add(camera)
+            cameraController.primaryCamera? = camera
             
             camera.look(at: .zero, from: model.cameraPosition, relativeTo: nil)
             

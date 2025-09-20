@@ -45,7 +45,7 @@ class CameraController {
     // MARK: - Camera System Properties
 
     /// Primary perspective camera for orbital visualization
-    private var primaryCamera: PerspectiveCamera?
+    var primaryCamera: PerspectiveCamera?
     private var cameraDistance: Float = 10.0
 
     
@@ -477,8 +477,24 @@ class CameraController {
     } */
 
     /// Handle scroll wheel zoom events for mouse users
+    /// Migrated to Entity.Observable - delegates to main zoom method for consistency
     /// - Parameter deltaY: Scroll wheel delta (positive = zoom in, negative = zoom out)
     private func handleScrollWheelZoom(deltaY: CGFloat) {
+        guard let camera = primaryCamera else {
+            print("⚠️ CameraController.handleScrollWheelZoom: No camera reference available")
+            return
+        }
+        
+        // Convert scroll delta to zoom factor using sensitivity
+        let zoomFactor = 1.0 + Float(deltaY) * scrollSensitivity
+        
+        // Delegate to the Entity.Observable zoom method for consistency
+        handleZoomGesture(zoomFactor: zoomFactor, camera: camera)
+    }
+    
+    /// Handle scroll wheel zoom events for mouse users
+    /// - Parameter deltaY: Scroll wheel delta (positive = zoom in, negative = zoom out)
+    /*private func handleScrollWheelZoom(deltaY: CGFloat) {
         guard let viewModel = viewModel else { return }
         
         // Convert scroll delta to zoom factor using sensitivity
@@ -501,7 +517,7 @@ class CameraController {
         updateSphericalOrbitPosition(orbitalAngle: currentOrbitalAngle, elevationAngle: currentElevationAngle)
         
         print("🖱️ Scroll zoom: deltaY=\(deltaY), newDistance=\(newDistance)")
-    }
+    } */
     
     /// Apply zoom factor to camera distance (shared logic for trackpad and mouse)
     /// Maintains orbital angle while adjusting distance for consistent zoom behavior
