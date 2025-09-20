@@ -76,6 +76,7 @@ struct CenterRealityView: View {
                             if model.shiftPressed {
                                 print("🎯 SceneCenter + Shift: pivot gesture")
                                 cameraController.handleCameraPivotGesture(translation: value.translation, camera: camera)
+                                cameraController.primaryCamera = camera
                             } else {
                                 print("🎯 SceneCenter: orbit gesture")
                                 cameraController.handleSimpleOrbitGesture(translation: value.translation, camera: camera)
@@ -90,6 +91,7 @@ struct CenterRealityView: View {
                             } else {
                                 print("🎯 FreeFlier: translate gesture")
                                 cameraController.handleCameraPivotGesture(translation: value.translation, camera: camera)
+                                cameraController.primaryCamera = camera
                             }
                         }
                     },

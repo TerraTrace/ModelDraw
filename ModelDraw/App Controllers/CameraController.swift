@@ -362,8 +362,8 @@ class CameraController {
     ///   - camera: PerspectiveCamera to update directly via Entity.Observable
     func handleSimpleOrbitGesture(translation: CGSize, camera: PerspectiveCamera) {
         // Use proven SimOrb sensitivity scaling for smooth control
-        let orbitSensitivity: Float = 0.001  // Matches SimOrb proven values
-        let elevationSensitivity: Float = 0.001  // Same sensitivity for vertical movement
+        let orbitSensitivity: Float = 0.0005  // Matches SimOrb proven values
+        let elevationSensitivity: Float = 0.0004  // Same sensitivity for vertical movement
         
         // Calculate angle changes from drag translation
         let orbitalAngleChange = Float(translation.width) * orbitSensitivity
@@ -389,6 +389,9 @@ class CameraController {
         
         // Direct Entity.Observable update - SwiftUI automatically observes changes
         camera.position = newPosition
+        
+        // 🎯 FIX: Make camera look at origin for proper orbit behavior
+        camera.look(at: .zero, from: newPosition, relativeTo: nil)
         
         print("🎮 3D orbit: orbital=\(newOrbitalAngle), elevation=\(newElevationAngle), distance=\(cameraDistance)")
     }
@@ -596,8 +599,8 @@ class CameraController {
     ///   - translation: 2D drag translation from SwiftUI DragGesture
     ///   - camera: PerspectiveCamera to update directly via Entity.Observable
     func handleCameraPivotGesture(translation: CGSize, camera: PerspectiveCamera) {
-        // Use proven sensitivity values for smooth free-look camera control
-        let rotationSensitivity: Float = 0.002  // Matches other gesture sensitivities
+
+        let rotationSensitivity: Float = 0.0003  // a little less sensitive (slower)
         
         // Calculate rotation deltas from drag translation
         let horizontalDelta = Float(translation.width) * rotationSensitivity
