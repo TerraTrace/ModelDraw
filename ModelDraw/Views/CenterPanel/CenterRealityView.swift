@@ -79,6 +79,7 @@ struct CenterRealityView: View {
                             } else {
                                 print("🎯 SceneCenter: orbit gesture")
                                 cameraController.handleSimpleOrbitGesture(translation: value.translation, camera: camera)
+                                cameraController.primaryCamera = camera
                             }
                             
                         case .freeFlier:
@@ -95,6 +96,7 @@ struct CenterRealityView: View {
                 MagnificationGesture()
                     .onChanged { value in
                         cameraController.handleZoomGesture(zoomFactor: Float(value), camera: camera)
+                        cameraController.primaryCamera = camera
                     }
             )
         )
