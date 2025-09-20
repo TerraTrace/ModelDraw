@@ -64,7 +64,7 @@ struct CenterRealityView: View {
                 model.placeItemAtLocation(worldPosition)
             }
         }
-        /*.gesture(
+        .gesture(
             SimultaneousGesture(
                 DragGesture()
                     .onChanged { value in
@@ -93,17 +93,9 @@ struct CenterRealityView: View {
                     },
                 MagnificationGesture()
                     .onChanged { value in
-                        print("🎯 MagnificationGesture detected: \(value)")
-                        //cameraController.handleZoomGesture(zoomFactor: Float(value), camera: camera)
+                        cameraController.handleZoomGesture(zoomFactor: Float(value), camera: camera)
                     }
             )
-        ) */
-        .gesture(
-            MagnificationGesture()
-                .onChanged { value in
-                    print("🎯 MagnificationGesture detected: \(value)")
-                    cameraController.handleZoomGesture(zoomFactor: Float(value), camera: camera)
-                }
         )
         // Add this to CenterRealityView after your existing .gesture() modifier
         // This handles single USD file drops only
