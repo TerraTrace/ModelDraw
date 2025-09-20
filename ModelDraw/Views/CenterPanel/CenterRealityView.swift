@@ -78,7 +78,7 @@ struct CenterRealityView: View {
                                 cameraController.handleCameraPivotGesture(translation: value.translation)
                             } else {
                                 print("🎯 SceneCenter: orbit gesture")
-                                cameraController.handleSimpleOrbitGesture(translation: value.translation)
+                                cameraController.handleSimpleOrbitGesture(translation: value.translation, camera: camera)
                             }
                             
                         case .freeFlier:

@@ -176,7 +176,7 @@ class CameraController {
      
      /// Current orbital angle in radians around Y-axis (horizontal rotation)
      /// Tracks how far around the circle we've rotated
-     private var orbitalAngle: Float {
+     /*private var orbitalAngle: Float {
          get {
              // Extract angle from current ViewModel position using simple atan2
              guard let viewModel = viewModel else { return 0.0 }
@@ -186,11 +186,11 @@ class CameraController {
          set {
              updateSimpleOrbitPosition(angle: newValue)
          }
-     }
+     } */
     
     /// Current elevation angle in radians (vertical rotation around horizontal circle)
     /// Tracks camera height: 0 = equatorial plane, π/2 = north pole, -π/2 = south pole
-    private var elevationAngle: Float {
+    /*private var elevationAngle: Float {
         get {
             guard let viewModel = viewModel else { return 0.0 }
             let pos = viewModel.cameraPosition
@@ -201,7 +201,7 @@ class CameraController {
             let currentOrbitalAngle = orbitalAngle
             //updateSphericalOrbitPosition(orbitalAngle: currentOrbitalAngle, elevationAngle: newValue)
         }
-    }
+    } */
     
     // MARK: - Camera Position Calculation Helpers
 
@@ -522,7 +522,7 @@ class CameraController {
     /// Apply zoom factor to camera distance (shared logic for trackpad and mouse)
     /// Maintains orbital angle while adjusting distance for consistent zoom behavior
     /// - Parameter zoomFactor: Zoom multiplication factor (>1.0 = zoom in, <1.0 = zoom out)
-    private func applyZoomFactor(_ zoomFactor: Float) {
+    /*private func applyZoomFactor(_ zoomFactor: Float) {
         guard let viewModel = viewModel else { return }
         
         // Apply zoom limits to prevent camera going too close or too far
@@ -545,7 +545,7 @@ class CameraController {
         updateSimpleOrbitPosition(angle: currentAngle)
         
         print("🔍 Zoom applied: factor=\(zoomFactor), oldDistance=\(currentDistance), newDistance=\(newDistance)")
-    }
+    } */
     
     
     // MARK: - Camera Position Updates
@@ -553,10 +553,10 @@ class CameraController {
     /// Legacy simple orbit position update (DEPRECATED - use spherical version)
     /// Kept for compatibility but now delegates to spherical method with elevation=0
     /// - Parameter angle: New orbital angle in radians around Y-axis
-    private func updateSimpleOrbitPosition(angle: Float) {
+    /*private func updateSimpleOrbitPosition(angle: Float) {
         // Delegate to spherical method with zero elevation for backward compatibility
         updateSphericalOrbitPosition(orbitalAngle: angle, elevationAngle: 0.0)
-    }
+    } */
     
     
     /// Update camera position using full spherical coordinates for 3D orbit
