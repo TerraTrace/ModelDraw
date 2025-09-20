@@ -14,6 +14,7 @@ class ViewModel {
     private let usdFileManager = USDFileManager.shared
     
     private let lastProjectKey = "ModelDraw_LastActiveProject"
+    private let cameraNavigationModeKey = "ModelDraw_CameraNavigationMode"
 
 
     // MARK: - Navigator State
@@ -31,9 +32,8 @@ class ViewModel {
     
     // MARK: - Camera Control Properties
     
-    /// Current camera mode - determines how camera behaves
-    var cameraMode: CameraMode = .sceneCenter
-    //var cameraMode: CameraMode = .freeFlier
+    //var cameraMode: CameraMode = .sceneCenter
+    //var cameraViewPreset: ViewPreset? = nil  // .front, .side, .iso, etc.
     
     var shiftPressed = false
     
@@ -48,7 +48,13 @@ class ViewModel {
         }
     }
     
-    // MARK: - Camera Transform Properties
+    // MARK: - Camera Properties
+    
+    var cameraMode: CameraMode = .sceneCenter {
+        didSet {
+            saveCameraNavigationMode()
+        }
+    }
         
     /// Current camera position in 3D space
     /// Updated by CameraController based on orbit/pan/zoom gestures
@@ -79,10 +85,25 @@ class ViewModel {
     init() {
         loadNavigatorData()
         loadLastActiveProject()
+        loadCameraNavigationMode()
     }
     
 
     // MARK: - Public Methods
+    
+    /// Load camera navigation mode from UserDefaults
+    private func loadCameraNavigationMode() {
+        let savedModeRawValue = UserDefaults.standard.string(forKey: cameraNavigationModeKey) ?? "sceneCenter"
+        cameraMode = CameraMode(rawValue: savedModeRawValue) ?? .sceneCenter
+        print("🎯 ViewModel: Loaded camera mode: \(cameraMode)")
+    }
+
+    /// Save camera navigation mode to UserDefaults
+    private func saveCameraNavigationMode() {
+        UserDefaults.standard.set(cameraMode.rawValue, forKey: cameraNavigationModeKey)
+        print("💾 ViewModel: Saved camera mode: \(cameraMode)")
+    }
+    
     
     /// Refresh the navigator tree from file system
     func loadNavigatorData() {

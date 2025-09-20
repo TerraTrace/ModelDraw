@@ -18,11 +18,11 @@ struct ToolsSection: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     ToolGroupView(
-                        groupName: "Navigation",
+                        groupName: "Camera",
                         tools: [
-                            ("Select", "cursorarrow.click", true),
+                            ("Orbit", "arrow.triangle.2.circlepath", true),
+                            ("Free", "bird", false),
                             ("Pan", "hand.draw", false),
-                            ("Orbit", "arrow.triangle.2.circlepath", false),
                             ("Zoom", "plus.magnifyingglass", false)
                         ]
                     )

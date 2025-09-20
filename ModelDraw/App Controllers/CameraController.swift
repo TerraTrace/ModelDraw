@@ -16,9 +16,14 @@ import RealityKit
 // MARK: - Camera Configuration Enums
 
 /// Camera mode for determining behavior type
-enum CameraMode: CaseIterable {
+/*enum CameraMode: CaseIterable {
     case sceneCenter    // Orbit around Earth/scene center for ECI missions
     case freeFlier     // CAD-like free movement anywhere in scene
+} */
+
+enum CameraMode: String, CaseIterable {
+    case sceneCenter = "sceneCenter"
+    case freeFlier = "freeFlier"
 }
 
 /// Camera configuration that includes target information
