@@ -59,7 +59,7 @@ class CameraController {
     
     /// Sensitivity multiplier for zoom gestures (adapted from SimOrb proven values)
     /// Reduced sensitivity for smooth, controllable zoom operations
-    private let zoomSensitivity: Float = 0.005
+    private let zoomSensitivity: Float = 0.01
     
     /// Sensitivity multiplier for scroll wheel zoom (matches SimOrb implementation)
     /// Used for mouse scroll wheel zoom calculations
@@ -393,6 +393,7 @@ class CameraController {
         print("🎮 3D orbit: orbital=\(newOrbitalAngle), elevation=\(newElevationAngle), distance=\(cameraDistance)")
     }
     
+    
     // MARK: - Zoom Gesture Handlers
     
     /// Handle zoom gesture for camera distance adjustment (trackpad pinch)
@@ -402,18 +403,19 @@ class CameraController {
     ///   - zoomFactor: Zoom multiplier (>1.0 = zoom in, <1.0 = zoom out)
     ///   - camera: PerspectiveCamera to update directly via Entity.Observable
     func handleZoomGesture(zoomFactor: Float, camera: PerspectiveCamera) {
-        // Apply zoom limits to prevent camera going too close or too far
-        // Reasonable limits for spacecraft mission visualization
-        guard zoomFactor > 0.1 && zoomFactor < 10.0 else {
-            print("🔍 Zoom factor \(zoomFactor) outside safe limits, ignoring")
+
+        // Dampen trackpad pinch sensitivity to match scroll wheel feel
+        let dampedZoomFactor = 1.0 + (zoomFactor - 1.0) * zoomSensitivity  // adjust the sensitive
+
+        guard dampedZoomFactor > 0.1 && dampedZoomFactor < 10.0 else {
+            print("🔍 Zoom factor \(dampedZoomFactor) outside safe limits, ignoring")
             return
         }
-        
-        // Calculate new distance by applying zoom factor to current distance
-        // Division by factor: factor > 1.0 = zoom in (closer), factor < 1.0 = zoom out (farther)
-        let currentDistance = cameraDistance  // Use local property
-        let newDistance = max(1.0, min(50.0, currentDistance / zoomFactor))  // Enforce distance bounds
-        
+        print("🔍 Zoom factor is: \(dampedZoomFactor)")
+
+        let currentDistance = cameraDistance
+        let newDistance = max(1.0, min(50.0, currentDistance / dampedZoomFactor))
+
         // Update local distance for orbit radius tracking
         cameraDistance = newDistance
         
