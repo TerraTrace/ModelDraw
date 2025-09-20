@@ -33,27 +33,6 @@ enum CameraConfiguration: Equatable {
 }
 
 
-// MARK: - Device Callback Functions (C functions for IOHIDManager)
-
-/// C callback for mouse attachment events
-private func mouseAttachedCallback(context: UnsafeMutableRawPointer?, result: IOReturn, sender: UnsafeMutableRawPointer?, device: IOHIDDevice) {
-    guard let context = context else { return }
-    let controller = Unmanaged<CameraController>.fromOpaque(context).takeUnretainedValue()
-    
-    DispatchQueue.main.async {
-        controller.onMouseAttached()
-    }
-}
-
-/// C callback for mouse detachment events
-private func mouseDetachedCallback(context: UnsafeMutableRawPointer?, result: IOReturn, sender: UnsafeMutableRawPointer?, device: IOHIDDevice) {
-    guard let context = context else { return }
-    let controller = Unmanaged<CameraController>.fromOpaque(context).takeUnretainedValue()
-    
-    DispatchQueue.main.async {
-        controller.onMouseDetached()
-    }
-}
 
 
 /// Professional camera controller for MissionViz 3D scene navigation
@@ -96,12 +75,6 @@ class CameraController {
     /// Enables mouse scroll wheel zoom for users without trackpad
     private var scrollWheelMonitor: Any?
     
-    /// IOHIDManager for detecting mouse attach/detach events
-    private var deviceMonitor: IOHIDManager?
-
-    /// Tracks if an external mouse is currently connected
-    private var mouseAttached: Bool = false
-
 
     // MARK: - Initialization and Cleanup
     
@@ -123,8 +96,7 @@ class CameraController {
     /// Enables real-time Shift key detection and scroll wheel capture
     private func setupEventMonitoring() {
         setupKeyboardMonitoring()
-        setupDeviceMonitoring()          // Always monitor device changes
-        // setupScrollWheelMonitoring()   // Now called conditionally from device callbacks
+        setupScrollWheelMonitoring()   // Now called conditionally from device callbacks
     }
     
     /// Setup keyboard monitoring for Shift key detection (adapted from SimOrb)
@@ -144,7 +116,7 @@ class CameraController {
     
     /// Setup scroll wheel monitoring for mouse zoom (existing method)
     /// Enables zoom gesture for mouse users (alternative to trackpad pinch)
-    /*private func setupScrollWheelMonitoring() {
+    private func setupScrollWheelMonitoring() {
         // Monitor for scroll wheel events using NSEvent (matches SimOrb implementation)
         scrollWheelMonitor = NSEvent.addLocalMonitorForEvents(matching: [.scrollWheel]) { [weak self] event in
             DispatchQueue.main.async {
@@ -154,7 +126,7 @@ class CameraController {
         }
         
         print("🖱️ CameraController: Mouse scroll wheel monitoring active - Zoom enabled")
-    } */
+    }
     
     /// Clean up event monitors (enhanced with keyboard monitor)
     /// Prevents memory leaks and ensures proper resource management
@@ -172,78 +144,7 @@ class CameraController {
         }
     }
 
-    // MARK: - Device Monitoring Setup
-
-    /// Setup HID device monitoring for mouse attach/detach detection
-    /// Dynamically enables/disables scroll wheel monitoring based on mouse presence
-    private func setupDeviceMonitoring() {
-        deviceMonitor = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
-        
-        guard let manager = deviceMonitor else {
-            print("⚠️ CameraController: Failed to create HID device manager")
-            return
-        }
-        
-        // Set device matching criteria for mice
-        let deviceMatching = [
-            kIOHIDDeviceUsagePageKey: kHIDPage_GenericDesktop,
-            kIOHIDDeviceUsageKey: kHIDUsage_GD_Mouse
-        ] as CFDictionary
-        
-        IOHIDManagerSetDeviceMatching(manager, deviceMatching)
-        
-        // Register callbacks for device attach/detach events
-        IOHIDManagerRegisterDeviceMatchingCallback(manager, mouseAttachedCallback, Unmanaged.passUnretained(self).toOpaque())
-        IOHIDManagerRegisterDeviceRemovalCallback(manager, mouseDetachedCallback, Unmanaged.passUnretained(self).toOpaque())
-        
-        // Schedule with run loop and start monitoring
-        IOHIDManagerScheduleWithRunLoop(manager, CFRunLoopGetCurrent(), CFRunLoopMode.defaultMode.rawValue)
-        
-        let result = IOHIDManagerOpen(manager, IOOptionBits(kIOHIDOptionsTypeNone))
-        if result == kIOReturnSuccess {
-            print("🖱️ CameraController: Device monitoring active - tracking mouse connections")
-            
-            // Check if mouse is already connected at startup
-            checkInitialMouseState()
-        } else {
-            print("⚠️ CameraController: Failed to open HID device manager")
-        }
-    }
-
-    /// Check for mice already connected at startup
-    private func checkInitialMouseState() {
-        guard let manager = deviceMonitor else { return }
-        
-        let deviceSet = IOHIDManagerCopyDevices(manager)
-        let deviceCount = deviceSet != nil ? CFSetGetCount(deviceSet) : 0
-        
-        if deviceCount > 0 {
-            mouseAttached = true
-            enableScrollWheelMonitoring()
-            print("🖱️ CameraController: Mouse detected at startup")
-        } else {
-            mouseAttached = false
-            print("🖱️ CameraController: No mouse detected at startup")
-        }
-    }
     
-
-    // MARK: - Mouse Device Event Handlers
-
-    /// Called when a mouse device is attached
-    func onMouseAttached() {
-        mouseAttached = true
-        enableScrollWheelMonitoring()
-        print("🖱️ CameraController: Mouse attached - scroll wheel zoom enabled")
-    }
-
-    /// Called when a mouse device is detached
-    func onMouseDetached() {
-        mouseAttached = false
-        disableScrollWheelMonitoring()
-        print("🖱️ CameraController: Mouse detached - scroll wheel zoom disabled")
-    }
-
     // MARK: - Scroll Wheel Monitoring Control
 
     /// Enable scroll wheel monitoring when mouse is attached
