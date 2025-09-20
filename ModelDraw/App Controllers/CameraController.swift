@@ -199,8 +199,25 @@ class CameraController {
         }
         set {
             let currentOrbitalAngle = orbitalAngle
-            updateSphericalOrbitPosition(orbitalAngle: currentOrbitalAngle, elevationAngle: newValue)
+            //updateSphericalOrbitPosition(orbitalAngle: currentOrbitalAngle, elevationAngle: newValue)
         }
+    }
+    
+    // MARK: - Camera Position Calculation Helpers
+
+    /// Calculate orbital angle from camera position (replaces computed property)
+    /// - Parameter position: Camera position in 3D space
+    /// - Returns: Orbital angle in radians around Y-axis
+    private func getOrbitalAngle(from position: SIMD3<Float>) -> Float {
+        return atan2(position.x, position.z)
+    }
+
+    /// Calculate elevation angle from camera position (replaces computed property)
+    /// - Parameter position: Camera position in 3D space
+    /// - Returns: Elevation angle in radians (0 = equatorial, π/2 = north pole)
+    private func getElevationAngle(from position: SIMD3<Float>) -> Float {
+        let distance = sqrt(position.x * position.x + position.y * position.y + position.z * position.z)
+        return asin(position.y / distance)
     }
     
     
@@ -312,7 +329,8 @@ class CameraController {
     /// Horizontal drag = orbital angle around Y-axis (existing behavior)
     /// Vertical drag = elevation angle for overhead/underside views (NEW)
     /// - Parameter translation: 2D drag translation from SwiftUI DragGesture
-    func handleSimpleOrbitGesture(translation: CGSize) {
+    /*func handleSimpleOrbitGesture(translation: CGSize, camera: PerspectiveCamera) {
+    //func handleSimpleOrbitGesture(translation: CGSize) {
         guard let viewModel = viewModel else {
             print("⚠️ CameraController.handleSimpleOrbitGesture: No ViewModel reference available")
             return
@@ -334,8 +352,46 @@ class CameraController {
         updateSphericalOrbitPosition(orbitalAngle: newOrbitalAngle, elevationAngle: newElevationAngle)
         
         print("🎮 3D orbit: orbital=\(newOrbitalAngle), elevation=\(newElevationAngle), distance=\(viewModel.cameraDistance)")
-    }
+    } */
     
+    /// Handle orbit gesture for camera rotation around scene center
+    /// Migrated to Entity.Observable - directly updates camera Entity instead of ViewModel
+    /// Horizontal drag = orbital angle around Y-axis, Vertical drag = elevation angle
+    /// - Parameters:
+    ///   - translation: 2D drag translation from SwiftUI DragGesture
+    ///   - camera: PerspectiveCamera to update directly via Entity.Observable
+    func handleSimpleOrbitGesture(translation: CGSize, camera: PerspectiveCamera) {
+        // Use proven SimOrb sensitivity scaling for smooth control
+        let orbitSensitivity: Float = 0.001  // Matches SimOrb proven values
+        let elevationSensitivity: Float = 0.001  // Same sensitivity for vertical movement
+        
+        // Calculate angle changes from drag translation
+        let orbitalAngleChange = Float(translation.width) * orbitSensitivity
+        let elevationAngleChange = -Float(translation.height) * elevationSensitivity  // Invert for natural feel
+        
+        // Get current angles from camera position (Entity.Observable source)
+        let currentOrbitalAngle = getOrbitalAngle(from: camera.position)
+        let currentElevationAngle = getElevationAngle(from: camera.position)
+        
+        // Update both angles from current position
+        let newOrbitalAngle = currentOrbitalAngle + orbitalAngleChange
+        let newElevationAngle = max(-Float.pi/2 + 0.1, min(Float.pi/2 - 0.1, currentElevationAngle + elevationAngleChange))  // Clamp to prevent gimbal lock
+        
+        // Calculate new camera position using spherical coordinates
+        let cosElevation = cos(newElevationAngle)
+        let sinElevation = sin(newElevationAngle)
+        
+        let newPosition = SIMD3<Float>(
+            cameraDistance * cosElevation * sin(newOrbitalAngle),    // X position
+            cameraDistance * sinElevation,                           // Y position
+            cameraDistance * cosElevation * cos(newOrbitalAngle)     // Z position
+        )
+        
+        // Direct Entity.Observable update - SwiftUI automatically observes changes
+        camera.position = newPosition
+        
+        print("🎮 3D orbit: orbital=\(newOrbitalAngle), elevation=\(newElevationAngle), distance=\(cameraDistance)")
+    }
     
     // MARK: - Zoom Gesture Handlers
     
@@ -362,8 +418,8 @@ class CameraController {
         cameraDistance = newDistance
         
         // Calculate new position preserving both orbital AND elevation angles
-        let currentOrbitalAngle = orbitalAngle
-        let currentElevationAngle = elevationAngle
+        let currentOrbitalAngle = getOrbitalAngle(from: camera.position)
+        let currentElevationAngle = getElevationAngle(from: camera.position)
         
         // Calculate new camera position using spherical coordinates
         let cosElevation = cos(currentElevationAngle)
@@ -441,6 +497,7 @@ class CameraController {
         // FIXED: Preserve both angles during scroll zoom too
         let currentOrbitalAngle = orbitalAngle
         let currentElevationAngle = elevationAngle
+        
         updateSphericalOrbitPosition(orbitalAngle: currentOrbitalAngle, elevationAngle: currentElevationAngle)
         
         print("🖱️ Scroll zoom: deltaY=\(deltaY), newDistance=\(newDistance)")
@@ -491,7 +548,7 @@ class CameraController {
     /// - Parameters:
     ///   - orbitalAngle: Horizontal angle in radians around Y-axis (0 = +Z direction)
     ///   - elevationAngle: Vertical angle in radians (0 = equatorial, π/2 = north pole)
-    private func updateSphericalOrbitPosition(orbitalAngle: Float, elevationAngle: Float) {
+    /*private func updateSphericalOrbitPosition(orbitalAngle: Float, elevationAngle: Float) {
         guard let viewModel = viewModel else { return }
         
         let distance = viewModel.cameraDistance
@@ -509,7 +566,7 @@ class CameraController {
         
         viewModel.cameraPosition = newPosition
         print("🎮 Spherical camera position: orbital=\(orbitalAngle)°, elevation=\(elevationAngle)°, pos=\(newPosition)")
-    }
+    } */
     
     
     // MARK: - Camera Pivot Gesture Handler
